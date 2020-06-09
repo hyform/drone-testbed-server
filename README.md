@@ -2,7 +2,7 @@
 This is the server for the HyForm drone design testbed. It pairs with a Unity interface available here: https://github.com/hyform/drone-testbed-unity
 
 ## Quick Setup Guide
-# Installation 
+### Installation 
 Install Vagrant  (https://www.vagrantup.com/)  
   
 From the Command Prompt, navigate to the root directory of this reporitory (where this document is located) and run  
