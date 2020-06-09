@@ -1,0 +1,18 @@
+<!-- templates/registration/login.html -->
+{% extends 'base.html' %}
+
+{% block title %}A-Teams Overview{% endblock %}
+
+{% block body_content %}
+<br>
+<h2 class="bebas-font">DARPA Agile Teams (A-Teams) Testbed </h2>
+<br>
+
+The A-Teams program seeks to create a systematic methodology to design teams that best use the capabilities of both humans and machines and that can achieve enhanced performance in uncertain, dynamic, and co-evolving environments. These new abstractions will be validated using experimental testbeds aimed to support reproducible evaluation of human-machine team architectures in a diverse range of problem contexts. <a href="https://www.darpa.mil/program/agile-teams">https://www.darpa.mil/program/agile-teams</a>
+
+<br><br>
+<a href="{% url 'home' %}" class="btn-sm btn-secondary my-2">HyForm Testbed</a>
+<br><br>
+
+
+{% endblock body_content %}

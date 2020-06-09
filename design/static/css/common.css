@@ -1,0 +1,14 @@
+@font-face {
+    font-family: 'BebasNeue';
+    font-style: normal;
+    font-weight: 700;
+    src: url('/static/font/BebasNeue-Bold.otf') format('opentype');
+    
+}
+
+@font-face {
+    font-family: source-sans-pro, sans-serif;
+    font-style: normal;
+    font-weight: 200;
+    src: url('/static/font/SourceSansPro-Regular.otf.woff') format('woff');
+}

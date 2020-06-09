@@ -1,0 +1,62 @@
+{% extends '../base.html' %}
+{% block pageName %}
+{% if results %}
+  <h2>Data Log for Team: {{ results.0.team }}</h2>
+{% else %}
+  <h2>Data Log for Session: {{ session_name }}</h2>
+{% endif %}
+{% endblock pageName %}
+
+{% block body_content %}
+  <div id="header">
+  {% if datalog_list %}
+<style>
+table {
+  width: 100%;
+  margin: 20px auto;
+  table-layout: fixed;
+}
+
+table,
+td,
+th {
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 10px;
+  border: solid 1px;
+  text-align: left;
+}
+
+.w {
+  width: 100px;
+}
+
+.v {
+  width: 150px;
+}
+</style>
+{% load tz %}
+<a href="/static/docs/log_documentation.pdf">Log Documentation</a><br>
+    <table>
+    <tr>
+      <th class="w">User</th>
+      <th class="v">Date/Time</th>
+      <th>Action</th>
+      <th class="w">Type</th>
+    </tr>
+    {% for log in datalog_list %}
+      <tr>
+        <td> {{ log.user }} </td>
+        <td> {{ log.time|localtime|date:"d-M-y H:i:s" }} </td>
+        <td> {{ log.action }} </td>
+        <td> {{ log.type }} </td>
+      </tr>
+    {% endfor %}
+    </table>
+  {% else %}
+    <p>There are no records in the Data Log.</p>
+  {% endif %}
+{% endblock body_content%}

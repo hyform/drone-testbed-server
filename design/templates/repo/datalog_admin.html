@@ -1,0 +1,25 @@
+{% extends '../base.html' %}
+<style>
+  select {
+    width: 150px;
+    margin: 10 px;
+  {
+  select:focus {
+    min_width: 150px;
+    width: auto;
+  }
+</style>
+{% block pageName %}<h2>Data Log Admin</h2>{% endblock pageName %}
+{% block body_content %}
+  <div id="header">
+<br><h3>Select team to delete all data logs</h3><br>
+  {% if results %}
+    <select name="team">
+    {% for r in results %}
+      <option value="{{ r.team }}"> {{ r.team }}</option>
+    {% endfor %}
+    </select>
+  {% else %}
+    <p>There are no records in the Data Log.</p>
+  {% endif %}
+{% endblock body_content%}

@@ -1,0 +1,128 @@
+{% block dtd %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3c.org/TR/xhtml11/DTD/xhtml-strict.dd">
+{% endblock dtd %}
+{% block html_tag %}<html xmlns="http://www.w3c.org/1999/xhtml" xml: lang="en-US" lang="en-US">{% endblock html_tag %}
+{% block head %}
+
+<head>
+  {% if redir %}
+  <meta http-equiv="Refresh" content="0; url={{redir}}" />
+  {% endif %}
+  <title>{% block title %}{{ page.title }}{% endblock title %}</title>
+  {% block head_favicon %}
+  <link rel="icon" href="/static/css/images/favicon.ico" type="x-icon" />
+  <link rel="shortcut icon" href="/static/css/images/favicon.ico" type="x-icon" />{% endblock head_favicon %}
+  {% block head_meta %}
+  {% block head_meta_author %}{% endblock head_meta_author %}
+  {% block head_meta_charset %}
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />{% endblock head_meta_charset %}
+  {% block head_meta_contentlanguage %}
+  <meta http-equiv="Content-Language" value="en-US" />{% endblock head_meta_contentlanguage %}
+  {% block head_meta_description %}{% endblock head_meta_description %}
+  {% block head_meta_keywords %}{% endblock head_meta_keywords %}
+  {% block head_meta_othertags %}{% endblock head_meta_othertags %}
+  {% block head_meta_refresh %}{% endblock head_meta_refresh %}
+  {% block head_meta_robots %}{% endblock head_meta_robots %}
+  {% endblock head_meta %}
+  {% block head_rss %}{% endblock head_rss %}
+  {% block head_css %}
+  {% block head_css_site %}
+  <link rel="stylesheet" media="screen" href="/static/css/common.css">
+  <link rel="stylesheet" type="text/css" href="/static/css/ateams.css" />
+  {% endblock head_css_site %}
+  {% block head_css_section %}{% endblock head_css_section %}
+  {% block head_css_page %}{% endblock head_css_page %}
+  {% endblock head_css %}
+  {% block head_section %}{% endblock head_section %}
+  {% block head_page %}{% endblock head_page %}
+
+  <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+</head>{% endblock head %}
+{% block body %}
+
+<body class="source-font">
+  <div id="masthead">
+    {% block masthead %}
+
+    <!-- might want to extend base.html but there is a lot going on in this html page so left it unmodified -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark bebas-font">
+      <a class="navbar-brand" href="{% url 'home' %}">
+        <img src="/static/css/images/hyform-20.png" width="30" height="30" class="d-inline-block align-top" alt="">
+        HyForm Testbed
+      </a>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'ateams_main' %}">A-Teams</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- end #search -->
+    {% endblock masthead %}
+  </div>
+  <div id="pagecell" class="roundTop roundBottom">
+    {% block pagecell %}
+    <div id="pageName">
+      {% block pageName %}{% endblock pageName %}
+    </div>
+    <div id="sidebar">
+      {% block body_sidebar %}{% endblock body_sidebar %}
+    </div>
+    <div id="content">
+
+
+      <section class="jumbotron text-center">
+        <div>
+          <h1 class="jumbotron-heading bebas-font">Drone Delivery Testbed</h1>
+
+          <p><b>Participate in a game competition to design drones, plan delivery routes, and define markets strategies to satisfy food and parcel demands in a community</b></p>
+
+          <div id="header"></div>
+
+          {% if user.is_authenticated %}
+          <b>Hi {{ user.username }}</b>
+          <br>
+          {% if experimenter %}
+          <a href="experiment/" class="btn btn-secondary my-2">Session Management</a><br>
+          <a href="/static/docs/session-management-tutorial.pdf" target="_blank">Session Management Tutorial</a><br>
+          <a href="/static/docs/log_documentation.pdf" target="_blank">Data Log Documentation</a><br>
+          {% endif %}
+          <br>
+          <p><a href="{% url 'logout' %}" class="btn btn-secondary my-2">logout</a></p>
+          {% else %}
+          <a href="{% url 'login' %}" class="btn btn-secondary my-2">Login</a>
+          <p>If login fails, please try again at the scheduled time or verify your credentials are correct.</p>
+          {% endif %}
+
+        </div>
+      </section>
+
+      <p>This site requires Firefox, Chrome, or Edge</p>
+    </div>
+    <div id="footer">
+      {% block body_footer %}
+      {% block body_footer_breadcrumb %}{{ page.breadcrumb }}{% endblock body_footer_breadcrumb %}
+      {% block body_footer_legal %}
+      &copy; 2020 CMU/PSU/ARL</br>
+      <a href="http://guru.psu.edu/POLICIES/Ad42.html" target="_blank">Nondiscrimination Statement</a> -
+      <a href="http://www.psu.edu/ur/copyright.html" target="_blank">Copyright</a> -
+      <a href="http://www.psu.edu/ur/legal.html" target="_blank">Privacy and Legal Statements</a> </p>
+      {% endblock body_footer_legal %}
+      {% endblock body_footer %}
+    </div>
+    {% endblock pagecell %}
+  </div>
+</body>{% endblock body %}
+{% block footer %}
+{% block footer_javascript %}
+{% block footer_javascript_site %}
+<script language="JavaScript" type="text/javascript" src="/static/rest_framework/js/jquery-3.4.1.min.js"></script>
+{% endblock footer_javascript_site %}
+{% block footer_javascript_section %}{% endblock footer_javascript_section %}
+{% block footer_javascript_page %}{% endblock footer_javascript_page %}
+{% endblock footer_javascript %}
+{% endblock footer %}
+
+</html>

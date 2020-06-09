@@ -1,0 +1,72 @@
+html, body {
+    height: 100%;
+}
+
+h1 {
+    font-family: 'BebasNeue';
+}
+
+html, h2, h3, h4, h5, h6, div, ul, li, p, a {
+    font-family: source-sans-pro, sans-serif;
+}
+
+.fullheight {
+    height: 100%
+}
+
+.stuff {
+    flex-grow: 1;  
+    display: flex;
+    flex-direction: column;
+}
+
+.running-status {
+    background-color: #90EE90;  
+}
+
+.stopped-status {
+    background-color: #F08080;
+}
+
+.archived-status {
+    background-color: white;
+}
+
+.setup-status {
+    background-color: #90EE90; 
+}
+
+.presession-status {
+    background-color: #90EE90; 
+}
+
+.postsession-status {
+    background-color: #90EE90;
+}
+
+#table-heading {
+    background-color: #FFEFD5; 
+}
+
+.btn {
+    background-color: #4682B4;
+    margin: 2px;
+    text-align: center;
+    color: white;
+    border: 0;
+}
+
+.btn:hover {
+    background-color: #87CEEB;
+    color: black;
+  }
+
+.btn:focus {
+    background-color: #87CEEB;
+    color: black;
+    border-color: #00BFFF;
+}
+
+.ctrl_button {
+    padding: 2px;
+}

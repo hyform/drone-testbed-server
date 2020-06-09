@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Pre-Session</title>
+  {% if redir %}
+  <meta http-equiv="Refresh" content="0; url={{redir}}" />
+  {% endif %}
+  <link rel="stylesheet" media="screen" href="/static/css/bootstrap.min.css">
+  <link rel="stylesheet" media="screen" href="/static/css/common.css">
+  <link rel="stylesheet" media="screen" href="/static/css/info.css">
+  <script src="/static/js/TemplateData/UnityProgress.js"></script>
+  <script src="/static/js/Build/UnityLoader.js"></script>
+  <script>
+    var gameInstance = UnityLoader.instantiate("gameContainer", "/static/js/Build/webgl.json", {onProgress: UnityProgress});
+  </script>
+</head>
+
+<body>
+  {% if not redir %}
+  <div class="container-fluid h-100">
+    <div class="row fullheight">
+      <div class="col-8">
+        <div>
+          {% if user.is_authenticated %}
+          {% if not last %}
+          <h1>Part 1</h1>
+          {% else %}
+          <h1>Part 2</h1>
+          {% endif %}
+          <br>
+          Hi {{ user.username }}!
+          <br>
+          <br><br>
+          <h2>Problem Brief</h2>
+          {% if session == "Extra" %}
+          <a href="/static/docs/ProblemBreifs/IndStudy/Individual Study_Problem Brief.pdf" target=”_blank”>Individual
+            Problem Brief</a>
+          {% elif session == "A" %}
+          {% if first %}
+          {% if position == 1 %}
+          <a href="/static/docs/ProblemBreifs/TeamStudy/TAB/P1TSA/TeamAtoB_Part1_DesignManager.pdf"
+            target="_blank">Design Manager Brief</a>
+          {% elif position == 2 %}
+          <a href="/static/docs/ProblemBreifs/TeamStudy/TAB/P1TSA/TeamAtoB_Part1_DesignSpecialist.pdf"
+            target="_blank">Design Specialist Brief</a>
+          {% elif position == 3 %}
+          <a href="/static/docs/ProblemBreifs/TeamStudy/TAB/P1TSA/TeamAtoB_Part1_OperationsManager.pdf"
+            target="_blank">Operations Manager Brief</a>
+          {% elif position == 4 %}
+          <a href="/static/docs/ProblemBreifs/TeamStudy/TAB/P1TSA/TeamAtoB_Part1_OperationsSpecialist.pdf"
+            target="_blank">Operations Specialist Brief</a>
+          {% else %}
+          <a href="/static/docs/ProblemBreifs/TeamStudy/TAB/P1TSA/TeamAtoB_Part1_BusinessManager.pdf"
+            target="_blank">Business Manager Brief</a>
+          {% endif %}
+          {% else %}
+          {% if position == 1 %}
+          <a href="/static/docs/ProblemBreifs/TeamStudy/TBA/P2TSB2A/TeamBtoA_Part2_DesignManager.pdf"
+            target="_blank">Design Manager Brief</a>
+          {% elif position == 2 %}
+          <a href="/static/docs/ProblemBreifs/TeamStudy/TBA/P2TSB2A/TeamBtoA_Part2_DesignSpecialist.pdf"
+            target="_blank">Design Specialist Brief</a>
+          {% elif position == 3 %}
+          <a href="/static/docs/ProblemBreifs/TeamStudy/TBA/P2TSB2A/TeamBtoA_Part2_OperationsManager.pdf"
+            target="_blank">Operations Manager Brief</a>
+          {% elif position == 4 %}
+          <a href="/static/docs/ProblemBreifs/TeamStudy/TBA/P2TSB2A/TeamBtoA_Part2_OperationsSpecialist.pdf"
+            target="_blank">Operations Specialist Brief</a>
+          {% else %}
+          <a href="/static/docs/ProblemBreifs/TeamStudy/TBA/P2TSB2A/TeamBtoA_Part2_BusinessManager.pdf"
+            target="_blank">Business Manager Brief</a>
+          {% endif %}
+          {% endif %}
+          {% else %}
+          {% if first %}
+          {% if position == 2 %}
+          <a href="/static/docs/ProblemBreifs/TeamStudy/TBA/P1TSB/TeamBtoA_Part1_DesignSpecialist.pdf"
+            target="_blank">Design Specialist Brief</a>
+          {% elif position == 3 %}
+          <a href="/static/docs/ProblemBreifs/TeamStudy/TBA/P1TSB/TeamBtoA_Part1_OperationsManager.pdf"
+            target="_blank">Operations Manager Brief</a>
+          {% elif position == 4 %}
+          <a href="/static/docs/ProblemBreifs/TeamStudy/TBA/P1TSB/TeamBtoA_Part1_OperationsSpecialist.pdf"
+            target="_blank">Operations Specialist Brief</a>
+          {% else %}
+          <a href="/static/docs/ProblemBreifs/TeamStudy/TBA/P1TSB/TeamBtoA_Part1_BusinessManager.pdf"
+            target="_blank">Business Manager Brief</a>
+          {% endif %}
+          {% else %}
+          {% if position == 2 %}
+          <a href="/static/docs/ProblemBreifs/TeamStudy/TAB/P2TSA2B/TeamAtoB_Part2_DesignSpecialist.pdf"
+            target="_blank">Design Specialist Brief</a>
+          {% elif position == 3 %}
+          <a href="/static/docs/ProblemBreifs/TeamStudy/TAB/P2TSA2B/TeamAtoB_Part2_OperationsManager.pdf"
+            target="_blank">Operations Manager Brief</a>
+          {% elif position == 4 %}
+          <a href="/static/docs/ProblemBreifs/TeamStudy/TAB/P2TSA2B/TeamAtoB_Part2_OperationsSpecialist.pdf"
+            target="_blank">Operations Specialist Brief</a>
+          {% else %}
+          <a href="/static/docs/ProblemBreifs/TeamStudy/TAB/P2TSA2B/TeamAtoB_Part2_BusinessManager.pdf"
+            target="_blank">Business Manager Brief</a>
+          {% endif %}
+          {% endif %}
+          {% endif %}
+          <br><br>
+          <h2>Tutorials</h2>
+          {% if is_team %}
+          <a href="/static/docs/chat_tutorial.pdf" target="_blank">Chat Tutorial</a>
+          {% else %}
+          <a href="/static/docs/chat_tutorial_individual.pdf" target="_blank">Chat Tutorial</a>
+          {% endif %}
+          <br>
+          {% if role.name == "Designer" %}
+          {% if session_ai %}
+          {% if is_team %}
+          <a href="/static/docs/designer-tutorial.pdf" target="_blank">Designer Tutorial</a><br><br>
+          {% else %}
+          <a href="/static/docs/designer-tutorial_individual.pdf" target="_blank">Designer Tutorial</a><br><br>
+          {% endif %}
+          {% else %}
+          {% if is_team %}
+          <a href="/static/docs/designer-tutorial_noAI.pdf" target="_blank">Designer Tutorial</a><br><br>
+          {% else %}
+          <a href="/static/docs/designer-tutorial_individual_noAI.pdf" target="_blank">Designer Tutorial</a><br><br>
+          {% endif %}
+          {% endif %}
+          {% elif role.name == "OpsPlanner" %}
+          {% if session_ai %}
+          <a href="/static/docs/ops-tutorial.pdf" target="_blank">Operations Planner Tutorial</a><br><br>
+          {% else %}
+          <a href="/static/docs/ops-tutorial_noAI.pdf" target="_blank">Operations Planner Tutorial</a><br><br>
+          {% endif %}
+          {% elif role.name == "Business" %}
+          <a href="/static/docs/business-tutorial.pdf" target="_blank">Business Tutorial</a><br>
+          {% endif %}
+          <br>
+          <p>Your role for this session is <b>{{pos_name}}</b>. For more information please read the above documentation</p>
+          <br>
+          <p>Problem Brief and Tutorials are also available at the <b>Info</b> link above the chat</p><br>
+          {% else %}
+          <p>You are not logged in</p>
+          <a href="{% url 'login' %}">login</a>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-4">
+        <div style="flex-grow: 1; display: flex; min-height: 0; flex-direction: column; height: 100%;">
+          <iframe style="height: 100%; border: none" src='/chat/'></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type='application/javascript' src="/static/js/jquery-3.4.1.min.js"></script>
+  <script type='application/javascript' src="/static/js/session.js"></script>
+  {% endif %}
+</body>
+
+</html>

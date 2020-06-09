@@ -1,0 +1,57 @@
+ canvas {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+.container {
+    min-height:100%;
+    margin: 0;
+    padding: 0;
+}
+
+.container-fluid {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.col-9 {
+    margin: 0;
+    padding: 0;
+}
+
+.col-3 {
+    margin: 0;
+    padding: 0;
+}
+
+.row {
+    min-height:100%;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    height:100%;
+}
+
+body {
+    margin:0;
+    height:100%;
+}
+
+.webgl-content, #gameContainer {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    margin: auto;
+}
+
+iframe {
+    height:100%;
+    width:100%;
+    margin: 0;
+    border: 0;
+    overflow: hidden;
+}

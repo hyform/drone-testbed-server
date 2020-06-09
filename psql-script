@@ -1,0 +1,5 @@
+create database ateams;
+create user atuser with password 'ateamspass';
+grant all privileges on database ateams to atuser;
+\c ateams;
+\i /vagrant/ateams-basic.sql;

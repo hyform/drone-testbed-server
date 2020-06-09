@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" media="screen" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" media="screen" href="/static/css/chat.css">
+    <title>A-Teams Chat</title>
+
+</head>
+
+<body>
+    <div class="outerer-container">
+        {% if not experimenter %}
+        <div class="chat-header">
+            <div class="col-10">
+                {% if position_name %}
+                {{position_name}}
+                {% endif %}
+            </div>
+            <div class="col-2">
+                <a href="/info/" target="_blank">Info</a>
+            </div>
+        </div>
+        {% endif %}
+        <div class="outer-container">
+            <ul id="channel-list" class="list-unstyled channel-list"></ul>
+        </div>        
+        <div class="message-controls">
+            <div class="col-9 chat-message">
+                <input id="message" placeholder="Type Here" type="text" autofocus autocomplete="off"
+                    spellcheck="false" autocorrect="off" class="form-control input-xs" />
+            </div>
+            <div class="col-3 chat-send">
+                <button id="send" type="submit" class="btn primary-btn btn-xs">Send</button>
+            </div>
+        </div>
+        {% if not experimenter %}
+        <a target="_parent" href="{% url 'logout' %}">logout</a>
+        {% endif %}        
+    </div>
+
+    <script type='application/javascript' src="/static/js/jquery-3.4.1.min.js"></script>
+    <script type='application/javascript' src="/static/js/chat.js"></script>
+
+</body>
+
+</html>

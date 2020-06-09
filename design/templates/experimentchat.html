@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Session Management</title>
+    <link rel="stylesheet" media="screen" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" media="screen" href="/static/css/common.css">
+    <link rel="stylesheet" media="screen" href="/static/css/experiment.css">
+</head>
+
+<body>
+{% if user.is_authenticated %}
+<div class="stuff fullheight">
+    <h2 class="text-center">Help Chat Channels - <label id="minutes">00</label>:<label id="seconds">00</label></h2>
+    <div class="container-fluid h-100">
+        <div class="row fullheight">
+            {% for team in org_teams %}
+            <div class="col-4 stuff">
+                <h4>{{team.name}}</h4>
+                <iframe style="height: 100%; border: none;" src='/chat/?teamId={{team.id}}'></iframe>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="stuff fullheight">
+          <h2 class="text-center">Active Session Data Logs</h2>
+          <div class="row fullheight">
+          {% for s in exp_sessions %}
+              <h5> <a href="/repo/datalog/list/{{s.id}}" target="_blank">Data Log for {{ s.name }}</a></h5><br>
+          {% endfor %}
+        </div>
+        </div>
+    </div>
+</div>
+
+<script type='application/javascript' src="/static/js/jquery-3.4.1.min.js"></script>
+<script type='application/javascript' src="/static/js/bootstrap.bundle.min.js"></script>
+<script type='text/javascript' src="/static/js/experiment.js"></script>
+<script type='text/javascript' src="/static/js/timer.js"></script>
+{% endif %}
+</body>
+
+</html>

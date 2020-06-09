@@ -1,0 +1,288 @@
+.bebas-font {
+    font-family: 'BebasNeue';
+}
+
+.source-font {
+    font-family: source-sans-pro, sans-serif;
+}
+
+body {
+  background: #cccccc url(images/bg_grad.jpg) fixed;
+  color: #333333;
+  line-height: 1.166;
+  margin: 0px;
+  padding: 15px;
+  list-style-position: inside;
+}
+
+h1 {
+  color: #334d55;
+  margin: 0px;
+  padding: 0px;
+}
+
+h2 {
+  color: #000000;
+  margin: 0px;
+  padding 0px;
+    -webkit-margin-before: 0.83em;
+    -webkit-margin-after: 0.83em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    font-weight: bold;
+}
+
+h3 {
+  color: #334d55;
+  margin: 0px;
+  padding: 0px;
+}
+
+h4 {
+  color: #333333;
+  margin: 0px;
+  padding 0px;
+}
+
+h5 {
+  color: #334d55;
+  margin: 0px;
+  padding: 0px;
+}
+
+#pageName {
+    padding: 0px 0px 14px 10px;
+    margin: 0px;
+    border-bottom: 1px solid #ccd2d2;
+}
+
+#pageName h2 {
+    color: #000000;
+    margin: 10px 0px 0px 0px;
+    padding: 0px;
+}
+
+#pageBottom {
+    padding: 0px 0px 0px 0px;
+    padding-top: 10px;
+    margin-top: 10px;
+    position: static;
+}
+
+#siteContain {
+    width: 910px;
+    margin: 0 auto;
+    background: #FFEEBB;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    padding: 3px;
+    float: left;
+}
+
+#header {
+    padding: 5px;
+    position: static;
+}
+
+.jumbotron {
+    background-image: url("/static/css/images/uavbackground_wide.png");
+    background-size: cover;
+}
+
+#pagecell {
+    position: absolute;
+    top: 150 px;
+    left: 2%;
+    right 2%;
+    width: 95.6%;
+    background-color: #ffffff;
+}
+
+#sidebar {
+    float: left;
+    width: 240px;
+    color: black;
+    margin-right: 10px;
+}
+
+#footer {
+    clear: both;
+    border-top: 1px solid #cccccc;
+    font-size: small;
+    color: #999999;
+    padding: 10px 10px 10px 10px;
+    margin-top: 0px;
+    text-align: right;
+}
+
+
+#menu {
+    float: left;
+    font-size: 1.2em;
+    color: #0F67A1;
+    display: block;
+    background: transparent;
+    -moz-border-radius: 10px;
+    outline-width: 0px;
+    padding-top: 0.2em;
+    padding-right: 10px;
+    margin-top: 0px;
+    position: relative;
+    border-top-width: 0px;
+    border-radius: 10px;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #EEE;
+}
+
+#systemMenu {
+    margin-top: -15px;
+    margin-left: 10px;
+    font-size: 1.0em;
+    padding-top: 5px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+    padding-left: 10px;
+    background: #FAFAFA;
+    border-right-width:1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-right-color: #AAA;
+    border-bottom-color: #AAA;
+    border-left-color: #AAA;
+}
+
+#optionMenu {
+    margin-top: -15px;
+    margin-left: 10px;
+    padding-top: 5px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+    padding-left: 20px;
+    background: #FAFAFA;
+    border-right-width:1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-right-color: #AAA;
+    border-bottom-color: #AAA;
+    border-left-color: #AAA;
+    display: block;
+}
+
+#costMenu {
+    margin-top: -15px;
+    margin-left: 10px;
+    font-size: 1.0em;
+    padding-top: 5px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+    padding-left: 10px;
+    background: #FAFAFA;
+    border-right-width:1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-right-color: #AAA;
+    border-bottom-color: #AAA;
+    border-left-color: #AAA;
+}
+
+#content {
+    padding: 0px 10px 0px 10px;
+    margin: 0px 0px 0px 0px;
+    border-left: 1px solid #ccd2d2;
+    /*position: absolute;*/
+    float: left;
+}
+
+
+#plotPane {
+    float: left;
+    width:620px;
+    height:300px;
+    background: #FFFFFF;
+    position: static;
+    display: block;
+}
+
+.plotContent {
+    float: left;
+    width:620px;
+    height:300px;
+    background: #FFFFFF;
+    position: static;
+    margin-top: 10px;
+}
+
+#plotLegend {
+    float: right;
+    width: 210px;
+    height: 300px;
+    background: #FFFFFF;
+    position: static;
+    margin-top: 10px;
+}
+
+#plotFrame {
+    /* display: inline; */
+    float: left;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    padding-top: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+/*    width: 780px; */
+    width: 830px;
+/*    height: 320px; */
+    background: #FFFFFF;
+    position: static;
+}
+
+.roundTop {
+    -webkit-border-top-left-radius: 6px;
+    -webkit-border-top-right-radius: 6px;
+    border-top-left-radius: 6px 6px;
+    border-top-right-radius: 6px 6px;
+}
+
+.sectionTitle {
+    border-top-style: none;
+    background-color: #0D5995;
+    color: white;
+    padding-top: 6px;
+    padding-right: 20px;
+    padding-bottom: 6px;
+    padding-left: 20px;
+    font-size: 1.4em;
+    margin-top: 15px;
+    margin-left: 10px;
+    /* display: block; */
+    /*position: absolute; */
+}
+
+.roundBottom {
+    margin-top: 0px;
+    margin-right: 0px;
+    margin-bottom: 1em;
+    margin-left: 0px;
+    -webkit-border-bottom-left-radius: 6px;
+    -webkit-border-bottom-right-radius: 6px;
+    border-top-style: none;
+    border-bottom-left-radius: 6px 6px;
+    border-bottom-right-radius: 6px 6px;
+}
+
+.inblock {
+    display: inline-block;
+    vertical-align: top;
+    min-width: 240px;
+}
