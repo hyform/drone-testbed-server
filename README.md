@@ -1,10 +1,14 @@
-//-------- Installation --------------------------------------------------   
+# Drone Testbed - Server
+This is the server for the HyForm drone design testbed. It pairs with a Unity interface available here: https://github.com/hyform/drone-testbed-unity
+
+## Quick Setup Guide
+# Installation 
 Install Vagrant  (https://www.vagrantup.com/)  
   
 From the Command Prompt, navigate to the root directory of this reporitory (where this document is located) and run  
 vagrant up --provision  
   
-//--------- Running HyForm -----------------------------------------------  
+### Running HyForm
 From the same Command Prompt location run  
 vagrant ssh  
   
@@ -16,10 +20,7 @@ Then in your browser go to
 http://localhost:8081/  
 and you should see the site  
   
-
-  
-//-------- Starting Django -------------------------------------------------  
-  
+### Starting Django 
 From root folder (with "Vagrantfile")  
   
 (windows)	vagrant ssh  
@@ -30,13 +31,13 @@ From root folder (with "Vagrantfile")
   
   
   
-//-------- Stopping Django --------------------------------------------------  
+### Stopping Django 
   
 (linux)		ctrl-c  
   
   
   
-//-------- Creating Django admin user ---------------------------------------  
+### Creating Django admin user 
   
 (windows)	vagrant ssh  
 (linux)		cd /vagrant  
@@ -48,7 +49,13 @@ In browser go to
 http://localhost:8081/admin  
   
   
-//-------- Logout and close VM ----------------------------------------------  
-  
+### Logout and close VM
+
 (linux)		logout  
 (windows)	vagrant halt  
+
+
+## Citing HyForm
+If you use HyForm in your own research, please cite it using this paper:
+
+B. Song, N.F. Soria Zurita, G. Zhang, G. Stump, C. Balon, S.W. Miller, M. Yukish, J. Cagan, and C. McComb (2020). "Toward Hybrid Teams: A Platform To Understand Human-Computer Collaboration During the Design of Complex Engineered Systems." International Design Conference. [(pdf)]()
