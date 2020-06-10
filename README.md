@@ -59,3 +59,6 @@ http://localhost:8081/admin
 If you use HyForm in your own research, please cite it using this paper:
 
 B. Song, N.F. Soria Zurita, G. Zhang, G. Stump, C. Balon, S.W. Miller, M. Yukish, J. Cagan, and C. McComb (2020). "Toward Hybrid Teams: A Platform To Understand Human-Computer Collaboration During the Design of Complex Engineered Systems." International Design Conference. [(pdf)](https://engrxiv.org/n7u95)
+
+## Funding
+This material is based upon work supported by the Defense Advanced Research Projects Agency through cooperative agreement N66001-17-1-4064. Any opinions, findings, and conclusions or recommendations expressed in this repository are those of the contributors and do not necessarily reflect the views of the sponsors.
