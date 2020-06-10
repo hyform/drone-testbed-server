@@ -55,7 +55,7 @@ http://localhost:8081/admin
 (windows)	vagrant halt  
 
 
-## Citing HyForm
+## Citing HyForm™
 If you use HyForm in your own research, please cite it using this paper:
 
 B. Song, N.F. Soria Zurita, G. Zhang, G. Stump, C. Balon, S.W. Miller, M. Yukish, J. Cagan, and C. McComb (2020). "Toward Hybrid Teams: A Platform To Understand Human-Computer Collaboration During the Design of Complex Engineered Systems." International Design Conference. [(pdf)](https://engrxiv.org/n7u95)
