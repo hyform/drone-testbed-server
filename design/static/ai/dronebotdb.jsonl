@@ -1,0 +1,3 @@
+
+{"phase": 1, "table_id": "1-10015132-16", "question": "What clu was in toronto 1995-96", "sql": {"sel": 5, "conds": [[4, 0, "1995-96"]], "agg": 0}}
+{"phase": 1, "table_id": "2-19007736-2", "question": "What vehicles have more range than 10", "sql": {"sel": 0, "conds": [[0, 1, 12]], "agg": 0}}
