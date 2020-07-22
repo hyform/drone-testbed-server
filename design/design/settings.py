@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '#@n#$#55uitl+hq8f6943gwfxd##14s#o348867634868y3am1xi@2'
+SECRET_KEY = '#@n#$#55uitl+@#$#hq8f6943gwfxd##14s#o34886347634868y3am1xi@2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -166,3 +166,13 @@ STATICFILES_DIRS = (
 
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+
+# Redis location
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+
+# Data directories
+ATEAMS_DATA = '/usr/share/ateams_data'
+NLTK_DATA = ATEAMS_DATA + '/' + 'nltk_data'
+os.environ['NLTK_DATA'] = NLTK_DATA
+SEQ2SQL_DATA = ATEAMS_DATA + '/' + 'seq2sql_data'

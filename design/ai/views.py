@@ -1,11 +1,14 @@
 from django.shortcuts import render
 from django.db.models import F, Value, Max, Min
 from .models import Designer1
-from .serializers import Designer1Serializer, OpsPlan1Serializer, UAVDesignSerializer, UAVDesign2Serializer, UAVDesign2TrajSerializer
+from .serializers import Designer1Serializer, OpsPlanSerializer, UAVDesignSerializer
+from .serializers import UAVDesign2Serializer, UAVDesign2TrajSerializer, DroneBotSerializer, OpsServiceSerializer
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from random import shuffle
+import time
+
 
 # Create your views here.
 
@@ -28,11 +31,20 @@ class Designer1List(generics.ListAPIView):
         shuffle(best10)
         return best10[:5]
 
-class OpsPlan1(generics.CreateAPIView):
+class OpsPlan(generics.CreateAPIView):
     """
-    Generate an Ops Plan given an input string.
+    Generate a Plan.
     """
-    serializer_class = OpsPlan1Serializer
+    serializer_class = OpsPlanSerializer
+
+class OpsService(generics.CreateAPIView):
+    serializer_class = OpsServiceSerializer
+
+class DroneBot(generics.CreateAPIView):
+    """
+    Generate a Plan.
+    """
+    serializer_class = DroneBotSerializer
 
 class UAVDesignAsses(generics.CreateAPIView):
     """
@@ -51,3 +63,10 @@ class UAVDesign2Traj(generics.CreateAPIView):
     Asses a given UAV design and return its performance and GetUAVTrajectory
     """
     serializer_class = UAVDesign2TrajSerializer
+
+    def create(self, request, *args, **kwargs):
+        t1 = time.time()
+        response = super().create(request, args, kwargs)
+        t2 = time.time()
+        print("time to create traj: ", t2-t1)
+        return response
