@@ -1,14 +1,16 @@
-from __future__ import unicode_literals, print_function, division
+from __future__ import unicode_literals, print_function, division, absolute_import
 
 import json
 from .util.utils import *
 from .util.constants import *
 from .seq2sql.model.seq2sql import Seq2SQL
 from django.conf import settings
+from ai.models import Designer1
 
-import pandas as pd
+# import pandas as pd
 import pickle
 import time
+from random import shuffle
 
 def replace_keywords(s):
     s = s.replace("payload", "capacity")
@@ -110,21 +112,43 @@ class DroneBotSeqToSQL(object):
             start = end
 
         # get the results
+        print(result)
+        # split the query into tokens
+        str_array = result.split()
+        # replace the specific field queries with * (all)
+        str_array[1]='*'
+        # replace the nonsense table name with a "real" one
+        str_array[3]='ai_designer1'
+        q_string = " "
+        q_string = q_string.join(str_array)
+        print(q_string)
         idx = result.find("WHERE")
         stInx = len(result) - idx - 6;
         query_str = result[-stInx:]
         try:
             query_str = fix_query(query_str)
+            q_string = fix_query(q_string)
             query_str = convert_equals(query_str)
+            q_string = convert_equals(q_string)
             print(query_str)
-            q1 = pd.read_csv (r'static/ai/designerAI.csv').query(query_str)
+            print(q_string)
+            # q1 = pd.read_csv (r'static/ai/designerAI.csv').query(query_str)
+            q2 = Designer1.objects.raw(q_string)
             results = []
-            if q1.empty:
+            #if q1.empty or not q2:
+            if not q2:
                 print("found no records")
             else:
-                q = q1.sample(n=5,replace=False).values.tolist()
-                for row in q:
-                    print(row)
+                #q = q1.sample(n=5,replace=False).values.tolist()
+                shuffle(list(q2))
+                q3 = q2[:5]
+                #for row in q:
+                #    print(row)
+                    # results.append(row)
+                #print("results from database")
+                for res in q3:
+                    row = [res.range, res.cost, res.payload, res.velocity, res.config]
+                    #print(row)
                     results.append(row)
             return results
         except Exception as e:

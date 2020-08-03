@@ -6,7 +6,7 @@ from .seqtosql.dronebotseqtosql import DroneBotSeqToSQL
 class Designer1Serializer(serializers.ModelSerializer):
     class Meta:
         model = Designer1
-        fields = ['id', 'config', 'range', 'cost', 'payload']
+        fields = ['id', 'config', 'range', 'cost', 'payload', 'velocity']
 
 class OpsPlanSerializer(serializers.Serializer):
 
@@ -49,13 +49,13 @@ class DroneBotSerializer(serializers.Serializer):
         result_vehicles = obj.vehicles
         for result in result_vehicles:
             vehicle_json = []
-            if len(result)==4:
-                vehicle_json.append({"config" : result[3]})
+            if len(result)==5:
+                vehicle_json.append({"config" : result[4]})
                 # vehicle_json.append({"result" : result[1]})
                 vehicle_json.append({"range" : result[0]})
-                # vehicle_json.append({"velocity" : result[3]})
                 vehicle_json.append({"cost" : result[1]})
                 vehicle_json.append({"capacity" : result[2]})
+                vehicle_json.append({"velocity" : result[3]})
             ret.append(vehicle_json)
         return ret
 

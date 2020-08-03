@@ -16,7 +16,7 @@ import time
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 
-from .seqtosql.dronebotseqtosql import DroneBotSeqToSQL
+# from .seqtosql.dronebotseqtosql import DroneBotSeqToSQL
 
 # Create your models here.
 
@@ -30,6 +30,7 @@ class Designer1(models.Model):
     range = models.FloatField()
     cost = models.FloatField()
     payload = models.FloatField()
+    velocity = models.FloatField(default=0.1)
 
 class UAVDesign(object):
     def __init__(self, config):

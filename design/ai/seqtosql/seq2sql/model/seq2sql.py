@@ -67,29 +67,12 @@ class Seq2SQL(nn.Module):
         return ret_seq
 
     def forward(self, q, col, col_num, ground_truth_where=None, ground_truth_cond=None, ground_truth_sel=None):
-        start_time = time.time()
         x_emb_var, x_len = self.embed_layer.gen_x_batch(q, col)
         batch = self.embed_layer.gen_col_batch(col)
-
-        next_time = time.time()
-        print('time to batch words: ', next_time-start_time)
         col_inp_var, col_name_len, col_len = batch
-
         agg_score = self.agg_pred(x_emb_var, x_len)
-        start_time = next_time
-        next_time = time.time()
-        print('time to eval agg: ', next_time-start_time)
-
         sel_score = self.sel_pred(x_emb_var, x_len, col_inp_var, col_name_len, col_len, col_num)
-        start_time = next_time
-        next_time = time.time()
-        print('time to eval sel: ', next_time-start_time)
-
         cond_score = self.cond_pred(x_emb_var, x_len, col_inp_var, col_name_len, col_len, col_num, ground_truth_where, ground_truth_cond)
-        start_time = next_time
-        next_time = time.time()
-        print('time to eval cond: ', next_time-start_time)
-
         return (agg_score, sel_score, cond_score)
 
     def loss(self, score, truth_num, ground_truth_where):
