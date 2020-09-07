@@ -9,4 +9,5 @@ pip3 install bleach
 pip3 install grpcio
 pip3 install pandas
 pip3 install torch==1.5.1+cpu torchvision==0.6.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
+pip3 install tabulate
 sudo -u postgres psql -f /vagrant/psql-script
