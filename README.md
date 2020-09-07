@@ -24,6 +24,7 @@ and you should see the site
   
 ### Starting Django 
 From root folder (with "Vagrantfile")  
+Note: commands run from a windows command prompt are marked with (windows), those frun from the vagrant virtual machine are marked with (linux) and browser links are (browser)  
   
 (windows)	vagrant ssh  
 (linux)		cd /vagrant/design  
