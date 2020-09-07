@@ -7,7 +7,7 @@ Install Virtualbox  (https://www.virtualbox.org/)
 Install Vagrant  (https://www.vagrantup.com/)  
   
 From the Command Prompt, navigate to the root directory of this reporitory (where this document is located) and run  
-vagrant up --provision  
+vagrant up --provision --provider=virtualbox    
   
 ### Running HyForm
 From the same Command Prompt location run  
@@ -15,7 +15,7 @@ vagrant ssh
   
 This will put you into the virtual machine. From there run  
 cd /vagrant/design  
-python3 manage.py migrate
+python3 manage.py migrate  
 python3 manage.py runserver 0:8000  
   
 Then in your browser go to  
