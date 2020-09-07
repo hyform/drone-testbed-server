@@ -9,7 +9,7 @@ Install Vagrant  (https://www.vagrantup.com/)
 From the Command Prompt, navigate to the root directory of this reporitory (where this document is located) and run  
 vagrant up --provision --provider=virtualbox    
   
-### Running HyForm
+### Running HyForm for the first time
 From the same Command Prompt location run  
 vagrant ssh  
   
@@ -21,6 +21,9 @@ python3 manage.py runserver 0:8000
 Then in your browser go to  
 http://localhost:8081/  
 and you should see the site  
+  
+An initial set of users and passwords is included in the file initial-users.txt  
+Log in with the Experimenter and create a new Session to get started  
   
 ### Starting Django 
 From root folder (with "Vagrantfile")  
