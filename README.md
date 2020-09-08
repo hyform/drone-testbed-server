@@ -46,7 +46,7 @@ Note: commands run from a windows command prompt are marked with (windows), thos
 ### Creating Django admin user 
   
 (windows)	vagrant ssh  
-(linux)		cd /vagrant  
+(linux)		cd /vagrant/design  
 (linux)		python3 manage.py createsuperuser  
 -- enter account info --  
 (linux)		python3 manage.py runserver 0:8000  
