@@ -24,12 +24,10 @@
                     <div>
                         <h1>Setup</h1>
                         <br><br>
-                        <h2>Tutorials</h2>
-                        {% if is_team %}
-                        <a href="/static/docs/chat_tutorial.pdf" target="_blank">Chat Tutorial</a>
-                        {% else %}
-                        <a href="/static/docs/chat_tutorial_individual.pdf" target="_blank">Chat Tutorial</a>
-                        {% endif %}
+                        <h2>Tutorials</h2>                        
+                        {% for tutorial_link in tutorial_links %}
+                        <a href="{{tutorial_link.link}}" target="_blank">{{tutorial_link.text}}</a><br>
+                        {% endfor %}
                         <br><br>                        
                     </div>
                 </div>
@@ -40,6 +38,11 @@
                 </div>
             </div>
         </div>
+        <!--
+        <div class="webgl-content" hidden>
+            <div id="gameContainer" hidden></div>
+        </div>
+        -->
         <script type='application/javascript' src="/static/js/jquery-3.4.1.min.js"></script>  
         {% endif %}
     </body>

@@ -10,6 +10,7 @@ from urllib.parse import parse_qs
 from collections import OrderedDict
 import json
 import bleach
+from ai.seqtosql.dronebotseqtosql import DroneBotSeqToSQL
 
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
@@ -19,7 +20,7 @@ class ChatConsumer(WebsocketConsumer):
         self.channels = OrderedDict([])
         st = None
 
-        if self.user.profile.is_exper:
+        if self.user.profile.is_experimenter():
             params = parse_qs(self.scope['query_string'].decode('utf8'))
             teamId = params.get('teamId', (None,))[0]
             team = DesignTeam.objects.filter(id=teamId).first()
@@ -30,7 +31,7 @@ class ChatConsumer(WebsocketConsumer):
                 if st:
                     user_profiles = Profile.objects.filter(team=team)
                     for user_profile in user_profiles:
-                        if not user_profile.is_exper:
+                        if not user_profile.is_experimenter():
                             team_user = user_profile.user
                             up = UserPosition.objects.filter(Q(user=team_user)&Q(session=st.session)).first()
                             if up:
@@ -63,10 +64,10 @@ class ChatConsumer(WebsocketConsumer):
                                     'sender': "Experimenter",
                                     'channel': channel_instance
                                 })
-                    # Don't include Setup channel for now                                
+                    # Don't include Setup channel for now
                     #setup_channel = Channel.objects.filter(name="Setup").first()
                     #if setup_channel:
-                    #    setup_instance = str(setup_channel.id) + "___" + str(st.session.id) 
+                    #    setup_instance = str(setup_channel.id) + "___" + str(st.session.id)
                     #    self.channels[setup_instance] = setup_channel
                     #    async_to_sync(self.channel_layer.group_add)(
                     #        setup_instance,
@@ -78,6 +79,7 @@ class ChatConsumer(WebsocketConsumer):
                     #        'sender' : "System",
                     #        'channel' : setup_instance
                     #    }))
+
                     session_channel = Channel.objects.filter(name="Session").first()
                     if session_channel:
                         session_instance = str(session_channel.id) + "___" + str(st.session.id)
@@ -104,7 +106,7 @@ class ChatConsumer(WebsocketConsumer):
                 help_channel = Channel.objects.filter(name="Help").first()
                 help_instance = str(help_channel.id) + "_" + str(self.user.id) + "___" + str(st.session.id)
                 up = UserPosition.objects.filter(Q(user=self.user)&Q(session=st.session)).first()
-                if st.session.status == Session.RUNNING:                                        
+                if st.session.status == Session.RUNNING:
                     channel_positions = ChannelPosition.objects.filter(position=up.position)
                     user_channels = Channel.objects.filter(id__in=channel_positions.values('channel'))
                     for channel in user_channels:
@@ -123,6 +125,11 @@ class ChatConsumer(WebsocketConsumer):
                 if session_channel:
                     session_instance = str(session_channel.id) + "___" + str(st.session.id)
                     self.channels[session_instance] = session_channel
+                dronebot_channel = Channel.objects.filter(name="DroneBot").first()
+                show_dronebot = st.session.structure.name == "Extra"
+                if dronebot_channel and show_dronebot:
+                    dronebot_instance = str(dronebot_channel.id) + "___" + str(st.session.id)
+                    self.channels[dronebot_instance] = dronebot_channel
                 self.accept()
 
                 if self.channels:
@@ -203,16 +210,16 @@ class ChatConsumer(WebsocketConsumer):
                 )
 
     # receive message from websocket
-    def receive(self, text_data):    
-        user = self.scope["user"]    
-                
+    def receive(self, text_data):
+        user = self.scope["user"]
+
         text_data_json = json.loads(text_data)
         message_type = str(text_data_json['type'])
         channel_id = str(text_data_json['channel'])
         message = bleach.clean(text_data_json['message'])
-        sender_string = self.username        
+        sender_string = self.username
 
-        if user.profile.is_exper:
+        if user.profile.is_experimenter():
             # Experimenter, so all channels are user help channels, plus Setup and Session
             channel_position = str(text_data_json['channel_position'])
             channel_team_id = str(text_data_json['channel_team_id'])
@@ -274,13 +281,13 @@ class ChatConsumer(WebsocketConsumer):
                                 )
         else:
             # Non-Experimenter, so all channels are their own
-            st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=user.profile.team)).first()        
+            st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=user.profile.team)).first()
             user_position = UserPosition.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(user=user)).first()
             if user_position:
                 position = user_position.position
                 if position:
                     sender_string = position.name
-            
+
             channel_user_id = str(self.user.id)
             channel_real_id = channel_id.split("_")[0]
             channel = Channel.objects.get(id=channel_real_id)
@@ -306,6 +313,41 @@ class ChatConsumer(WebsocketConsumer):
                         'type': 'chat.message',
                         'message': message,
                         'sender': sender_string,
+                        'channel': channel_instance
+                    }
+                )
+
+            if channel.name == "DroneBot":
+
+                self.send(text_data=json.dumps({
+                    'type' : 'system.usermessage',
+                    'message' : "I am working on your request ...",
+                    'sender' : "DroneBot",
+                    'channel' : channel_instance
+                }))
+
+
+                html_display = '<br>Select a preferred design(s) to save into your session ...<br><br>'
+                vehicles, msg = DroneBotSeqToSQL.run(message, user, st.session)
+                if len(vehicles) > 0:
+                    counter = 0
+                    for v in vehicles:
+                        counter += 1
+                        scale_cost = 1
+                        if st.session.market.name == 'Market 2':
+                            scale_cost = 0.7
+                        html_display += "<button onclick=\"savevehicle('" + str(v[4]) + "', " + str(v[0]) + "," + str(v[2]) + "," + str(v[1]) + "," + str(v[3]) + ")\">Design " + str(counter) + "</button> <b>range(mi)</b>=" + str(round(v[0], 2)) + " , "
+                        html_display += "<b>capacity(lb)</b>=" + str(round(v[2], 0)) + " , "
+                        html_display += "<b>cost($)</b>=" + str(round(scale_cost*float(v[1]), 0)) + "<br><br>"
+
+                else:
+                    html_display = "<br>" + msg + "<br>"
+                async_to_sync(self.channel_layer.group_send)(
+                    channel_instance,
+                    {
+                        'type': 'system.usermessage',
+                        'message': html_display,
+                        'sender': "DroneBot",
                         'channel': channel_instance
                     }
                 )

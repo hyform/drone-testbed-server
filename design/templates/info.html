@@ -22,113 +22,29 @@
                     <br><br>
                     {% if user.is_authenticated %}
                     <br>
-                    {% if state == 1 or state == 7 or state == 8 %}
-                    <h3>Problem Brief</h3>
-                    {% if session == "Extra" %}
-                    <a href="/static/docs/ProblemBreifs/IndStudy/Individual Study_Problem Brief.pdf"
-                        target=”_blank”>Individual Problem Brief</a>
-                    {% elif session == "A" %}
-                    {% if first %}
-                    {% if position == 1 %}
-                    <a href="/static/docs/ProblemBreifs/TeamStudy/TAB/P1TSA/TeamAtoB_Part1_DesignManager.pdf"
-                        target="_blank">Design Manager Brief</a>
-                    {% elif position == 2 %}
-                    <a href="/static/docs/ProblemBreifs/TeamStudy/TAB/P1TSA/TeamAtoB_Part1_DesignSpecialist.pdf"
-                        target="_blank">Design Specialist Brief</a>
-                    {% elif position == 3 %}
-                    <a href="/static/docs/ProblemBreifs/TeamStudy/TAB/P1TSA/TeamAtoB_Part1_OperationsManager.pdf"
-                        target="_blank">Operations Manager Brief</a>
-                    {% elif position == 4 %}
-                    <a href="/static/docs/ProblemBreifs/TeamStudy/TAB/P1TSA/TeamAtoB_Part1_OperationsSpecialist.pdf"
-                        target="_blank">Operations Specialist Brief</a>
-                    {% else %}
-                    <a href="/static/docs/ProblemBreifs/TeamStudy/TAB/P1TSA/TeamAtoB_Part1_BusinessManager.pdf"
-                        target="_blank">Business Manager Brief</a>
-                    {% endif %}
-                    {% else %}
-                    {% if position == 1 %}
-                    <a href="/static/docs/ProblemBreifs/TeamStudy/TBA/P2TSB2A/TeamBtoA_Part2_DesignManager.pdf"
-                        target="_blank">Design Manager Brief</a>
-                    {% elif position == 2 %}
-                    <a href="/static/docs/ProblemBreifs/TeamStudy/TBA/P2TSB2A/TeamBtoA_Part2_DesignSpecialist.pdf"
-                        target="_blank">Design Specialist Brief</a>
-                    {% elif position == 3 %}
-                    <a href="/static/docs/ProblemBreifs/TeamStudy/TBA/P2TSB2A/TeamBtoA_Part2_OperationsManager.pdf"
-                        target="_blank">Operations Manager Brief</a>
-                    {% elif position == 4 %}
-                    <a href="/static/docs/ProblemBreifs/TeamStudy/TBA/P2TSB2A/TeamBtoA_Part2_OperationsSpecialist.pdf"
-                        target="_blank">Operations Specialist Brief</a>
-                    {% else %}
-                    <a href="/static/docs/ProblemBreifs/TeamStudy/TBA/P2TSB2A/TeamBtoA_Part2_BusinessManager.pdf"
-                        target="_blank">Business Manager Brief</a>
-                    {% endif %}
-                    {% endif %}
-                    {% else %}
-                    {% if first %}
-                    {% if position == 2 %}
-                    <a href="/static/docs/ProblemBreifs/TeamStudy/TBA/P1TSB/TeamBtoA_Part1_DesignSpecialist.pdf"
-                        target="_blank">Design Specialist Brief</a>
-                    {% elif position == 3 %}
-                    <a href="/static/docs/ProblemBreifs/TeamStudy/TBA/P1TSB/TeamBtoA_Part1_OperationsManager.pdf"
-                        target="_blank">Operations Manager Brief</a>
-                    {% elif position == 4 %}
-                    <a href="/static/docs/ProblemBreifs/TeamStudy/TBA/P1TSB/TeamBtoA_Part1_OperationsSpecialist.pdf"
-                        target="_blank">Operations Specialist Brief</a>
-                    {% else %}
-                    <a href="/static/docs/ProblemBreifs/TeamStudy/TBA/P1TSB/TeamBtoA_Part1_BusinessManager.pdf"
-                        target="_blank">Business Manager Brief</a>
-                    {% endif %}
-                    {% else %}
-                    {% if position == 2 %}
-                    <a href="/static/docs/ProblemBreifs/TeamStudy/TAB/P2TSA2B/TeamAtoB_Part2_DesignSpecialist.pdf"
-                        target="_blank">Design Specialist Brief</a>
-                    {% elif position == 3 %}
-                    <a href="/static/docs/ProblemBreifs/TeamStudy/TAB/P2TSA2B/TeamAtoB_Part2_OperationsManager.pdf"
-                        target="_blank">Operations Manager Brief</a>
-                    {% elif position == 4 %}
-                    <a href="/static/docs/ProblemBreifs/TeamStudy/TAB/P2TSA2B/TeamAtoB_Part2_OperationsSpecialist.pdf"
-                        target="_blank">Operations Specialist Brief</a>
-                    {% else %}
-                    <a href="/static/docs/ProblemBreifs/TeamStudy/TAB/P2TSA2B/TeamAtoB_Part2_BusinessManager.pdf"
-                        target="_blank">Business Manager Brief</a>
-                    {% endif %}
-                    {% endif %}
-                    {% endif %}
-                    {% endif %}
-                    <br><br>
-                    <h3>Tutorials</h3>
-                    {% if is_team %}
-                    <a href="/static/docs/chat_tutorial.pdf" target="_blank">Chat Tutorial</a>
-                    {% else %}
-                    <a href="/static/docs/chat_tutorial_individual.pdf" target="_blank">Chat Tutorial</a>
-                    {% endif %}
+                    
+                   
+
+          {% if brief_links %}
+            <h2>Problem Brief</h2>
+            {% for brief_link in brief_links %}
+            <a href="{{brief_link.link}}" target="_blank">{{brief_link.text}}</a><br>
+            {% endfor %}
+            <br>
+            <br>
+          {% endif %}
+
+          {% if tutorial_links %}
+            <h2>Tutorials</h2>
+            {% for tutorial_link in tutorial_links %}
+            <a href="{{tutorial_link.link}}" target="_blank">{{tutorial_link.text}}</a><br>
+            {% endfor %}
+            <br>
+            <br>
+          {% endif %}
+
                     <br>
-                    {% if state == 1 or state == 7 or state == 8 %}
-                    {% if role.name == "Designer" %}
-                    {% if session_ai %}
-                    {% if is_team %}
-                    <a href="/static/docs/designer-tutorial.pdf" target="_blank">Designer Tutorial</a><br><br>
-                    {% else %}
-                    <a href="/static/docs/designer-tutorial_individual.pdf" target="_blank">Designer Tutorial</a><br><br>
-                    {% endif %}
-                    {% else %}
-                    {% if is_team %}
-                    <a href="/static/docs/designer-tutorial_noAI.pdf" target="_blank">Designer Tutorial</a><br><br>
-                    {% else %}
-                    <a href="/static/docs/designer-tutorial_individual_noAI.pdf" target="_blank">Designer Tutorial</a><br><br>
-                    {% endif %}
-                    {% endif %}
-                    {% elif role.name == "OpsPlanner" %}
-                    {% if session_ai %}
-                    <a href="/static/docs/ops-tutorial.pdf" target="_blank">Operations Planner Tutorial</a><br><br>
-                    {% else %}
-                    <a href="/static/docs/ops-tutorial_noAI.pdf" target="_blank">Operations Planner Tutorial</a><br><br>
-                    {% endif %}
-                    {% elif role.name == "Business" %}
-                    <a href="/static/docs/business-tutorial.pdf" target="_blank">Business Tutorial</a><br>
-                    {% endif %}
-                    <br>
-                    {% endif %}
+                    
                     {% endif %}
                     <br>
                 </div>

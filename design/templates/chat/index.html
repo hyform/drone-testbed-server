@@ -28,11 +28,11 @@
         {% endif %}
         <div class="outer-container">
             <ul id="channel-list" class="list-unstyled channel-list"></ul>
-        </div>        
+        </div>
         <div class="message-controls">
             <div class="col-9 chat-message">
-                <input id="message" placeholder="Type Here" type="text" autofocus autocomplete="off"
-                    spellcheck="false" autocorrect="off" class="form-control input-xs" />
+              <textarea id="message" placeholder="Type Here" type="text" autofocus autocomplete="off"
+                spellcheck="false" autocorrect="off" class="form-control input-xs" ></textarea>
             </div>
             <div class="col-3 chat-send">
                 <button id="send" type="submit" class="btn primary-btn btn-xs">Send</button>
@@ -40,11 +40,12 @@
         </div>
         {% if not experimenter %}
         <a target="_parent" href="{% url 'logout' %}">logout</a>
-        {% endif %}        
+        {% endif %}
     </div>
 
     <script type='application/javascript' src="/static/js/jquery-3.4.1.min.js"></script>
     <script type='application/javascript' src="/static/js/chat.js"></script>
+    <script type='text/javascript' src="/static/js/helpers.js"></script>
 
 </body>
 

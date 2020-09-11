@@ -7,29 +7,33 @@ from django.db.models import Subquery
 from django.db.models import Q
 from rest_framework import generics, status
 from rest_framework.response import Response
+from django.utils.safestring import mark_safe
 from operator import attrgetter
 from exper.models import Role, UserPosition, Structure
 from exper.models import Session, SessionTeam, Market
-from repo.models import Profile, DesignTeam
+from exper.models import CustomLinks, Exercise
+from repo.models import Profile, DesignTeam, Study, Experiment, ExperOrg
 import collections
+import json
+
 
 def ateams_homepage(request):
     context = {}
     response = None
     experimenter = False
     if request.user.is_authenticated:
-        expcheck = Profile.objects.filter(user=request.user, is_exper=True)
-        if expcheck:
-            experimenter = True
+        experimenter = request.user.profile.is_experimenter()
         context['experimenter'] = experimenter
-        st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
+        st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES) & Q(
+            team=request.user.profile.team)).first()
         if st:
             if st.session.status == Session.SETUP:
                 context['redir'] = "/setup/"
             elif st.session.status == Session.PRESESSION:
                 context['redir'] = "/presession/"
             elif st.session.status == Session.RUNNING:
-                position = UserPosition.objects.filter(Q(session=st.session)&Q(user=request.user)).first().position
+                position = UserPosition.objects.filter(
+                    Q(session=st.session) & Q(user=request.user)).first().position
                 if position:
                     if position.role.name == "Business":
                         context['redir'] = "/business/"
@@ -50,101 +54,147 @@ def ateams_homepage(request):
 
 @login_required
 def ateams_experiment(request):
-    profile = Profile.objects.filter(user=request.user).first()
-    org_teams = None
-    exp_sessions = None
-    session_teams = None
-    markets = None
-    structures = None
-    st_dict = {}
-    session_next = {}
-    all_users = dict()
-    if profile.organization:
-        org_teams = DesignTeam.objects.filter(organization=profile.organization)
-        for org_team in org_teams:
-            user_profiles = Profile.objects.filter(team=org_team)
-            for user_profile in user_profiles:
-                up_user = user_profile.user
-                user_string = up_user.username + " : " + org_team.name
-                all_users[user_string] = up_user.id
-        org_teams_ids = org_teams.values('id')
-        session_teams = SessionTeam.objects.filter(team_id__in=org_teams_ids)
-        for st in session_teams:
-            st_dict[st.session_id] = DesignTeam.objects.filter(id=st.team_id).first()
-        exp_sessions = Session.objects.filter(id__in=session_teams.values('session_id')).order_by('id')
-        for session in exp_sessions:
-            # This assumes the prior session is in the organization
-            # If it ever isn't, this code needs to be updated to check that
-            if session.prior_session:
-                session_next[session.prior_session] = session
-        markets = Market.objects.all()
-        structures = Structure.objects.all()
+    if request.user.is_authenticated and request.user.profile.is_experimenter():
+        # If any of these are null, go to the organization page to select them
+        if not request.user.profile.organization or not request.user.profile.study or not request.user.profile.experiment:
+            context = {}
+            orgs = []
+            exper_orgs = ExperOrg.objects.filter(user=request.user)
+            for exper_org in exper_orgs:
+                orgs.append(exper_org.organization)
+            context["orgs"] = orgs
+            response = HttpResponse(render(request, "organization.html", context))
+        else:
+            profile = request.user.profile
+            organization = None
+            study = None
+            experiment = None
+            org_teams = None
+            exp_sessions = None
+            session_teams = None
+            markets = None
+            structures = None
+            st_dict = {}
+            session_next = {}
+            all_users = dict()
+            exercises = {}
 
-        sorted_all_users = collections.OrderedDict()
-        for key, value in sorted(all_users.items()):
-            sorted_all_users[key] = value
+            if profile.organization:               
+                organization = profile.organization
+                study = profile.study
+                experiment = profile.experiment
 
-    context = {
-        'org_teams': org_teams,
-        'exp_sessions': exp_sessions,
-        'session_teams': session_teams,
-        'st_dict': st_dict,
-        'session_next': session_next,
-        'markets': markets,
-        'structures': structures,
-        'all_users': sorted_all_users,
-    }
-    response = HttpResponse(render(request, "experiment.html", context))
-    if request.user.is_authenticated:
-        response.set_cookie('username', request.user.username)
+                org_teams = DesignTeam.objects.filter(
+                    organization=profile.organization)
+                for org_team in org_teams:
+                    user_profiles = Profile.objects.filter(team=org_team)
+                    for user_profile in user_profiles:
+                        up_user = user_profile.user
+                        user_string = up_user.username + " : " + org_team.name
+                        all_users[user_string] = up_user.id
+                org_teams_ids = org_teams.values('id')
+                session_teams = SessionTeam.objects.filter(team_id__in=org_teams_ids)
+                for st in session_teams:
+                    st_dict[st.session_id] = DesignTeam.objects.filter(
+                        id=st.team_id).first()
+                exp_sessions = Session.objects.filter(
+                    id__in=session_teams.values('session_id')).order_by('id')
+                for session in exp_sessions:
+                    # This assumes the prior session is in the organization
+                    # If it ever isn't, this code needs to be updated to check that
+                    if session.prior_session:
+                        session_next[session.prior_session] = session
+
+                current_exercises = Exercise.objects.filter(experiment=experiment)
+                for exercise in current_exercises:
+                    exercise_sessions = []
+                    sessions = Session.objects.filter(exercise=exercise).order_by('index')                
+                    for session in sessions:
+                        exercise_sessions.append(session)
+                    exercises[exercise] = exercise_sessions
+
+                markets = Market.objects.all()
+                structures = Structure.objects.all()
+
+                sorted_all_users = collections.OrderedDict()
+                for key, value in sorted(all_users.items()):
+                    sorted_all_users[key] = value                
+
+            context = {
+                'org_teams': org_teams,
+                'organization': organization,
+                'study': study,
+                'experiment': experiment,
+                'exp_sessions': exp_sessions,
+                'session_teams': session_teams,
+                'st_dict': st_dict,
+                'session_next': session_next,
+                'markets': markets,
+                'structures': structures,
+                'all_users': sorted_all_users,
+                'exercises': exercises,
+            }
+            response = HttpResponse(render(request, "experiment.html", context))
+            response.set_cookie('username', request.user.username)
+    else:
+        response = HttpResponse(render(request, "home.html"))
     return response
+
 
 @login_required
 def ateams_experiment_chat(request):
-    template_sessions = None
-    template_sessions = Session.objects.filter(status=Session.TEMPLATE)
+    if request.user.is_authenticated and request.user.profile.is_experimenter():
 
-    profile = Profile.objects.filter(user=request.user).first()
-    org_teams = None
-    exp_sessions = None
-    session_teams = None
-    st_dict = {}
-    if profile.organization:
-        org_teams = DesignTeam.objects.filter(organization=profile.organization)
-        org_teams_ids = org_teams.values('id')
-        session_teams = SessionTeam.objects.filter(team_id__in=org_teams_ids)
-        # exp_sessions = Session.objects.filter(id__in=session_teams.values('session_id')).order_by('id')
-        exp_sessions = Session.objects.filter(Q(id__in=session_teams.values('session_id'))&Q(status__in=Session.ACTIVE_STATES)).order_by('id')
-        for st in session_teams:
-            st_dict[st.session_id] = DesignTeam.objects.filter(id=st.team_id).first()
+        template_sessions = None
+        template_sessions = Session.objects.filter(status=Session.TEMPLATE)
 
-    context = {
-        'template_sessions': template_sessions,
-        'org_teams': org_teams,
-        'exp_sessions': exp_sessions,
-        'session_teams': session_teams,
-        'st_dict': st_dict,
-    }
-    response = HttpResponse(render(request, "experimentchat.html", context))
-    if request.user.is_authenticated:
-        response.set_cookie('username', request.user.username)
+        profile = request.user.profile
+        org_teams = None
+        exp_sessions = None
+        session_teams = None
+        st_dict = {}
+        if profile.organization:
+            org_teams = DesignTeam.objects.filter(
+                organization=profile.organization)
+            org_teams_ids = org_teams.values('id')
+            session_teams = SessionTeam.objects.filter(team_id__in=org_teams_ids)
+            exp_sessions = Session.objects.filter(Q(id__in=session_teams.values(
+                'session_id')) & Q(status__in=Session.ACTIVE_STATES)).order_by('id')
+            for st in session_teams:
+                st_dict[st.session_id] = DesignTeam.objects.filter(
+                    id=st.team_id).first()
+
+        context = {
+            'template_sessions': template_sessions,
+            'org_teams': org_teams,
+            'exp_sessions': exp_sessions,
+            'session_teams': session_teams,
+            'st_dict': st_dict,
+        }
+        response = HttpResponse(render(request, "experimentchat.html", context))
+        if request.user.is_authenticated:
+            response.set_cookie('username', request.user.username)
+    else:
+        response = HttpResponse(render(request, "home.html"))
     return response
+
 
 @login_required
 def ateams_temp_user_info(request):
     context = {}
     user_info = {}
     if request.user.is_authenticated:
-        profile = Profile.objects.filter(user = request.user).first()
-        if profile and profile.is_exper:
+        if request.user.profile and request.user.profile.is_experimenter():
+            profile = request.user.profile
             organization = profile.organization
             if organization:
-                org_teams = DesignTeam.objects.filter(organization=profile.organization)
+                org_teams = DesignTeam.objects.filter(
+                    organization=profile.organization)
                 for team in org_teams:
                     user_profiles = Profile.objects.filter(team=team)
                     for user_profile in user_profiles:
                         up_user = user_profile.user
-                        if not user_profile.is_exper and up_user and not up_user.is_superuser:
+                        if user_profile.is_player():
                             user_info[up_user.username] = user_profile.temp_code
                 sorted_user_info = collections.OrderedDict()
                 for key, value in sorted(user_info.items()):
@@ -153,13 +203,87 @@ def ateams_temp_user_info(request):
                 return HttpResponse(render(request, "tempuserinfo.html", context))
     return HttpResponse(render(request, "home.html"))
 
+
+def get_cutsom_links(request, st, context):
+    # Get any links which should be displayed to this user           
+    link_org = None
+    link_role = None
+    link_structure = None
+    link_position = None
+    link_is_team = None
+    link_ai = None
+    link_status = None
+    link_first = None
+    link_last = None
+
+    link_org = st.team.organization
+    link_position = position = UserPosition.objects.filter(Q(session=st.session)&Q(user=request.user)).first().position
+    link_structure = st.session.structure
+    if link_position:
+        link_role = position.role
+    link_is_team = True
+    if st.session.structure.name == "Extra":
+        link_is_team = False
+    link_ai = st.session.use_ai
+    link_status = st.session.status
+    if st.session.prior_session:
+        link_first = False
+        link_last = True #TODO: This will need to change when more than 2 sessions are added
+    else:
+        link_first = True
+        # Don't know if there is a second session or not, so leave link_last as None
+
+    custom_links = CustomLinks.objects.filter(
+        Q(org__isnull=True) | Q(org=link_org)
+        ).filter(
+            Q(role__isnull=True) | Q(role=link_role)
+        ).filter(
+            Q(structure__isnull=True) | Q(structure=link_structure)
+        ).filter(
+            Q(position__isnull=True) | Q(position=link_position)
+        ).filter(
+            Q(is_team__isnull=True) | Q(is_team=link_is_team)
+        ).filter(
+            Q(ai__isnull=True) | Q(ai=link_ai)
+        ).filter(
+            Q(status__isnull=True) | Q(status=link_status)
+        ).filter(
+            Q(first__isnull=True) | Q(first=link_first)
+        ).filter(
+            Q(last__isnull=True) | Q(last=link_last)
+        )
+
+    if custom_links:
+        #CustomLinks
+        #SURVEY = 1
+        #FORM = 2
+        #BRIEF = 3
+        #TUTORIAL = 4
+        survey_links = custom_links.filter(link_type=CustomLinks.SURVEY)
+        if survey_links:
+            context['survey_links'] = survey_links
+
+        form_links = custom_links.filter(link_type=CustomLinks.FORM)
+        if form_links:
+            context['form_links'] = form_links
+
+        brief_links = custom_links.filter(link_type=CustomLinks.BRIEF)
+        if brief_links:
+            context['brief_links'] = brief_links
+
+        tutorial_links = custom_links.filter(link_type=CustomLinks.TUTORIAL)
+        if tutorial_links:
+            context['tutorial_links'] = tutorial_links
+
 @login_required
 def ateams_setup(request):
     context = {}
     response = None
     if request.user.is_authenticated:
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
-        if st:
+        if st:            
+            get_cutsom_links(request, st, context)
+
             if st.session.status == Session.SETUP:
                 is_team = True
                 if st.session.structure.name == "Extra":
@@ -185,7 +309,7 @@ def ateams_setup(request):
                 response = HttpResponse(render(request, "setup.html", context))
         else:
             context['redir'] = "/"
-            #logout(request)
+            # logout(request)
             response = HttpResponse(render(request, "setup.html", context))
     else:
         response = HttpResponse(render(request, "home.html"))
@@ -204,6 +328,7 @@ def ateams_presession(request):
     if request.user.is_authenticated:
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
         if st:
+            get_cutsom_links(request, st, context)
             context['session'] = st.session.structure.name
             if st.session.status == Session.PRESESSION:
                 is_team = True
@@ -232,8 +357,30 @@ def ateams_presession(request):
 
                 role = up.position.role
 
+                active_team = st.team
+                if active_team:
+                    if "cmu team 1" in active_team.name:
+                        team_type = 1
+                    elif "cmu team 2" in active_team.name:
+                        team_type = 1
+                    elif "cmu team extra" in active_team.name:
+                        team_type = 2
+                    elif "psu team 1" in active_team.name:
+                        team_type = 10
+                    elif "psu team 2" in active_team.name:
+                        team_type = 10
+                    elif "psu team 5" in active_team.name:
+                        team_type = 10
+                    elif "psu team 6" in active_team.name:
+                        team_type = 10
+                    elif "psu extra 1" in active_team.name:
+                        team_type = 11
+                    elif "psu extra 5" in active_team.name:
+                        team_type = 11
+
                 context['role'] = role
                 context['position'] = pos
+                context['team_type'] = team_type
 
                 response = HttpResponse(render(request, "presession.html", context))
                 response.set_cookie('use_ai', st.session.use_ai)
@@ -255,7 +402,6 @@ def ateams_presession(request):
                 response = HttpResponse(render(request, "presession.html", context))
         else:
             context['redir'] = "/"
-            #logout(request)
             response = HttpResponse(render(request, "presession.html", context))
     else:
         response = HttpResponse(render(request, "home.html"))
@@ -282,7 +428,6 @@ def ateams_design(request):
                 response = HttpResponse(render(request, "design.html", context))
         else:
             context['redir'] = "/"
-            #logout(request)
             response = HttpResponse(render(request, "design.html", context))
     else:
         response = HttpResponse(render(request, "home.html"))
@@ -309,7 +454,6 @@ def ateams_ops(request):
                 response = HttpResponse(render(request, "ops.html", context))
         else:
             context['redir'] = "/"
-            #logout(request)
             response = HttpResponse(render(request, "ops.html", context))
     else:
         response = HttpResponse(render(request, "home.html"))
@@ -336,7 +480,6 @@ def ateams_business(request):
                 response = HttpResponse(render(request, "business.html", context))
         else:
             context['redir'] = "/"
-            #logout(request)
             response = HttpResponse(render(request, "business.html", context))
     else:
         response = HttpResponse(render(request, "home.html"))
@@ -354,6 +497,7 @@ def ateams_postsession(request):
     if request.user.is_authenticated:
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
         if st:
+            get_cutsom_links(request, st, context)
             if st.session.status == Session.POSTSESSION:
                 is_team = True
                 # TODO: Make individual/team a property of Structure
@@ -379,8 +523,30 @@ def ateams_postsession(request):
 
                 role = up.position.role
 
+                active_team = st.team
+                if active_team:
+                    if "cmu team 1" in active_team.name:
+                        team_type = 1
+                    elif "cmu team 2" in active_team.name:
+                        team_type = 1
+                    elif "cmu team extra" in active_team.name:
+                        team_type = 2
+                    elif "psu team 1" in active_team.name:
+                        team_type = 10
+                    elif "psu team 2" in active_team.name:
+                        team_type = 10
+                    elif "psu team 5" in active_team.name:
+                        team_type = 10
+                    elif "psu team 6" in active_team.name:
+                        team_type = 10
+                    elif "psu extra 1" in active_team.name:
+                        team_type = 11
+                    elif "psu extra 5" in active_team.name:
+                        team_type = 11
+
                 context['role'] = role
                 context['position'] = pos
+                context['team_type'] = team_type
 
                 response = HttpResponse(render(request, "postsession.html", context))
                 response.set_cookie('use_ai', st.session.use_ai)
@@ -402,7 +568,6 @@ def ateams_postsession(request):
                 response = HttpResponse(render(request, "postsession.html", context))
         else:
             context['redir'] = "/"
-            #logout(request)
             response = HttpResponse(render(request, "postsession.html", context))
     else:
         response = HttpResponse(render(request, "home.html"))
@@ -419,6 +584,7 @@ def ateams_info(request):
     if request.user.is_authenticated:
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
         if st:
+            get_cutsom_links(request, st, context)
             is_team = True
             # TODO: Make individual/team a property of Structure
             if st.session.structure.name == "Extra":
@@ -442,8 +608,18 @@ def ateams_info(request):
 
             role = up.position.role
 
+            active_team = st.team
+            if active_team:
+                if "cmu team 1" in active_team.name:
+                    team_type = 1
+                elif "cmu team 2" in active_team.name:
+                    team_type = 1
+                elif "cmu team extra" in active_team.name:
+                    team_type = 2
+
             context['role'] = role
             context['position'] = pos
+            context['team_type'] = team_type
             response = HttpResponse(render(request, "info.html", context))
             response.set_cookie('username', request.user.username)
             response.set_cookie('use_ai', st.session.use_ai)
@@ -456,3 +632,8 @@ def ateams_info(request):
 
 def ateams_main(request):
     return render(request, "ateams_main.html")
+
+@login_required
+def structure(request):
+    response = HttpResponse(render(request, "structure.html"))
+    return response

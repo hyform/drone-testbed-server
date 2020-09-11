@@ -20,12 +20,50 @@
             <div class="col-8">
                 <div>
                     {% if user.is_authenticated %}
-                    {% if not last %}
-                    <h1>Part 1 Wrap up</h1>
-                    {% else %}
-                    <h1>Part 2 Wrap up</h1>
-                    {% endif %}
-                    <br><br>
+                    
+                    {% if survey_links or form_links %}
+            {% if survey_links %}
+              <h2>Surveys</h2>
+              {% for survey_link in survey_links %}
+              <a href="{{survey_link.link}}" target="_blank">{{survey_link.text}}</a><br>
+              {% endfor %}
+              <br>
+              <br>
+            {% endif %}
+
+            {% if form_links %}
+              <h2>Forms</h2>
+              {% for form_link in form_links %}
+              <a href="{{form_link.link}}" target="_blank">{{form_link.text}}</a><br>
+              {% endfor %}
+              <br>
+              <br>
+            {% endif %}
+
+            <p>Please check here when any surveys and forms are complete: </p><input class="user-check" type="checkbox" id="pre-user-complete">
+            <label for="pre-user-complete">Complete</label>
+            <br>
+            <br>
+          {% endif %}
+
+          {% if brief_links %}
+            <h2>Problem Brief</h2>
+            {% for brief_link in brief_links %}
+            <a href="{{brief_link.link}}" target="_blank">{{brief_link.text}}</a><br>
+            {% endfor %}
+            <br>
+            <br>
+          {% endif %}
+
+          {% if tutorial_links %}
+            <h2>Tutorials</h2>
+            {% for tutorial_link in tutorial_links %}
+            <a href="{{tutorial_link.link}}" target="_blank">{{tutorial_link.text}}</a><br>
+            {% endfor %}
+            <br>
+            <br>
+          {% endif %}
+
                     {% if last %}
                     <p>You will be automatically logged out shortly. Thank you for playing</p><br>
                     {% endif %}

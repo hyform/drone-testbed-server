@@ -26,10 +26,11 @@ class Designer1List(generics.ListAPIView):
         range = self.request.query_params.get('range', 6)
         cost = self.request.query_params.get('cost', 5000)
         payload = self.request.query_params.get('payload', 20)
-        queryset = list(Designer1.objects.order_by(((F('range')-range)/max_range)**2+((F('cost')-cost)/max_cost)**2+((F('payload')-payload)/max_payload)**2))
-        best10 = queryset[:10]
-        shuffle(best10)
-        return best10[:5]
+        #queryset = list(Designer1.objects.order_by(((F('range')-range)/max_range)**2+((F('cost')-cost)/max_cost)**2+((F('payload')-payload)/max_payload)**2))
+        queryset = list(Designer1.objects.order_by(((F('range')-range)/max_range)**2+((F('cost')-cost)/max_cost)**2))
+        best100 = queryset[:100]  # new ai dataset has about 1000, so get about the top 10% and shuffle
+        shuffle(best100)
+        return best100[:5]
 
 class OpsPlan(generics.CreateAPIView):
     """

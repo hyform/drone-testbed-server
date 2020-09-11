@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '#@n#$#55uitl+@#$#hq8f6943gwfxd##14s#o34886347634868y3am1xi@2'
+SECRET_KEY = '#@nq8uitl+hq8f69lb!@1cynhjx6lq)jd##14s#o3886767868y3am1xi@2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -100,7 +100,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'ateams',
         'USER': 'atuser',
-        'PASSWORD': 'ateamspass',
+        'PASSWORD': 'darpa',
         'HOST': 'localhost',
         'PORT': '',
     }
@@ -124,6 +124,14 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# AUTH_USER_MODEL = 'users.CustomUser'
+
+# Some SSL settings
+#SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# SECURE_SSL_REDIRECT = True
+#SESSION_COOKIE_SECURE = True
+#CSRF_COOKIE_SECURE = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
@@ -164,6 +172,7 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
 
+#LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
@@ -176,3 +185,31 @@ ATEAMS_DATA = '/usr/share/ateams_data'
 NLTK_DATA = ATEAMS_DATA + '/' + 'nltk_data'
 os.environ['NLTK_DATA'] = NLTK_DATA
 SEQ2SQL_DATA = ATEAMS_DATA + '/' + 'seq2sql_data'
+
+LOAD_DRONEBOT_ON_STARTUP = True
+
+# Celery stuff
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+    #'loggers': {
+    #    'django.db.backends': {
+    #        'level': 'DEBUG',
+    #    },
+    #},
+}

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from .serializers import SessionSerializer
-from .models import Session, SessionTeam, Position, UserPosition, Group, UserChecklist, Market, Structure, Experiment
+from .models import Session, SessionTeam, Position, UserPosition, Group, UserChecklist, Market, Structure, Experiment, Organization, Study, Exercise
 from django.db.models import Q, Subquery
 from django.contrib.auth.models import User
 from rest_framework import generics, status
@@ -15,6 +15,7 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from chat.messaging import new_precheck_message, new_postcheck_message
 import csv
+import json
 
 # Create your views here.
 
@@ -104,15 +105,73 @@ class ScenarioList(generics.ListAPIView):
         session_id = self.kwargs['session_id']
         return Scenario.objects.filter(session=session_id)
 
+@api_view(['PUT'])
+def select_organization(request):
+    if request.user.is_authenticated and request.user.profile.is_experimenter():
+        orgId = request.data.get('orgId')
+        if orgId:
+            org = Organization.objects.filter(id=orgId).first()
+            if org:
+                studies = Study.objects.filter(organization=org)
+                studies_dict = {}
+                for study in studies:
+                    studies_dict[study.name] = study.id
+                return JsonResponse(json.dumps(studies_dict), safe=False)
+        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(['PUT'])
+def select_study(request):
+    if request.user.is_authenticated and request.user.profile.is_experimenter():
+        studyId = request.data.get('studyId')
+        if studyId:
+            study = Study.objects.filter(id=studyId).first()
+            if study:
+                experiments = Experiment.objects.filter(study=study)
+                experiments_dict = {}
+                for experiment in experiments:
+                    experiments_dict[experiment.name] = experiment.id
+                return JsonResponse(json.dumps(experiments_dict), safe=False)
+        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+@api_view(['PUT'])
+def continue_to_experiment(request):
+    if request.user.is_authenticated and request.user.profile.is_experimenter():
+        orgId = request.data.get('orgId')
+        studyId = request.data.get('studyId')
+        expId = request.data.get('expId')
+        if orgId and studyId and expId:
+            org = Organization.objects.filter(id=orgId).first()
+            study = Study.objects.filter(id=studyId).first()
+            experiment = Experiment.objects.filter(id=expId).first()
+            if org and study and experiment:
+                request.user.profile.organization = org
+                request.user.profile.study = study
+                request.user.profile.experiment = experiment
+                request.user.save()
+                return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(['PUT'])
+def change_selection(request):
+    if request.user.is_authenticated and request.user.profile.is_experimenter():
+        # Don't null organization to prevent potential errors elsewhere
+        request.user.profile.study = None
+        request.user.profile.experiment = None
+        request.user.save()
+        return Response(status=status.HTTP_200_OK)
+    return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 @api_view(['PUT'])
 def session_status_play(request):
     if request.user.is_authenticated:
-        profile = Profile.objects.filter(user = request.user).first()
-        if profile and profile.is_exper:
+        if request.user.profile.is_experimenter():
             session = Session.objects.filter(id=request.data.get('id')).first()
             has_next = False
-            next_session = Session.objects.filter(prior_session=session).first()
+            next_session = Session.objects.filter(exercise=session.exercise).filter(index=session.index+1).first()
             if next_session:
                 has_next = True
             if session:
@@ -159,8 +218,7 @@ def session_status_play(request):
 @api_view(['PUT'])
 def session_status_stop(request):
     if request.user.is_authenticated:
-        profile = Profile.objects.filter(user = request.user).first()
-        if profile and profile.is_exper:
+        if request.user.profile.is_experimenter():
             session = Session.objects.filter(id=request.data.get('id')).first()
             if session:
                 session.status = request.data.get('newstatus')
@@ -184,15 +242,14 @@ def session_status_stop(request):
 @api_view(['PUT'])
 def session_status_archive(request):
     if request.user.is_authenticated:
-        profile = Profile.objects.filter(user = request.user).first()
-        if profile and profile.is_exper:
+        if request.user.profile.is_experimenter():
             session = Session.objects.filter(id=request.data.get('id')).first()
             if session:
                 isTeam = True
                 # TODO: Make individual/team a property of Structure
                 if session.structure.name == "Extra":
                     isTeam = False
-                next_session = Session.objects.filter(prior_session=session).first()
+                next_session = Session.objects.filter(exercise=session.exercise).filter(index=session.index+1).first()
                 if next_session:
                     same_market = True
                     if session.market != next_session.market:
@@ -272,73 +329,48 @@ def session_status_archive(request):
 
 @api_view(['PUT'])
 def create_session_group(request):
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.profile.is_experimenter():
         teamId = request.data.get('teamId')
-        session1Name = request.data.get('session1Name')
-        session1AI =request.data.get('session1AI')
-        session1StructureId = request.data.get('session1StructureId')
-        session1MarketId = request.data.get('session1MarketId')
-        create2nd = request.data.get('create2nd')
-        session2Name = request.data.get('session2Name')
-        session2AI =request.data.get('session2AI')
-        session2StructureId = request.data.get('session2StructureId')
-        session2MarketId = request.data.get('session2MarketId')
+        data = request.data.get('newSessionList')
+        newSessionList  = json.loads(data)
+        if len(newSessionList) < 1:
+            return Response(status=status.HTTP_200_OK)
 
-        team = DesignTeam.objects.filter(id=teamId).first()
+        experiment = request.user.profile.experiment
+        newExercise = Exercise.objects.create(experiment=experiment)
+        sessionIndex = 0
 
-        experiment = Experiment.objects.filter(user=request.user).first()
-        if not experiment:
-            experiment = Experiment.objects.all().first()
+        team = DesignTeam.objects.filter(id=teamId).first()        
+        for item in newSessionList:
+            sessionIndex = sessionIndex + 1
+            sessionName = item['name']
+            sessionUseAI = item['ai']
+            sessionStructureId = item['structure']
+            sessionStructure = Structure.objects.filter(id=sessionStructureId).first()
+            sessionMarketId = item['market']
+            sessionMarket = Market.objects.filter(id=sessionMarketId).first()
+            newSession = Session.objects.create(name=sessionName, experiment=experiment, exercise=newExercise, index=sessionIndex, prior_session=None, structure=sessionStructure, market=sessionMarket, use_ai=sessionUseAI, status=4)
+            sessionTeam = SessionTeam.objects.create(team=team, session=newSession)
+            structurePositions = list(Position.objects.filter(structure=sessionStructure).order_by('name'))
 
-        session1UseAI = True
-        if session1AI == "false":
-            session1UseAI = False
-        session1Structure = Structure.objects.filter(id=session1StructureId).first()
-        session1Market = Market.objects.filter(id=session1MarketId).first()
-        newSession1 = Session.objects.create(name=session1Name, experiment=experiment, prior_session=None, structure=session1Structure, market=session1Market, use_ai=session1UseAI, status=4)
-        sessionTeam1 = SessionTeam.objects.create(team=team, session=newSession1)
-        strusture1Positions = list(Position.objects.filter(structure=session1Structure).order_by('name'))
+            profiles = Profile.objects.filter(team=team)
+            teamUsers = list(User.objects.filter(id__in=Subquery(profiles.values('user'))).order_by('username'))
+            numUsers = len(teamUsers)
 
-        profiles = Profile.objects.filter(team=team)
-        teamUsers = list(User.objects.filter(id__in=Subquery(profiles.values('user'))).order_by('username'))
-        numUsers = len(teamUsers)
+            numPos = len(structurePositions)
+            positer = numUsers
+            if numPos < positer:
+                positer = numPos
+            for x in range(positer):
+                UserPosition.objects.create(position=structurePositions[x], user=teamUsers[x], session=newSession)
 
-        numPos1 = len(strusture1Positions)
-        pos1iter = numUsers
-        if numPos1 < pos1iter:
-            pos1iter = numPos1
-        for x in range(pos1iter):
-            UserPosition.objects.create(position=strusture1Positions[x], user=teamUsers[x], session=newSession1)
+            warehouseAddress = Address.objects.filter(region="warehouse").first()
+            warehouseGroup = Group.objects.filter(name="All", structure=sessionStructure).first()
+            Warehouse.objects.create(address=warehouseAddress, group=warehouseGroup, session=newSession)
 
-        warehouseAddress = Address.objects.filter(region="warehouse").first()
-        warehouse1Group = Group.objects.filter(name="All", structure=session1Structure).first()
-        Warehouse.objects.create(address=warehouseAddress, group=warehouse1Group, session=newSession1)
-
-        baseConfig = "*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3"
-        Vehicle.objects.create(tag="base", config=baseConfig, result="Success", range=10.6703462600708, velocity=8.86079978942871, cost=3470.20043945312, payload=5, group=warehouse1Group, session=newSession1)
-
-        if create2nd == "true":
-            session2UseAI = True
-            if session2AI == "false":
-                session2UseAI = False
-            session2Structure = Structure.objects.filter(id=session2StructureId).first()
-            session2Market = Market.objects.filter(id=session2MarketId).first()
-            newSession2 = Session.objects.create(name=session2Name, experiment=experiment, prior_session=newSession1, structure=session2Structure, market=session2Market, use_ai=session2UseAI, status=4)
-            sessionTeam2 = SessionTeam.objects.create(team=team, session=newSession2)
-            strusture2Positions = list(Position.objects.filter(structure=session2Structure).order_by('name'))
-
-            numPos2 = len(strusture2Positions)
-            pos2iter = numUsers
-            if numPos2 < pos2iter:
-                pos2iter = numPos2
-            for y in range(pos2iter):
-                UserPosition.objects.create(position=strusture2Positions[y], user=teamUsers[y], session=newSession2)
-
-            warehouse2Group = Group.objects.filter(name="All", structure=session2Structure).first()
-            Warehouse.objects.create(address=warehouseAddress, group=warehouse2Group, session=newSession2)
-
-            #Session 2 should get seed data loaded from Session 1
-            #Vehicle.objects.create(tag="base", config=baseConfig, group=warehouse2Group, session=newSession2)
+            if sessionIndex == 1:
+                baseConfig = "*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3"
+                Vehicle.objects.create(tag="base", config=baseConfig, result="Success", range=10.6703462600708, velocity=8.86079978942871, cost=3470.20043945312, payload=5, group=warehouseGroup, session=newSession)
 
         return Response(status=status.HTTP_200_OK)
     return Response(status=status.HTTP_401_UNAUTHORIZED)
@@ -348,11 +380,10 @@ def change_user_password(request):
     newpassword = request.data.get('newpassword')
     newpassword_id = request.data.get('newpassword_id')
     if request.user.is_authenticated and newpassword:
-        profile = Profile.objects.filter(user = request.user).first()
-        if profile and profile.is_exper:
+        if request.user.profile.is_experimenter():
             user_profile = Profile.objects.filter(user__id=newpassword_id).first()
             up_user = user_profile.user
-            if not user_profile.is_exper and up_user and not up_user.is_superuser:
+            if user_profile.is_player():
                 up_user.set_password(newpassword)
                 up_user.save()
                 user_profile.temp_code = newpassword
@@ -365,8 +396,8 @@ def change_user_password(request):
 def change_org_password(request):
     newpassword = request.data.get('newpassword')
     if request.user.is_authenticated and newpassword:
-        profile = Profile.objects.filter(user = request.user).first()
-        if profile and profile.is_exper:
+        if request.user.profile.is_experimenter():
+            profile = request.user.profile
             organization = profile.organization
             if organization:
                 org_teams = DesignTeam.objects.filter(organization=profile.organization)
@@ -377,7 +408,7 @@ def change_org_password(request):
                         # The shouldn't be part of a team, but may be since database
                         # doesn't enforce that they aren't
                         up_user = user_profile.user
-                        if not user_profile.is_exper and up_user and not up_user.is_superuser:
+                        if user_profile.is_player():
                             up_user.set_password(newpassword)
                             up_user.save()
                             user_profile.temp_code = newpassword
@@ -421,4 +452,10 @@ def post_check(request):
                 current_checklist.postcheck = False
                 current_checklist.save()
             new_postcheck_message(request.user, st.session, current_checklist.postcheck)
+    return Response(status=status.HTTP_200_OK)
+
+@api_view(['PUT'])
+def create_structure(request):
+    channel_data = request.data.get('channelData')
+    print(str(channel_data))
     return Response(status=status.HTTP_200_OK)

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
-from .models import Profile, DesignTeam, Address, Customer, Warehouse, Vehicle, Plan, Scenario, DataLog
+from .models import Profile, DesignTeam, Address, Customer, Warehouse, Vehicle, Plan, Scenario, DataLog, ExperOrg
 
 # Register your models here.
 
@@ -80,3 +80,4 @@ admin.site.register(Vehicle, VehicleAdmin)
 admin.site.register(Plan, PlanAdmin)
 admin.site.register(Scenario, ScenarioAdmin)
 admin.site.register(DataLog, DataLogAdmin)
+admin.site.register(ExperOrg)
