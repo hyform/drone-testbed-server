@@ -226,12 +226,17 @@ def get_cutsom_links(request, st, context):
         link_is_team = False
     link_ai = st.session.use_ai
     link_status = st.session.status
-    if st.session.prior_session:
-        link_first = False
-        link_last = True #TODO: This will need to change when more than 2 sessions are added
-    else:
+    num_sessions = Session.objects.filter(exercise=st.session.exercise).count()
+    if st.session.index == 1:
         link_first = True
-        # Don't know if there is a second session or not, so leave link_last as None
+        if st.session.index != num_sessions:
+            link_last = False
+    elif st.session.index == num_sessions:
+        link_first = False
+        link_last = True
+    else:
+        link_first = False
+        link_last = False
 
     custom_links = CustomLinks.objects.filter(
         Q(org__isnull=True) | Q(org=link_org)
@@ -323,8 +328,6 @@ def ateams_presession(request):
     st = None
     pos = 0
     team_type = 0
-    context['last'] = True
-    context['first'] = True
     if request.user.is_authenticated:
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
         if st:
@@ -335,14 +338,23 @@ def ateams_presession(request):
                 if st.session.structure.name == "Extra":
                     is_team = False
                 context['is_team'] = is_team
-                next_sessions = Session.objects.filter(session__prior_session=st.session)
-                if next_sessions:
-                    context['last'] = False
+
+                num_sessions = Session.objects.filter(exercise=st.session.exercise).count()
+                if st.session.index == 1:
+                    context['first'] = True
+                    if st.session.index != num_sessions:
+                        context['last'] = False
+                elif st.session.index == num_sessions:
+                    context['first'] = False
+                    context['last'] = True
                 else:
                     context['first'] = False
+                    context['last'] = False
+
                 context['session_ai'] = st.session.use_ai
                 up = UserPosition.objects.filter(Q(user=request.user)&Q(session=st.session)).first()
                 pos_name = up.position.name
+                #TODO: some of this can still be removed
                 context['pos_name'] = pos_name
                 if "Design Manager" in pos_name:
                     pos = 1
@@ -357,30 +369,8 @@ def ateams_presession(request):
 
                 role = up.position.role
 
-                active_team = st.team
-                if active_team:
-                    if "cmu team 1" in active_team.name:
-                        team_type = 1
-                    elif "cmu team 2" in active_team.name:
-                        team_type = 1
-                    elif "cmu team extra" in active_team.name:
-                        team_type = 2
-                    elif "psu team 1" in active_team.name:
-                        team_type = 10
-                    elif "psu team 2" in active_team.name:
-                        team_type = 10
-                    elif "psu team 5" in active_team.name:
-                        team_type = 10
-                    elif "psu team 6" in active_team.name:
-                        team_type = 10
-                    elif "psu extra 1" in active_team.name:
-                        team_type = 11
-                    elif "psu extra 5" in active_team.name:
-                        team_type = 11
-
                 context['role'] = role
                 context['position'] = pos
-                context['team_type'] = team_type
 
                 response = HttpResponse(render(request, "presession.html", context))
                 response.set_cookie('use_ai', st.session.use_ai)
@@ -493,7 +483,6 @@ def ateams_postsession(request):
     st = None
     pos = 0
     team_type = 0
-    context['last'] = True
     if request.user.is_authenticated:
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
         if st:
@@ -504,11 +493,22 @@ def ateams_postsession(request):
                 if st.session.structure.name == "Extra":
                     is_team = False
                 context['is_team'] = is_team
-                next_sessions = Session.objects.filter(session__prior_session=st.session)
-                if next_sessions:
+
+                num_sessions = Session.objects.filter(exercise=st.session.exercise).count()
+                if st.session.index == 1:
+                    context['first'] = True
+                    if st.session.index != num_sessions:
+                        context['last'] = False
+                elif st.session.index == num_sessions:
+                    context['first'] = False
+                    context['last'] = True
+                else:
+                    context['first'] = False
                     context['last'] = False
+
                 context['session_ai'] = st.session.use_ai
                 up = UserPosition.objects.filter(Q(user=request.user)&Q(session=st.session)).first()
+                #TODO: some of this can still be removed
                 pos_name = up.position.name
                 if "Design Manager" in pos_name:
                     pos = 1
