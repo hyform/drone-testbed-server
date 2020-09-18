@@ -585,41 +585,8 @@ def ateams_info(request):
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
         if st:
             get_cutsom_links(request, st, context)
-            is_team = True
-            # TODO: Make individual/team a property of Structure
-            if st.session.structure.name == "Extra":
-                is_team = False
-            context['is_team'] = is_team
             context['state'] = st.session.status
-            context['session_ai'] = st.session.use_ai
-            context['session'] = st.session.structure.name
-            up = UserPosition.objects.filter(Q(user=request.user)&Q(session=st.session)).first()
-            pos_name = up.position.name
-            if "Design Manager" in pos_name:
-                pos = 1
-            elif "Design Specialist" in pos_name:
-                pos = 2
-            elif "Operations Manager" in pos_name:
-                pos = 3
-            elif "Operations Specialist" in pos_name:
-                pos = 4
-            elif "Business" in pos_name:
-                pos = 5
 
-            role = up.position.role
-
-            active_team = st.team
-            if active_team:
-                if "cmu team 1" in active_team.name:
-                    team_type = 1
-                elif "cmu team 2" in active_team.name:
-                    team_type = 1
-                elif "cmu team extra" in active_team.name:
-                    team_type = 2
-
-            context['role'] = role
-            context['position'] = pos
-            context['team_type'] = team_type
             response = HttpResponse(render(request, "info.html", context))
             response.set_cookie('username', request.user.username)
             response.set_cookie('use_ai', st.session.use_ai)

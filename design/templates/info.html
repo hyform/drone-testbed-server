@@ -21,8 +21,7 @@
                     <p>If you've visited this site before and are experiencing problems, try clearing your browser cache (often Ctrl+F5)</p>
                     <br><br>
                     {% if user.is_authenticated %}
-                    <br>
-
+        {% if state == 1 or state == 7 %}
           {% if brief_links %}
             <h2>Problem Brief</h2>
             {% for brief_link in brief_links %}
@@ -31,7 +30,7 @@
             <br>
             <br>
           {% endif %}
-
+          {% endif %}
           {% if tutorial_links %}
             <h2>Tutorials</h2>
             {% for tutorial_link in tutorial_links %}
@@ -43,7 +42,7 @@
 
                     <br>
                     
-                    {% endif %}
+                    {% endif %}                    
                     <br>
                 </div>
             </div>
