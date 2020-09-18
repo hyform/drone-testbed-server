@@ -410,6 +410,14 @@ $(document).ready(function () {
             return;
         }
 
+        sessionNameNew = $("#session-name-new").val();
+        if(sessionNameNew) {
+            var keepGoing = confirm("A new session may have not been added via the + button.\nContinue anyway?");
+            if(!keepGoing) {
+                return;
+            }
+        }
+
         teamId = $("#select-session-team option:selected").val();
 
         var newSessionList = [];

@@ -28,7 +28,7 @@
           <br>
           Hi {{ user.username }}!
           <br><br>
-          {% if survey_links or form_links %}
+          {% if survey_links or form_links or brief_links%}
             {% if survey_links %}
               <h2>Surveys</h2>
               {% for survey_link in survey_links %}
@@ -47,20 +47,20 @@
               <br>
             {% endif %}
 
-            <p>Please check here when any surveys and forms are complete: </p><input class="user-check" type="checkbox" id="pre-user-complete">
-            <label for="pre-user-complete">Complete</label>
-            <br>
-            <br>
-          {% endif %}
-
-          {% if brief_links %}
-            <h2>Problem Brief</h2>
-            {% for brief_link in brief_links %}
-            <a href="{{brief_link.link}}" target="_blank">{{brief_link.text}}</a><br>
+            {% if brief_links %}
+              <h2>Problem Brief</h2>
+              {% for brief_link in brief_links %}
+              <a href="{{brief_link.link}}" target="_blank">{{brief_link.text}}</a><br>
             {% endfor %}
             <br>
             <br>
           {% endif %}
+
+            <p>Please check here when any surveys and forms are complete, and any problem briefs have been reviewed: </p><input class="user-check" type="checkbox" id="pre-user-complete">
+            <label for="pre-user-complete">Complete</label>
+            <br>
+            <br>
+          {% endif %}          
 
           {% if tutorial_links %}
             <h2>Tutorials</h2>

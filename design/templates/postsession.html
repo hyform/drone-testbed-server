@@ -40,26 +40,8 @@
               <br>
             {% endif %}
 
-            <p>Please check here when any surveys and forms are complete: </p><input class="user-check" type="checkbox" id="pre-user-complete">
-            <label for="pre-user-complete">Complete</label>
-            <br>
-            <br>
-          {% endif %}
-
-          {% if brief_links %}
-            <h2>Problem Brief</h2>
-            {% for brief_link in brief_links %}
-            <a href="{{brief_link.link}}" target="_blank">{{brief_link.text}}</a><br>
-            {% endfor %}
-            <br>
-            <br>
-          {% endif %}
-
-          {% if tutorial_links %}
-            <h2>Tutorials</h2>
-            {% for tutorial_link in tutorial_links %}
-            <a href="{{tutorial_link.link}}" target="_blank">{{tutorial_link.text}}</a><br>
-            {% endfor %}
+            <p>Please check here when any surveys and forms are complete: </p><input class="user-check" type="checkbox" id="post-user-complete">
+            <label for="post-user-complete">Complete</label>
             <br>
             <br>
           {% endif %}
