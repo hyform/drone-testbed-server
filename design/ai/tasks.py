@@ -5,6 +5,8 @@ from celery.utils.log import get_task_logger
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
+import subprocess
+
 import grpc
 
 from . import uavdesign_pb2_grpc as uavdesign_pb2_grpc
@@ -37,3 +39,8 @@ def assess_design(channel_name, data):
         data['velocity'] = results.velocity
         data['cost'] = results.cost
     async_to_sync(channel_layer.send)(channel_name, {"type": "task.return","results": data})
+
+@shared_task
+def eval_design(channel_name, data):
+    logger.info('in eval_design task')
+    

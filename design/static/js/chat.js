@@ -193,12 +193,23 @@ document.addEventListener("DOMContentLoaded", function (event) {
             connection.close();
         };
 
+        var sender_color = {}
+        var sender_index = 0;
+
         connection.onmessage = function (event) {
             var jsonMessage = JSON.parse(event.data);
             var channelId = jsonMessage.channel;
             var message = jsonMessage.message;
             var messageType = jsonMessage.type;
             var sender = jsonMessage.sender;
+
+            // red and blue are already used
+            var color_options = ['black', 'green', 'brown', 'orange', 'magenta', 'olive', 'navy', 'purple', 'teal', 'gray', 'maroon', 'aqua'];
+            if(sender_color[sender] == undefined){
+                var color_index = sender_index % color_options.length
+                sender_color[sender] = color_options[color_index];
+                sender_index += 1;
+            }
 
             if (messageType === "chat.info") {
                 // If the Session channel and no teamId, this is a regular
@@ -466,14 +477,14 @@ document.addEventListener("DOMContentLoaded", function (event) {
                         if (channelId === thisChannelId) {
                             if (channel === activeChannel) {
                                 var newMessage = document.createElement("li");
-                                var newMessageText = "<b>" + sender + " : </b>" + message;
+                                var newMessageText = '<b style="color:' + sender_color[sender] + '">' + sender + ' : </b>' + message;
                                 newMessage.innerHTML = newMessageText;
                                 var channelMessages = getChannelMessages(channel);
                                 channelMessages.childNodes[0].appendChild(newMessage);
                                 newMessage.scrollIntoView(false);
                             } else {
                                 var newMessage = document.createElement("li");
-                                var newMessageText = "<b>" + sender + " : </b>" + message;
+                                var newMessageText = '<b style="color:' + sender_color[sender] + '">' + sender + ' : </b>' + message;
                                 newMessage.innerHTML = newMessageText;
                                 getChannelLabel(channel).classList.add("channel-label-new-messages");
                                 var channelMessages = getChannelMessages(channel);

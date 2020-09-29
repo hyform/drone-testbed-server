@@ -70,7 +70,6 @@ def ateams_experiment(request):
             study = None
             experiment = None
             org_teams = None
-            exp_sessions = None
             session_teams = None
             markets = None
             structures = None
@@ -78,6 +77,7 @@ def ateams_experiment(request):
             session_next = {}
             all_users = dict()
             exercises = {}
+            archived_exercises = {}
 
             if profile.organization:               
                 organization = profile.organization
@@ -97,35 +97,41 @@ def ateams_experiment(request):
                 for st in session_teams:
                     st_dict[st.session_id] = DesignTeam.objects.filter(
                         id=st.team_id).first()
-                exp_sessions = Session.objects.filter(
-                    id__in=session_teams.values('session_id')).order_by('id')
-                for session in exp_sessions:
-                    # This assumes the prior session is in the organization
-                    # If it ever isn't, this code needs to be updated to check that
-                    if session.prior_session:
-                        session_next[session.prior_session] = session
 
-                current_exercises = Exercise.objects.filter(experiment=experiment)
+                # Note: minus before index means descending order
+                current_exercises = Exercise.objects.filter(experiment=experiment).order_by('-id')
                 for exercise in current_exercises:
                     exercise_sessions = []
-                    sessions = Session.objects.filter(exercise=exercise).order_by('index')                
+                    sessions = Session.objects.filter(exercise=exercise).order_by('index')
+                    all_archived = True
+                    session_prev = None
                     for session in sessions:
+                        if session_prev:
+                            # Keep track of next session for each session
+                            session_next[session_prev] = session
                         exercise_sessions.append(session)
-                    exercises[exercise] = exercise_sessions
+                        if session.status != Session.ARCHIVED:
+                            # Check if all sessions in exercise are archived
+                            all_archived = False
+                        session_prev = session
+                    # Separate available and archived exercises
+                    if all_archived:
+                        archived_exercises[exercise] = exercise_sessions
+                    else:
+                        exercises[exercise] = exercise_sessions
 
                 markets = Market.objects.all()
                 structures = Structure.objects.all()
 
                 sorted_all_users = collections.OrderedDict()
                 for key, value in sorted(all_users.items()):
-                    sorted_all_users[key] = value                
+                    sorted_all_users[key] = value
 
             context = {
                 'org_teams': org_teams,
                 'organization': organization,
                 'study': study,
                 'experiment': experiment,
-                'exp_sessions': exp_sessions,
                 'session_teams': session_teams,
                 'st_dict': st_dict,
                 'session_next': session_next,
@@ -133,6 +139,7 @@ def ateams_experiment(request):
                 'structures': structures,
                 'all_users': sorted_all_users,
                 'exercises': exercises,
+                'archived_exercises': archived_exercises
             }
             response = HttpResponse(render(request, "experiment.html", context))
             response.set_cookie('username', request.user.username)

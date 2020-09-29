@@ -340,7 +340,7 @@ def create_session_group(request):
         newExercise = Exercise.objects.create(experiment=experiment)
         sessionIndex = 0
 
-        team = DesignTeam.objects.filter(id=teamId).first()        
+        team = DesignTeam.objects.filter(id=teamId).first()
         for item in newSessionList:
             sessionIndex = sessionIndex + 1
             sessionName = item['name']
@@ -370,7 +370,7 @@ def create_session_group(request):
 
             if sessionIndex == 1:
                 baseConfig = "*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3"
-                Vehicle.objects.create(tag="base", config=baseConfig, result="Success", range=10.6703462600708, velocity=8.86079978942871, cost=3470.20043945312, payload=5, group=warehouseGroup, session=newSession)
+                Vehicle.objects.create(tag="base", config=baseConfig, result="Success", range=10.0, velocity=20.0, cost=3470.20043945312, payload=5, group=warehouseGroup, session=newSession)
 
         return Response(status=status.HTTP_200_OK)
     return Response(status=status.HTTP_401_UNAUTHORIZED)

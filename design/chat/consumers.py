@@ -128,7 +128,7 @@ class ChatConsumer(WebsocketConsumer):
                 dronebot_channel = Channel.objects.filter(name="DroneBot").first()
                 show_dronebot = st.session.structure.name == "Extra"
                 if dronebot_channel and show_dronebot:
-                    dronebot_instance = str(dronebot_channel.id) + "___" + str(st.session.id)
+                    dronebot_instance = str(dronebot_channel.id) + "_" + str(self.user.id) + "___" + str(st.session.id)
                     self.channels[dronebot_instance] = dronebot_channel
                 self.accept()
 

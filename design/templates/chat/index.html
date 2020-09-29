@@ -16,13 +16,16 @@
     <div class="outerer-container">
         {% if not experimenter %}
         <div class="chat-header">
-            <div class="col-10">
+            <div class="col-7">
                 {% if position_name %}
                 {{position_name}}
                 {% endif %}
             </div>
-            <div class="col-2">
+            <div class="col-3">
                 <a href="/info/" target="_blank">Info</a>
+            </div>
+            <div class="col-2">
+                <a target="_parent" href="{% url 'logout' %}">logout</a>
             </div>
         </div>
         {% endif %}
@@ -38,9 +41,6 @@
                 <button id="send" type="submit" class="btn primary-btn btn-xs">Send</button>
             </div>
         </div>
-        {% if not experimenter %}
-        <a target="_parent" href="{% url 'logout' %}">logout</a>
-        {% endif %}
     </div>
 
     <script type='application/javascript' src="/static/js/jquery-3.4.1.min.js"></script>

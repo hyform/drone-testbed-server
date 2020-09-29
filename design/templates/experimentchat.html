@@ -17,25 +17,30 @@
     <div class="container-fluid h-100">
         <div class="row fullheight">
             {% for team in org_teams %}
-            <div class="col-4 stuff">
-                <h4>{{team.name}}</h4>
-                <iframe style="height: 100%; border: none;" src='/chat/?teamId={{team.id}}'></iframe>
+            <div class="col-4 stuff padding-15">
+                <div class="row stuff margin-0">
+                    <h4>{{team.name}}</h4>
+                </div>
+                <div class="row stuff fullheight margin-0">
+                    <iframe style="height: 100%; border: none;" src='/chat/?teamId={{team.id}}'></iframe>
+                </div>
             </div>
             {% endfor %}
         </div>
         <div class="stuff fullheight">
           <h2 class="text-center">Active Session Data Logs</h2>
-          <div class="row fullheight">
           {% for s in exp_sessions %}
-              <h5> <a href="/repo/datalog/list/{{s.id}}" target="_blank">Data Log for {{ s.name }}</a></h5><br>
-          {% endfor %}
+          <div class="row">          
+              <h5> <a href="/repo/datalog/list/{{s.id}}" target="_blank">Data Log for {{ s.name }}</a></h5><br>          
         </div>
+        {% endfor %}
         </div>
     </div>
 </div>
 
 <script type='application/javascript' src="/static/js/jquery-3.4.1.min.js"></script>
 <script type='application/javascript' src="/static/js/bootstrap.bundle.min.js"></script>
+<script type='text/javascript' src="/static/js/ajax.js"></script>
 <script type='text/javascript' src="/static/js/experiment.js"></script>
 <script type='text/javascript' src="/static/js/timer.js"></script>
 {% endif %}
