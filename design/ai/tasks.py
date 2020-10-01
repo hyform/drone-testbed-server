@@ -43,4 +43,4 @@ def assess_design(channel_name, data):
 @shared_task
 def eval_design(channel_name, data):
     logger.info('in eval_design task')
-    
+
