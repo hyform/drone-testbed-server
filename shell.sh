@@ -10,4 +10,7 @@ pip3 install grpcio
 pip3 install pandas
 pip3 install torch==1.5.1+cpu torchvision==0.6.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
 pip3 install tabulate
+pip3 install celery
 sudo -u postgres psql -f /vagrant/psql-script
+sudo mkdir /usr/share/ateams_service
+sudo cp -r /vagrant/evaluation /usr/share/ateams_service

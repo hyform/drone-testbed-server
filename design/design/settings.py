@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '#@n#$#55uitl+@#$#hq8f6943gwfxd##14s#o34886347634868y3am1xi@2'
+SECRET_KEY = '#@nq8%**@f69lb!@ynhjx6lq)jd##14s#o388676d8f734f36xi@2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -171,8 +171,39 @@ LOGOUT_REDIRECT_URL = 'home'
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
 
+# Celery stuff
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+
 # Data directories
 ATEAMS_DATA = '/usr/share/ateams_data'
 NLTK_DATA = ATEAMS_DATA + '/' + 'nltk_data'
 os.environ['NLTK_DATA'] = NLTK_DATA
 SEQ2SQL_DATA = ATEAMS_DATA + '/' + 'seq2sql_data'
+
+# Services
+ATEAMS_SERVICE = '/usr/share/ateams_service'
+EVALUTAION_DIR = ATEAMS_SERVICE + '/' + 'evaluation'
+EVALUATION_APP = EVALUTAION_DIR + '/' + 'evaluation.x86_64'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+    #'loggers': {
+    #    'django.db.backends': {
+    #        'level': 'DEBUG',
+    #    },
+    #},
+}

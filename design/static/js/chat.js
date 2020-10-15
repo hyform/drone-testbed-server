@@ -144,6 +144,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 channel_team_id: teamId
             };
             messageText.val("");
+            messageText.scrollTop(0);
             connection.send(JSON.stringify(messageBundle));
         }
     };
@@ -160,6 +161,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     }
 
     var websocketConnect = function (url) {
+
         connection = new WebSocket(url);
 
         connection.onopen = function () {
@@ -173,6 +175,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             messageText.keypress(function (event) {
                 var keycode = (event.keyCode ? event.keyCode : event.which);
                 if (keycode == '13') {
+                    event.preventDefault();
                     send();
                 }
             });
@@ -190,12 +193,23 @@ document.addEventListener("DOMContentLoaded", function (event) {
             connection.close();
         };
 
+        var sender_color = {}
+        var sender_index = 0;
+
         connection.onmessage = function (event) {
             var jsonMessage = JSON.parse(event.data);
             var channelId = jsonMessage.channel;
             var message = jsonMessage.message;
             var messageType = jsonMessage.type;
             var sender = jsonMessage.sender;
+
+            // red and blue are already used
+            var color_options = ['black', 'green', 'brown', 'orange', 'magenta', 'olive', 'navy', 'purple', 'teal', 'gray', 'maroon', 'aqua'];
+            if(sender_color[sender] == undefined){
+                var color_index = sender_index % color_options.length
+                sender_color[sender] = color_options[color_index];
+                sender_index += 1;
+            }
 
             if (messageType === "chat.info") {
                 // If the Session channel and no teamId, this is a regular
@@ -288,7 +302,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 newChannelMessageList.classList.add("message-list");
                 newChannelMessages.append(newChannelMessageList);
 
-                if (message === "Help" || message === "Session") {                    
+                if (message === "Help" || message === "Session") {
                     //If the Setup channel is added back in, place it before these two
                     channelList.appendChild(newChannel);
                     activateChannel(newChannel);
@@ -369,7 +383,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
                         newMessage.scrollIntoView(false);
                     }
                 }
-                //This is a scenario/plan/design update, so tell the unity component to refresh its views                
+                //This is a scenario/plan/design update, so tell the unity component to refresh its views
                 if(window.parent.gameInstance) {
                     //Just try update for both ops/business and designer
                     //TODO: only call the correct one here to prevent unintentional side effects down the road
@@ -381,7 +395,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
                     }
                     try {
                         window.parent.gameInstance.SendMessage('GUI', 'updateDesigns');
-                    } catch(err) {    
+                    } catch(err) {
                         //Expecting an error on one of these, so don't log unless debugging
                         //console.log(err);
                     }
@@ -463,14 +477,14 @@ document.addEventListener("DOMContentLoaded", function (event) {
                         if (channelId === thisChannelId) {
                             if (channel === activeChannel) {
                                 var newMessage = document.createElement("li");
-                                var newMessageText = "<b>" + sender + " : </b>" + message;
+                                var newMessageText = '<b style="color:' + sender_color[sender] + '">' + sender + ' : </b>' + message;
                                 newMessage.innerHTML = newMessageText;
                                 var channelMessages = getChannelMessages(channel);
                                 channelMessages.childNodes[0].appendChild(newMessage);
                                 newMessage.scrollIntoView(false);
                             } else {
                                 var newMessage = document.createElement("li");
-                                var newMessageText = "<b>" + sender + " : </b>" + message;
+                                var newMessageText = '<b style="color:' + sender_color[sender] + '">' + sender + ' : </b>' + message;
                                 newMessage.innerHTML = newMessageText;
                                 getChannelLabel(channel).classList.add("channel-label-new-messages");
                                 var channelMessages = getChannelMessages(channel);
@@ -496,9 +510,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
     });
 
     //start periodic response
-    setInterval(function() {        
+    setInterval(function() {
         if(responseChannel && !teamId) {
             sendResponse(responseChannel);
         }
     }, 15 * 1000);
+
+
 });

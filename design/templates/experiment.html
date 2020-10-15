@@ -24,6 +24,16 @@
     <h1 class="text-center">Session Management</h1>
     <br>
     <br>
+    <div class="container">
+        <div class="row">
+            <h4 class="text-center">Org: {{organization.name}}, Study: {{study.name}}, Experiment: {{experiment.name}}</h4>
+        </div>
+        <div class="row">
+            <button type="button" class="btn btn-primary" id="change_selection_button">Change Selection</button>
+        </div>
+    </div>
+    <br>
+    <br>
     <h3 class="text-center"><a href="/experimentchat/" target="_blank">Session Chat (Opens in new tab)</a></h3>
     <br>
     <br>
@@ -34,7 +44,7 @@
             </div>
             <div class="col-4">
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#create-session-modal">
-                    Create Session
+                    Create Session Group
                 </button>
             </div>
         </div>
@@ -51,17 +61,19 @@
                             <div class="col-1 border p-0 text-center">Team</div>
                             <div class="col-1 border p-0 text-center">Use AI</div>
                             <div class="col-1 border p-0 text-center">Structure</div>
-                            <div class="col-1 border p-0 text-center">Market</div>                            
+                            <div class="col-1 border p-0 text-center">Market</div>
                             <div class="col-1 border p-0 text-center">Status</div>
                             <div class="col-3 border p-0 text-center">Controls</div>
                             <div class="col-2 border p-0 text-center">Controls</div>
                         </div>
                     </li>
-                    {% for sess in exp_sessions %}
-                        {% if sess.status == 1 or sess.status == 4 or sess.status == 6 or sess.status == 7 or sess.status == 8 %}
+                    {% for exercise, sessions in exercises.items %}
+                        <div class="border border-dark">
+                        {% for sess in sessions %}
+                        {% if sess.status == 1 or sess.status == 4 or sess.status == 5 or sess.status == 6 or sess.status == 7 or sess.status == 8 %}
                         <li class="list-group-item p-0">
                             <div class="row m-0">
-                                <div class="col-2 border p-0">{{sess.name}}</div>                      
+                                <div class="col-2 border p-0">{{sess.name}}</div>
                                 <div class="col-1 border p-0">
                                     {% for key, value in st_dict.items %}
                                         {% if key == sess.id %}
@@ -71,7 +83,7 @@
                                 </div> 
                                 <div class="col-1 border p-0">{{sess.use_ai}}</div> 
                                 <div class="col-1 border p-0">{{sess.structure}}</div>
-                                <div class="col-1 border p-0">{{sess.market}}</div>                                                               
+                                <div class="col-1 border p-0">{{sess.market}}</div>
                                 {% if sess.status == 1 %}
                                 <div class="col-1 border p-0 running-status" id="status_{{sess.id}}">{{"Running"}}</div>
                                 {% elif sess.status == 4 %}
@@ -85,7 +97,7 @@
                                 {% elif sess.status == 8 %}
                                 <div class="col-1 border p-0 postsession-status" id="status_{{sess.id}}">{{"After"}}</div>
                                 {% endif %}
-                                <div class="col-1 border p-0 text-center">                                    
+                                <div class="col-1 border p-0 text-center">
                                     {% if sess.status == 1 %}
                                     <button type="button" class="btn ctrl_button play_button" id="play_button_{{sess.id}}">Next</button>
                                     {% elif sess.status == 4 %}
@@ -100,7 +112,7 @@
                                     <button type="button" class="btn ctrl_button play_button" id="play_button_{{sess.id}}">Archive</button>
                                     {% endif %}
                                 </div>
-                                <div class="col-2 border p-0">                                    
+                                <div class="col-2 border p-0">
                                     {% if sess.status == 1 %}
                                     <div id="info_text_{{sess.id}}">Continue to <b>Post-Session</b></div>
                                     {% elif sess.status == 4 %}
@@ -117,13 +129,17 @@
                                     <div id="info_text_{{sess.id}}"><b>Archive</b> the Session and end the Exercise</div>
                                     {% endif %}
                                 </div>
-                                <div class="col-2 border p-0 text-center">                                                     
+                                <div class="col-2 border p-0 text-center">
+                                    {% if sess.status != 5 %}                            
                                     <button type="button" class="btn ctrl_button stop_button" id="stop_button_{{sess.id}}">Stop</button>
                                     <button type="button" class="btn ctrl_button archive_button" id="archive_button_{{sess.id}}">Archive</button>
+                                    {% endif %}
                                 </div>
                             </div>
                         </li>
                         {% endif %}
+                        {% endfor %}
+                        </div>
                     {% endfor %}
                 </ul>
             </div>
@@ -131,6 +147,7 @@
     </div>
     <br>
     <br>   
+
     <h3 class="text-center">Archived Sessions</h3>
     <br>
     <div id="completed-sessions">
@@ -143,12 +160,14 @@
                             <div class="col-2 border p-0 text-center">Team</div>
                             <div class="col-1 border p-0 text-center">Use AI</div>
                             <div class="col-2 border p-0 text-center">Structure</div>
-                            <div class="col-2 border p-0 text-center">Market</div>                            
+                            <div class="col-2 border p-0 text-center">Market</div>
                             <div class="col-1 border p-0 text-center">Log</div>
                             <div class="col-1 border p-0 text-center">CSV</div>
                         </div>
                     </li>
-                    {% for sess in exp_sessions %}
+                    {% for exercise, sessions in archived_exercises.items %}
+                    <div class="border border-dark">
+                    {% for sess in sessions %}
                         {% if sess.status == 5 %}
                         <li class="list-group-item p-0">
                             <div class="row m-0">
@@ -169,12 +188,15 @@
                         </li>
                         {% endif %}
                     {% endfor %}
+                    </div>
+                    {% endfor %}
                 </ul>
             </div>
         </div>
     </div>
     <br>
     <br>
+
     <div id="reset-user-password">
         <div class="container">
             <h3 class="text-center">Change Password for User</h3>
@@ -209,6 +231,11 @@
             <a target="_parent" href="{% url 'logout' %}">logout</a>
         </div>
     </div>
+    <!--
+    <br>
+    <br>
+    <h3 class="text-center"><a href="/structure/" target="_blank">Create Structure</a></h3>
+    -->
     <br>
     <br>
 
@@ -219,7 +246,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="create-session-modal-label">New Session from Template</h5>
+                    <h5 class="modal-title" id="create-session-modal-label">Create Session Group</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -227,59 +254,79 @@
                 <div class="modal-body">
                     <form>
                         <div class="form-group">
-                            <label for="select-session-team">Team</label>
-                            <select class="form-control" id="select-session-team">
-                                {% for team in org_teams %}
-                                <option value="{{team.id}}">{{team.name}}</option>
-                                {% endfor %}
-                            </select>
-                            <br>
-                            <label for="session-1-name">Session 1 Name</label>
-                            <input class="form-control" id="session-1-name" type="text" placeholder="Enter Session 1 Name">   
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="session-1-ai" checked>
-                                <label class="form-check-label" for="session-1-ai">allow AI</label>
-                            </div>                
-                            <label for="select-structure-1">Structure</label>
-                            <select class="form-control" id="select-structure-1">
-                                {% for structure in structures %}
-                                <option value="{{structure.id}}">{{structure.name}}</option>
-                                {% endfor %}
-                            </select>
-                            <label for="select-market-1">Market</label>
-                            <select class="form-control" id="select-market-1">
-                                {% for market in markets %}
-                                <option value="{{market.id}}">{{market.name}}</option>
-                                {% endfor %}
-                            </select>
-                            <br>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="second-session-check" checked>
-                                <label class="form-check-label" for="second-session-check">Add a 2nd Session</label>
+                            <div class="row">
+                                <div class="col-3">
+                                    <label for="select-session-team">Team</label>
+                                </div>
+                                <div class="col-9">
+                                    <select class="form-control" id="select-session-team">
+                                        {% for team in org_teams %}
+                                        <option value="{{team.id}}">{{team.name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
                             </div>
-                            <label for="session-2-name">Session 2 Name</label>
-                            <input class="form-control" id="session-2-name" type="text" placeholder="Enter Session 2 Name">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="session-2-ai" checked>
-                                <label class="form-check-label" for="session-2-ai">allow AI</label>
-                            </div>         
-                            <label for="select-structure-2">Structure</label>
-                            <select class="form-control" id="select-structure-2">
-                                {% for structure in structures %}
-                                <option value="{{structure.id}}">{{structure.name}}</option>
-                                {% endfor %}
-                            </select>
-                            <label for="select-market-2">Market</label>
-                            <select class="form-control" id="select-market-2">
-                                {% for market in markets %}
-                                <option value="{{market.id}}">{{market.name}}</option>
-                                {% endfor %}
-                            </select>
+                            <br>
+
+                            <div id="session-list">
+                            </div>
+                            <br>
+
+                            <div class="border-session-create">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <label for="session-name-new">Name</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input class="form-control" id="session-name-new" type="text" placeholder="Enter Session Name">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="session-ai-new" checked>
+                                            <label class="form-check-label" for="session-ai-new">allow AI</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-3">
+                                        <label for="select-structure-new">Structure</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <select class="form-control" id="select-structure-new">
+                                            {% for structure in structures %}
+                                            <option value="{{structure.id}}">{{structure.name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-3">
+                                        <label for="select-market-new">Market</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <select class="form-control" id="select-market-new">
+                                            {% for market in markets %}
+                                            <option value="{{market.id}}">{{market.name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-primary" id="add_session_button">+</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                       </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="create_session_button">Create Session</button>
+                    <button type="button" class="btn btn-primary" id="create_session_button">Create Session Group</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                 </div>
             </div>
@@ -287,7 +334,8 @@
     </div>
         
     <script type='application/javascript' src="/static/js/jquery-3.4.1.min.js"></script>
-    <script type='application/javascript' src="/static/js/bootstrap.bundle.min.js"></script>   
+    <script type='application/javascript' src="/static/js/bootstrap.bundle.min.js"></script>
+    <script type='text/javascript' src="/static/js/ajax.js"></script>
     <script type='text/javascript' src="/static/js/experiment.js"></script>
 {% endif %}
 </body>

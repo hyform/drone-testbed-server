@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Structure, Role, Position, Group, GroupPosition, Study, Experiment, Market, Session, SessionTeam, UserPosition, Organization
+from .models import Structure, Role, Position, Group, GroupPosition, Study, Experiment, Market, Session, SessionTeam
+from .models import UserPosition, Organization, CustomLinks
 
 # Register your models here.
 
@@ -21,6 +22,9 @@ class SessionTeamAdmin(admin.ModelAdmin):
 class UserPositionAdmin(admin.ModelAdmin):
     list_display = ('user', 'position')
 
+class CustomLinksAdmin(admin.ModelAdmin):
+    list_display = ('text', 'link', 'link_type', 'org', 'role', 'position', 'is_team', 'ai', 'status', 'first', 'last')
+
 admin.site.register(Structure)
 admin.site.register(Role)
 admin.site.register(Position, PositionAdmin)
@@ -33,3 +37,4 @@ admin.site.register(Session, SessionAdmin)
 admin.site.register(SessionTeam, SessionTeamAdmin)
 admin.site.register(UserPosition, UserPositionAdmin)
 admin.site.register(Organization)
+admin.site.register(CustomLinks, CustomLinksAdmin)

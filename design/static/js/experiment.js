@@ -1,37 +1,5 @@
 $(document).ready(function () {
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = cookies[i].trim();
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-    var csrftoken = getCookie('csrftoken');
-    function csrfSafeMethod(method) {
-        // these HTTP methods do not require CSRF protection
-        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-    }
-    $.ajaxSetup({
-        beforeSend: function (xhr, settings) {
-            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            }
-        }
-    });
-
-    var ajaxUrl = location.protocol + "//" + location.hostname + "/exper/";
-    var hPort = location.port;
-    if (hPort && (hPort !== "80" || hPort !== "443")) {
-        ajaxUrl = location.protocol + "//" + location.hostname + ":" + hPort + "/exper/";
-    }
+    var ajaxUrl = getAjaxUrl("exper");
 
     function getId(thiss) {
         thisId = $(thiss).attr('id');
@@ -39,6 +7,20 @@ $(document).ready(function () {
         idSplitId = idSplit[idSplit.length - 1];
         return idSplitId;
     }
+
+    $('#change_selection_button').on('click', function () {
+        selectAjaxUrl = ajaxUrl + "change_selection/"
+        $.ajax({
+            url: selectAjaxUrl,
+            method: "PUT",
+            data: {
+                csrfmiddlewaretoken: csrftoken,
+            },
+            success: function (result) {
+                window.location.href = "/experiment";
+            }
+        });
+    });
 
     $('.play_button').on('click', function () {
         playAjaxUrl = ajaxUrl + "session_status_play/"
@@ -258,77 +240,236 @@ $(document).ready(function () {
     });
 
     //----------------------------------
+    
+    $('#add_session_button').on('click', function () {
+        sessionNameNew = $("#session-name-new").val();
+        sessionAINew = $("#session-ai-new").prop("checked");
+        sessionStructureIdNew = $("#select-structure-new option:selected").val();
+        sessionMarketIdNew = $("#select-market-new option:selected").val();
+
+        if(!sessionNameNew) {
+            alert("Please enter a name for the new Session");
+            return;
+        }
+
+        var sessionList = document.getElementById("session-list");
+
+        //TODO:This isn't incrementing
+        var numNewSessions = document.querySelectorAll('.new-session').length;
+        var newSessionIndex = numNewSessions + 1;
+
+        var newSession = document.createElement("div");
+        newSession.classList.add("new-session");
+        newSession.id = "new-session-" + newSessionIndex;
+
+        var newSessionBorder = document.createElement("div");
+        newSessionBorder.classList.add("border-session");
+        newSession.appendChild(newSessionBorder);
+
+        //new name
+        var nameRow = document.createElement("div");
+        nameRow.classList.add("row");
+        newSessionBorder.appendChild(nameRow);
+
+        var nameRowLabelCol = document.createElement("div");
+        nameRowLabelCol.classList.add("col-3");
+        nameRow.appendChild(nameRowLabelCol);
+
+        var nameRowLabel = document.createElement("label");
+        nameRowLabel.htmlFor = "session-name-" + newSessionIndex;
+        nameRowLabel.innerHTML = "Name"
+        nameRowLabelCol.appendChild(nameRowLabel);
+
+        var nameRowInputCol = document.createElement("div");
+        nameRowInputCol.classList.add("col-9");
+        nameRow.appendChild(nameRowInputCol);
+
+        var nameRowInput = document.createElement("input");
+        nameRowInput.classList.add("form-control");
+        nameRowInput.classList.add("new-session-name");
+        nameRowInput.id = "session-name-" + newSessionIndex;
+        nameRowInput.type = "text"
+        nameRowInput.value = sessionNameNew
+        nameRowInputCol.appendChild(nameRowInput);
+
+        //new AI
+        var aiRow = document.createElement("div");
+        aiRow.classList.add("row");
+        newSessionBorder.appendChild(aiRow);
+
+        var aiRowLabelCol = document.createElement("div");
+        aiRowLabelCol.classList.add("col-3");
+        aiRow.appendChild(aiRowLabelCol);
+
+        var aiFormCheck = document.createElement("div");
+        aiFormCheck.classList.add("form-check");
+        aiRowLabelCol.appendChild(aiFormCheck);
+
+        var aiCheckInput = document.createElement("input");
+        aiCheckInput.classList.add("form-check-input");
+        aiCheckInput.classList.add("new-session-ai");
+        aiCheckInput.id = "session-ai-" + newSessionIndex;
+        aiCheckInput.type = "checkbox"
+
+        var aiElement = document.getElementById("session-ai-new");
+        aiCheckInput.checked = aiElement.checked;
+        aiFormCheck.appendChild(aiCheckInput);
+
+        var aiCheckLabel = document.createElement("label");
+        aiCheckLabel.classList.add("form-check-label");
+        aiCheckLabel.htmlFor = "session-ai-" + newSessionIndex;
+        aiCheckLabel.innerHTML = "allow AI"
+        aiFormCheck.appendChild(aiCheckLabel);
+
+        //new Structure
+        var structureRow = document.createElement("div");
+        structureRow.classList.add("row");
+        newSessionBorder.appendChild(structureRow);
+
+        var structureRowLabelCol = document.createElement("div");
+        structureRowLabelCol.classList.add("col-3");
+        structureRow.appendChild(structureRowLabelCol);
+
+        var structureRowLabel = document.createElement("label");
+        structureRowLabel.htmlFor = "select-structure-" + newSessionIndex;
+        structureRowLabel.innerHTML = "Structure"
+        structureRowLabelCol.appendChild(structureRowLabel);
+
+        var structureRowSelectCol = document.createElement("div");
+        structureRowSelectCol.classList.add("col-9");
+        structureRow.appendChild(structureRowSelectCol);
+
+        var structureRowSelect = document.createElement("select");
+        structureRowSelect.classList.add("form-control");
+        structureRowSelect.classList.add("new-session-structure");
+        structureRowSelect.id = "select-structure-" + newSessionIndex;
+        //TODO: get correct list of structures to replace this
+        var structureRowSelectTemp = document.createElement("option");
+        structureRowSelectTemp.value = sessionStructureIdNew;
+        structureRowSelectTempText = $("#select-structure-new option:selected").text();
+        structureRowSelectTemp.text = structureRowSelectTempText;
+        structureRowSelect.appendChild(structureRowSelectTemp);
+        //------
+        structureRowSelectCol.appendChild(structureRowSelect);
+
+        //new Market
+        var marketRow = document.createElement("div");
+        marketRow.classList.add("row");
+        newSessionBorder.appendChild(marketRow);
+
+        var marketRowLabelCol = document.createElement("div");
+        marketRowLabelCol.classList.add("col-3");
+        marketRow.appendChild(marketRowLabelCol);
+
+        var marketRowLabel = document.createElement("label");
+        marketRowLabel.htmlFor = "select-market-" + newSessionIndex;
+        marketRowLabel.innerHTML = "Market"
+        marketRowLabelCol.appendChild(marketRowLabel);
+
+        var marketRowSelectCol = document.createElement("div");
+        marketRowSelectCol.classList.add("col-9");
+        marketRow.appendChild(marketRowSelectCol);
+
+        var marketRowSelect = document.createElement("select");
+        marketRowSelect.classList.add("form-control");
+        marketRowSelect.classList.add("new-session-market");
+        marketRowSelect.id = "select-market-" + newSessionIndex;
+        //TODO: get correct list of markets to replace this
+        var marketRowSelectTemp = document.createElement("option");
+        marketRowSelectTemp.value = sessionMarketIdNew;
+        marketRowSelectTempText = $("#select-market-new option:selected").text();
+        marketRowSelectTemp.text = marketRowSelectTempText;
+        marketRowSelect.appendChild(marketRowSelectTemp);
+        //------
+        marketRowSelectCol.appendChild(marketRowSelect);
+
+        //
+        sessionList.appendChild(newSession);
+
+        //
+        var sessionNameNewElement = document.getElementById("session-name-new");
+        sessionNameNewElement.value = "";
+        sessionNameNewElement.placeholder = "Enter Session Name";
+
+        //already have this from above
+        //var aiElement = document.getElementById("session-ai-new");
+        aiElement.checked = true;
+
+        var selectStructureElement = document.getElementById("select-structure-new");
+        selectStructureElement.selectedIndex = 0;
+
+        var selectMarketElement = document.getElementById("select-market-new");
+        selectMarketElement.selectedIndex = 0;
+    });
 
     $('#create_session_button').on('click', function () {
+        var newSessions = document.querySelectorAll('.new-session');
+        var numNewSessions = newSessions.length;
+        if(numNewSessions < 1) {
+            alert("Please create at least one new session");
+            return;
+        }
+
+        sessionNameNew = $("#session-name-new").val();
+        if(sessionNameNew) {
+            var keepGoing = confirm("A new session may have not been added via the + button.\nContinue anyway?");
+            if(!keepGoing) {
+                return;
+            }
+        }
+
         teamId = $("#select-session-team option:selected").val();
-        session1Name = $("#session-1-name").val();
-        session1AI = $("#session-1-ai").prop("checked");
-        session1StructureId = $("#select-structure-1 option:selected").val();
-        session1MarketId = $("#select-market-1 option:selected").val();
-        create2nd = $("#second-session-check").prop("checked");
-        session2Name = $("#session-2-name").val();
-        session2AI = $("#session-2-ai").prop("checked");
-        session2StructureId = $("#select-structure-2 option:selected").val();
-        session2MarketId = $("#select-market-2 option:selected").val();
-        createAjaxUrl = ajaxUrl + "create_session_group/";
 
-        if(!session1Name) {
-            alert("Please enter a name for Session 1");
-            return;
-        }
-        if(create2nd && !session2Name) {
-            alert("Please Enter a name for Session 2");
-            return;
+        var newSessionList = [];
+        for (i = 0; i < newSessions.length; ++i) {
+            newSessionList.push(new Object());
+        };
+
+        var newSessionNames = document.querySelectorAll('.new-session-name');
+        for (i = 0; i < newSessionNames.length; ++i) {
+            let name = newSessionNames[i].value;
+            if(name) {
+                newSessionList[i].name = name;
+            } else {
+                let index = i + 1;
+                alert("New session " + index + " does not have a name");
+                return;
+            }
         }
 
-        $('#session-1-name').val("");
-        $("#session-1-ai").prop('checked', true);
-        $("#session-1-ai").prop('disabled', false);
-        $("#select-structure-1").val($("#select-structure-1 option:first").val());
-        $("#select-market-1").val($("#select-market-1 option:first").val());
-        $("#second-session-check").prop('checked', true);
-        $('#session-2-name').prop('disabled', false);
-        $('#session-2-name').val("");
-        $("#session-2-ai").prop('checked', true);
-        $("#session-2-ai").prop('disabled', false);
-        $('#select-structure-2').prop('disabled', false);
-        $("#select-structure-2").val($("#select-structure-2 option:first").val());
-        $("#select-market-2").val($("#select-market-2 option:first").val());
+        var newSessionAI = document.querySelectorAll('.new-session-ai');
+        for (i = 0; i < newSessionAI.length; ++i) {
+            newSessionList[i].ai = newSessionAI[i].checked;
+        }
 
-        $('#create-session-modal').modal('hide');
+        var newSessionStructures = document.querySelectorAll('.new-session-structure');
+        for (i = 0; i < newSessionStructures.length; ++i) {
+            newSessionList[i].structure = newSessionStructures[i].value;
+        }
+
+        var newSessionMarkets = document.querySelectorAll('.new-session-market');
+        for (i = 0; i < newSessionMarkets.length; ++i) {
+            newSessionList[i].market = newSessionMarkets[i].value;
+        }
+
+        createAjaxUrl = ajaxUrl + "create_session_group/"
         $.ajax({
             url: createAjaxUrl,
             method: "PUT",
             data: {
                 csrfmiddlewaretoken: csrftoken,
                 teamId: teamId,
-                session1Name: session1Name,
-                session1AI: session1AI,
-                session1StructureId: session1StructureId,
-                session1MarketId: session1MarketId,
-                create2nd: create2nd,
-                session2Name: session2Name,
-                session2AI: session2AI,
-                session2StructureId: session2StructureId,
-                session2MarketId: session2MarketId
+                newSessionList: JSON.stringify(newSessionList)
+            },
+            error: function (result) {
+                //TODO: error message
+                alert("New session creation failed");
             },
             success: function (result) {
-                location.reload();
+                //clear new sessions
+                //$('#create-session-modal').modal('hide');
+                location.reload();                 
             }
         });
-    });
-
-    $('#second-session-check').on('click', function () {
-        if ($(this).prop("checked") == true) {
-            $('#session-2-name').prop('disabled', false);
-            $("#session-2-ai").prop('disabled', false);
-            $('#select-structure-2').prop('disabled', false);
-            $("#select-market-2").prop('disabled', false);
-        } else {
-            $('#session-2-name').prop('disabled', true);
-            $("#session-2-ai").prop('disabled', true);
-            $('#select-structure-2').prop('disabled', true);
-            $("#select-market-2").prop('disabled', false);
-        }
-    });
+    });    
 });

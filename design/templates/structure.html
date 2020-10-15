@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Structure Editor</title>
+    <link rel="stylesheet" media="screen" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" media="screen" href="/static/css/common.css">
+    <link rel="stylesheet" media="screen" href="/static/css/structure.css">
+</head>
+
+<body>
+{% if user.is_authenticated %}
+<div class="stuff fullheight">
+    <div class="container">
+        <label>Organization Structures</label>
+        <!-- TODO: List the structures for this organization -->
+        <br>
+        <label for="structure-name">Structure Name</label>
+        <input class="form-control" id="structure-name" type="text" placeholder="Enter Structure Name">
+        <br>
+        <label>Positions</label>
+        <div class="border">            
+            <div class="positions">
+                <ul id="position_list">
+                </ul>
+            </div>
+            <br>
+            <label>Enter a Name and select a Role to add a new Position</label>
+            <div class="row">
+                <div class="col-1">
+                    <button type="button" class="btn btn-primary" id="add_position_button">+</button>
+                </div>
+                <div class="col-4">
+                    <input class="form-control" id="position-name" type="text" placeholder="Enter Position Name">
+                </div>
+                <div class="col-2">
+                    <select class="form-control" id="select-role">
+                        <option value="1">Designer</option>
+                        <option value="2">Business</option>
+                        <option value="3">OpsPlanner</option>
+                    </select>
+                </div>
+            </div>
+        </div>     
+        <br>
+        <br>
+        <label>Chat Channels</label>
+        <div class="border">
+            <div class="channels">
+                <ul id="channel_list">
+                </ul>
+            </div>
+            <br>
+            <label>Enter a Name and select Positions to add a new Chat Channel</label>
+            <div class="row">
+                <div class="col-1">
+                    <button type="button" class="btn btn-primary" id="add_channel_button">+</button>
+                </div>
+                <div class="col-4">
+                    <input class="form-control" id="channel-name" type="text" placeholder="Enter Channel Name">
+                </div>                            
+            </div>
+            <div class="channel_positions">
+                <ul class="nopadding" id="channel_position_list" style="list-style: none;">
+                </ul>
+            </div>
+        </div>
+        <br>
+        <br>        
+        <button type="button" class="btn btn-primary" id="create_structure_button">Create Structure</button> 
+    </div>
+</div>
+
+<script type='application/javascript' src="/static/js/jquery-3.4.1.min.js"></script>
+<script type='application/javascript' src="/static/js/bootstrap.bundle.min.js"></script>
+<script type='text/javascript' src="/static/js/ajax.js"></script>
+<script type='text/javascript' src="/static/js/structure.js"></script>
+{% endif %}
+</body>
+
+</html>

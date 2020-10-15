@@ -16,10 +16,9 @@ def index(request):
     context = {}
     experimenter = False
     if request.user.is_authenticated:        
-        expcheck = Profile.objects.filter(user=request.user, is_exper=True)
-        if expcheck:
+        if request.user.profile.is_experimenter():
             experimenter = True            
-        else:
+        else: #TODO: to a is_player here instead of just the else, then handle the other condition(s)
             st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
             if st:
                 up = UserPosition.objects.filter(Q(user=request.user) & Q(session=st.session)).first()

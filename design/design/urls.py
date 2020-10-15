@@ -48,5 +48,6 @@ urlpatterns = [
     path('experimentchat/', views.ateams_experiment_chat, name='experimentchat'),
     path('tempuserinfo/', views.ateams_temp_user_info, name='tempuserinfo'),
     path('info/', views.ateams_info, name='info'),
-    path('ateams_main/', views.ateams_main, name="ateams_main")
+    path('ateams_main/', views.ateams_main, name="ateams_main"),
+    path('structure/', views.structure, name="structure")
 ]

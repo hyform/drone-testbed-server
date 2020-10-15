@@ -6,5 +6,5 @@ $( document ).ready(function() {
         if (event.detail > 1) {
         event.preventDefault();
         }
-    }, false);    
+    }, false);
 });

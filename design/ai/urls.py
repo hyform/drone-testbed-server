@@ -12,7 +12,9 @@ urlpatterns = [
     path('uavdesignasses/', views.UAVDesignAsses.as_view()),
     path('uavdesign2asses/', views.UAVDesign2Asses.as_view()),
     path('dronebot/', views.DroneBot.as_view()),
-    path('opsservice/', views.OpsService.as_view())
+    path('opsservice/', views.OpsService.as_view()),
+    path('design_evaluation/', views.design_evaluation),
+    path('design_trajectory/', views.design_trajectory),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

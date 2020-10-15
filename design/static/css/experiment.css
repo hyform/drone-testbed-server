@@ -10,8 +10,37 @@ html, h2, h3, h4, h5, h6, div, ul, li, p, a {
     font-family: source-sans-pro, sans-serif;
 }
 
+.border-dark {
+    padding: 2px;
+}
+
+.border-session-create {
+    border-style: solid;
+    border-width: medium;
+    border-color: goldenrod;
+    padding: 2px;
+    margin: 2px;
+}
+
+.border-session {
+    border-style: solid;
+    border-width: medium;
+    border-color: teal;
+    padding: 2px;
+    margin: 2px;
+}
+
 .fullheight {
     height: 100%
+}
+
+.padding-15 {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.margin-0 {
+    margin: 0px;
 }
 
 .stuff {

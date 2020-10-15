@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from exper.models import Group, Session, Organization
+from exper.models import Group, Session, Organization, Study, Experiment
 
 # Create your models here
 
@@ -16,11 +16,44 @@ class DesignTeam(models.Model):
         return self.name
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)              
+    # 1 = Player
+    # 2 = Experimenter
+    # 3 = Mediator
+    # other = undefined
+    PLAYER = 1
+    EXPERIMENTER = 2
+    MEDIATOR = 3
+    user_type = models.IntegerField(default=0)    
+
+    # Fields for Players
     team = models.ForeignKey(DesignTeam, null=True, blank=True, on_delete=models.SET_NULL)
-    is_exper = models.BooleanField(default=False)
-    organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.SET_NULL)
     temp_code = models.TextField(default="", blank=True)
+
+    # Fields for Experimenters
+    is_exper = models.BooleanField(default=False) # TODO: deprecate, then delete
+    organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.SET_NULL) # TODO: deprecate, then delete
+    study = models.ForeignKey(Study, null=True, blank=True, on_delete=models.SET_NULL)
+    experiment = models.ForeignKey(Experiment, null=True, blank=True, on_delete=models.SET_NULL)
+
+    def is_player(self):
+        if self.user_type == Profile.PLAYER:
+            return True
+        return False
+
+    def is_experimenter(self):
+        if self.user_type == Profile.EXPERIMENTER:
+            return True
+        return False
+
+    def is_mediator(self):
+        if self.user_type == Profile.MEDIATOR:
+            return True
+        return False
+
+class ExperOrg(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
