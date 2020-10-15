@@ -2325,7 +2325,6 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 --
 
 COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
-2	pbkdf2_sha256$180000$G2RFBJ2dIdPK$UAbB4stgC+Jz8d+nHXxEY9N0jaeMa9GOC0KqmH7ZVvQ=	\N	f	hyform-exper				f	t	2020-05-19 23:15:43+00
 3	pbkdf2_sha256$180000$c7nMq5gev1Ne$glYr5puokDb3XqQVOvuHmwfF5Ux1xy7ikaqi7/Feu7M=	\N	f	user-11				f	t	2020-05-19 23:18:11+00
 4	pbkdf2_sha256$180000$cHmFiWBWFYy0$qQu/zoqiRuH4xkCJBQFUhGiDvKwQ0ZjmvZbX3L9WRyc=	\N	f	user-12				f	t	2020-05-19 23:18:33+00
 5	pbkdf2_sha256$180000$4KQ8IupTu2DJ$60pn2rkXxE4zIOPExtSt3iey2cCsK4ACB5NXLabgwj0=	\N	f	user-13				f	t	2020-05-19 23:18:51+00
@@ -2338,6 +2337,8 @@ COPY public.auth_user (id, password, last_login, is_superuser, username, first_n
 12	pbkdf2_sha256$180000$pS7URA0WeezX$fI0w65jpVR3AzU73y2FcnVo9rM68Uu27csvqHMXIU5I=	\N	f	user-24				f	t	2020-05-19 23:20:48+00
 13	pbkdf2_sha256$180000$MQPuhUoSScCt$lEmxby2yeIbCOS5TJNPA4GeSH8wdM85lAmvTuiA0ghQ=	\N	f	user-25				f	t	2020-05-19 23:21:06+00
 14	pbkdf2_sha256$180000$eRhnPjlBBcut$5qpvDzr5P2AD5xL3H661AXtuHPTyxTMwbKSCA/8Lev4=	\N	f	user-26				f	t	2020-05-19 23:21:24+00
+15	pbkdf2_sha256$150000$WbLmXTE7iVa1$VgHV0uUAYj0msJuL+CW/7/828vYrO/iBkuDVh18ljKI=	2020-10-15 16:48:43.973574+00	t	hyformadmin			hyformadmin@a.com	t	t	2020-10-15 16:48:12.167978+00
+2	pbkdf2_sha256$150000$Uqqu524tCxYN$YHu1WJcplAUqHHONdQTIUgP4t5VzKDARlS8kpJsPX8w=	2020-10-15 16:55:27.676218+00	f	hyform-exper				f	t	2020-05-19 23:15:43+00
 \.
 
 
@@ -2362,6 +2363,7 @@ COPY public.auth_user_user_permissions (id, user_id, permission_id) FROM stdin;
 --
 
 COPY public.authtoken_token (key, created, user_id) FROM stdin;
+1488637928985e96cfaa5f9e89b9bdd154ef0fa0	2020-10-15 16:46:07.914125+00	2
 \.
 
 
@@ -2430,6 +2432,7 @@ COPY public.chat_message (id, message, "timestamp", channel_id, sender_id, sessi
 --
 
 COPY public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
+1	2020-10-15 16:49:10.713126+00	2	hyform-exper	2	[{"changed": {"fields": ["password"]}}]	4	15
 \.
 
 
@@ -2583,6 +2586,7 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 --
 
 COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
+to9pyu446tkmonc8wrqx9kiaczjynsln	YTg0NTM2N2U1NjE2NGQ5NmZmMzdiODQzZjVlYWFjZjZmMWQyNDM0Njp7Il9hdXRoX3VzZXJfaWQiOiIyIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiI5MGZjOTg0YzY2YTIxNjM2OTgzOWM0MDk1Njc1MzIxYzQzYTQ2MmMzIn0=	2020-10-29 16:55:27.680834+00
 \.
 
 
@@ -3042,19 +3046,20 @@ COPY public.repo_playdemo (id, xmlstring, tag, team) FROM stdin;
 --
 
 COPY public.repo_profile (id, team_id, user_id, is_exper, organization_id, user_type, experiment_id, study_id, temp_code) FROM stdin;
-2	\N	2	t	1	0	\N	\N	
-3	1	3	f	\N	0	\N	\N	
-4	1	4	f	\N	0	\N	\N	
-5	1	5	f	\N	0	\N	\N	
-6	1	6	f	\N	0	\N	\N	
-7	1	7	f	\N	0	\N	\N	
-8	1	8	f	\N	0	\N	\N	
-9	2	9	f	\N	0	\N	\N	
-10	2	10	f	\N	0	\N	\N	
-11	2	11	f	\N	0	\N	\N	
-12	2	12	f	\N	0	\N	\N	
-13	2	13	f	\N	0	\N	\N	
-14	2	14	f	\N	0	\N	\N	
+3	1	3	f	\N	1	\N	\N	
+4	1	4	f	\N	1	\N	\N	
+5	1	5	f	\N	1	\N	\N	
+6	1	6	f	\N	1	\N	\N	
+7	1	7	f	\N	1	\N	\N	
+8	1	8	f	\N	1	\N	\N	
+9	2	9	f	\N	1	\N	\N	
+10	2	10	f	\N	1	\N	\N	
+11	2	11	f	\N	1	\N	\N	
+12	2	12	f	\N	1	\N	\N	
+13	2	13	f	\N	1	\N	\N	
+14	2	14	f	\N	1	\N	\N	
+15	\N	15	f	\N	1	\N	\N	
+2	\N	2	t	1	2	\N	\N	
 \.
 
 
@@ -3145,7 +3150,7 @@ SELECT pg_catalog.setval('public.auth_user_groups_id_seq', 1, false);
 -- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atuser
 --
 
-SELECT pg_catalog.setval('public.auth_user_id_seq', 14, true);
+SELECT pg_catalog.setval('public.auth_user_id_seq', 15, true);
 
 
 --
@@ -3180,7 +3185,7 @@ SELECT pg_catalog.setval('public.chat_message_id_seq', 1, false);
 -- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atuser
 --
 
-SELECT pg_catalog.setval('public.django_admin_log_id_seq', 1, false);
+SELECT pg_catalog.setval('public.django_admin_log_id_seq', 1, true);
 
 
 --
@@ -3383,7 +3388,7 @@ SELECT pg_catalog.setval('public.repo_playdemo_id_seq', 1, false);
 -- Name: repo_profile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atuser
 --
 
-SELECT pg_catalog.setval('public.repo_profile_id_seq', 14, true);
+SELECT pg_catalog.setval('public.repo_profile_id_seq', 15, true);
 
 
 --
