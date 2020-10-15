@@ -2762,7 +2762,7 @@ COPY public.exper_structure (id, name, organization_id) FROM stdin;
 --
 
 COPY public.exper_study (id, name, purpose, lead, organization_id) FROM stdin;
-1	HyForm Study	Basic study	no one	\N
+1	HyForm Study	Basic study	no one	1
 \.
 
 
@@ -2998,6 +2998,7 @@ COPY public.repo_designteam (id, name, initialscore, currentscore, organization_
 --
 
 COPY public.repo_experorg (id, organization_id, user_id) FROM stdin;
+1	1	2
 \.
 
 
@@ -3059,7 +3060,7 @@ COPY public.repo_profile (id, team_id, user_id, is_exper, organization_id, user_
 13	2	13	f	\N	1	\N	\N	
 14	2	14	f	\N	1	\N	\N	
 15	\N	15	f	\N	1	\N	\N	
-2	\N	2	t	1	2	\N	\N	
+2	\N	2	t	1	2	1	1	
 \.
 
 
