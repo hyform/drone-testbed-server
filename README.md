@@ -2,24 +2,40 @@
 This is the server for the HyForm drone design testbed. It pairs with a Unity interface available here: https://github.com/hyform/drone-testbed-unity
 
 ## Quick Setup Guide
+### Starting Notes
+These instructions are for setting up a Linux virtual machine on Windows. For clarity, some commands are preceded by what environment you type them in  
+```
+(windows) This command is entered on a Windows command line  
+(linux) This command is entered in the Linux vm  
+(browser) This address is entered in a browser, usually from your Windows machine  
+```
+  
 ### Installation 
-Install Virtualbox  (https://www.virtualbox.org/)
+Install Virtualbox  (https://www.virtualbox.org/)  
 Install Vagrant  (https://www.vagrantup.com/)  
   
-From the Command Prompt, navigate to the root directory of this reporitory (where this document is located) and run  
-vagrant up --provision --provider=virtualbox    
+From a Windows Command Prompt, navigate to the root directory of this reporitory (where this document is located) and run  
+```
+vagrant up --provision --provider=virtualbox
+```    
   
 ### Running HyForm for the first time
 From the same Command Prompt location run  
+```
 vagrant ssh  
+```
   
 This will put you into the virtual machine. From there run  
+```
 cd /vagrant/design  
 python3 manage.py migrate  
 python3 manage.py runserver 0:8000  
-  
+```  
+
 Then in your browser go to  
+```
 http://localhost:8081/  
+```
 and you should see the site  
   
 An initial set of users and passwords is included in the file initial-users.txt  
@@ -29,37 +45,39 @@ Log in with the Experimenter and create a new Session to get started
 From root folder (with "Vagrantfile")  
 Note: commands run from a windows command prompt are marked with (windows), those frun from the vagrant virtual machine are marked with (linux) and browser links are (browser)  
   
+```
 (windows)	vagrant ssh  
 (linux)		cd /vagrant/design  
 (linux)		python3 manage.py runserver 0:8000  
 (browser)	http://localhost:8081/  
-  
+```  
   
   
   
 ### Stopping Django 
-  
+```  
 (linux)		ctrl-c  
-  
+```  
   
   
 ### Creating Django admin user 
-  
+```  
 (windows)	vagrant ssh  
 (linux)		cd /vagrant/design  
 (linux)		python3 manage.py createsuperuser  
 -- enter account info --  
 (linux)		python3 manage.py runserver 0:8000  
-  
+```  
 In browser go to  
+```
 http://localhost:8081/admin  
-  
+```  
   
 ### Logout and close VM
-
+```
 (linux)		logout  
 (windows)	vagrant halt  
-
+```
 
 ## Citing HyForm™
 If you use HyForm in your own research, please cite it using this paper:
