@@ -73,6 +73,14 @@ def evaluation(config, trajectory):
     
     if not config:
         config = '*aMM0++++++++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fOM3*gMO3*hKM3*iMK3*jPM2+++*kMP1+++*lJM2+++*mMJ1+++^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,50,3'
+    payload = 0
+    parts = config.split(',')
+    if len(parts) > 1:
+        tmp_payload = parts[1]
+        try:
+            payload = float(tmp_payload)
+        except ValueError:
+            pass
     config_param = '-config "' + config + '"'
     args = []
     args.append(settings.EVALUATION_APP)    
@@ -128,6 +136,7 @@ def evaluation(config, trajectory):
         evaluation_data['range'] = float(results[1])
         evaluation_data['cost'] = float(results[3])
         evaluation_data['velocity'] = float(results[2])
+        evaluation_data['payload'] = float(payload)
         out_data["evaluation"] = evaluation_data
 
         trajectory_data = []
