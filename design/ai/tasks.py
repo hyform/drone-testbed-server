@@ -120,22 +120,19 @@ def evaluation(config, trajectory):
 
     current_line = current_line + 1
 
-    out_data = []
+    out_data = {}
     if current_line < num_lines:
         results = lines[current_line].split()        
-        evaluation = {}
         evaluation_data = {}
         evaluation_data['result'] = bytes(results[0]).decode('UTF-8')
         evaluation_data['range'] = float(results[1])
         evaluation_data['cost'] = float(results[3])
         evaluation_data['velocity'] = float(results[2])
-        evaluation['evaluation'] = evaluation_data
-        out_data.append(evaluation)
+        out_data["evaluation"] = evaluation_data
 
+        trajectory_data = []
         current_line = current_line + 1
         while current_line < num_lines:
-            trajectory = {}
-            trajectory_data = []     
             traj_values = lines[current_line].split()
             traj_data = {}
             traj_data['time'] = float(traj_values[0])
@@ -147,8 +144,7 @@ def evaluation(config, trajectory):
             traj_data['rz'] = float(traj_values[6])
             traj_data['rw'] = float(traj_values[7])
             trajectory_data.append(traj_data)
-            trajectory['trajectory'] = trajectory_data
-            out_data.append(trajectory)
             current_line = current_line + 1
+        out_data["trajectory"] = trajectory_data
 
     return out_data

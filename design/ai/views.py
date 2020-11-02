@@ -83,7 +83,7 @@ def design_evaluation(request):
         config = request.data.get('config')        
         if config:
             results = evaluation(config, False)
-            return JsonResponse(json.dumps(results), safe=False)
+            return JsonResponse(results)
         return Response(status=status.HTTP_400_BAD_REQUEST)
     return Response(status=status.HTTP_401_UNAUTHORIZED)
 
@@ -93,6 +93,6 @@ def design_trajectory(request):
         config = request.data.get('config')        
         if config:
             results = evaluation(config, True)
-            return JsonResponse(json.dumps(results), safe=False)
+            return JsonResponse(results)
         return Response(status=status.HTTP_400_BAD_REQUEST)
     return Response(status=status.HTTP_401_UNAUTHORIZED)
