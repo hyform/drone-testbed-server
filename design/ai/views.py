@@ -80,7 +80,7 @@ class UAVDesign2Traj(generics.CreateAPIView):
 @api_view(['POST'])
 def design_evaluation(request):
     if request.user.is_authenticated and request.user.profile.is_experimenter() or request.user.profile.is_mediator():
-        config = request.data.get('config')        
+        config = request.data.get('config')     
         if config:
             results = evaluation(config, False)
             return JsonResponse(results)

@@ -70,9 +70,8 @@ def eval_design(channel_name, data):
 
 @shared_task
 def evaluation(config, trajectory):
-    
     if not config:
-        config = '*aMM0++++++++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fOM3*gMO3*hKM3*iMK3*jPM2+++*kMP1+++*lJM2+++*mMJ1+++^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,50,3'
+        return {}
     payload = 0
     parts = config.split(',')
     if len(parts) > 1:
@@ -81,14 +80,14 @@ def evaluation(config, trajectory):
             payload = float(tmp_payload)
         except ValueError:
             pass
-    config_param = '-config "' + config + '"'
     args = []
     args.append(settings.EVALUATION_APP)    
     args.append('-batchmode')
     args.append('-nographics')
     if trajectory:
         args.append('-trajectory')
-    args.append(config_param)
+    args.append('-configuration')
+    args.append(config)
     process=subprocess.Popen(
         args,
         bufsize=8192,
@@ -121,6 +120,7 @@ def evaluation(config, trajectory):
     current_line = 0
         
     while current_line < num_lines:
+        print("input: " + str(lines[current_line]))
         current_line_str = bytes(lines[current_line]).decode('UTF-8')
         if current_line_str == "RESULTS":
             break
@@ -130,6 +130,7 @@ def evaluation(config, trajectory):
 
     out_data = {}
     if current_line < num_lines:
+        print("input: " + str(lines[current_line]))
         results = lines[current_line].split()        
         evaluation_data = {}
         evaluation_data['result'] = bytes(results[0]).decode('UTF-8')
