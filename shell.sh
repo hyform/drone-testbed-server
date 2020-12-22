@@ -1,11 +1,11 @@
 apt-get update
 apt-get install -y python3-pip python3-dev libpq-dev postgresql postgresql-contrib nginx curl python3-django
-apt-get install -y redis-server
 pip3 install --upgrade pip
 pip3 install gunicorn==20.0.4
 pip3 install psycopg2-binary==2.8.6
 pip3 install djangorestframework==3.12.2
 pip3 install django-cors-headers==3.6.0
+pip3 install redis-server==5.0.7
 pip3 install channels==2.4.0
 pip3 install channels_redis==3.2.0
 pip3 install Django==3.1.4
