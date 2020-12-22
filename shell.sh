@@ -1,13 +1,6 @@
 apt-get update
-apt-get install -y python3-pip=20.0.2
-apt-get install -y python3-dev=3.8.2
-apt-get install -y libpq-dev=12.5
-apt-get install -y postgresql=12
-apt-get install -y postgresql-contrib=12
-apt-get install -y nginx=1.18.0
-apt-get install -y curl=7.68.0
-apt-get install -y python3-django=2.2.12
-apt-get install -y redis-server=5.0.7
+apt-get install -y python3-pip python3-dev libpq-dev postgresql postgresql-contrib nginx curl python3-django
+apt-get install -y redis-server
 pip3 install --upgrade pip
 pip3 install gunicorn==20.0.4
 pip3 install psycopg2-binary==2.8.6
