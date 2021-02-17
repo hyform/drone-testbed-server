@@ -205,9 +205,9 @@ $(document).ready(function () {
         stopButtonId = "#stop_button_" + gottenId;
         simButtonId = "#sim_button_" + gottenId;
         infoId = "#info_text_" + gottenId;
-        $(playId).prop('disabled', true);
-        $(stopButtonId).prop('disabled', true);
-        $(simButtonId).prop('disabled', true);
+        //$(playId).prop('disabled', true);
+        //$(stopButtonId).prop('disabled', true);
+        //$(simButtonId).prop('disabled', true);
         $.ajax({
             url: runAjaxUrl,
             method: "PUT",
@@ -216,7 +216,7 @@ $(document).ready(function () {
                 id: gottenId
             },
             success: function (result) {
-                $(infoId).html("Started digital twin. Will beginning of the Archived list below and refresh this page for its progess.");
+                //$(infoId).html("Started digital twin. Will beginning of the Archived list below and refresh this page for its progess.");
             }
         })
       }
