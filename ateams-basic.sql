@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 12.4 (Ubuntu 12.4-0ubuntu0.20.04.1)
--- Dumped by pg_dump version 12.4 (Ubuntu 12.4-0ubuntu0.20.04.1)
+-- Dumped from database version 12.6 (Ubuntu 12.6-0ubuntu0.20.04.1)
+-- Dumped by pg_dump version 12.6 (Ubuntu 12.6-0ubuntu0.20.04.1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -29,7 +29,8 @@ CREATE TABLE public.ai_designer1 (
     config character varying(500) NOT NULL,
     range double precision NOT NULL,
     cost double precision NOT NULL,
-    payload double precision NOT NULL
+    payload double precision NOT NULL,
+    velocity double precision NOT NULL
 );
 
 
@@ -564,6 +565,120 @@ ALTER TABLE public.exper_customlinks_id_seq OWNER TO atuser;
 --
 
 ALTER SEQUENCE public.exper_customlinks_id_seq OWNED BY public.exper_customlinks.id;
+
+
+--
+-- Name: exper_digitaltwin; Type: TABLE; Schema: public; Owner: atuser
+--
+
+CREATE TABLE public.exper_digitaltwin (
+    id integer NOT NULL,
+    open_time_interval double precision NOT NULL,
+    save_time_interval double precision NOT NULL,
+    quality_bias double precision NOT NULL,
+    self_bias double precision NOT NULL,
+    temperature double precision NOT NULL,
+    satisficing_factor double precision NOT NULL,
+    user_position_id integer
+);
+
+
+ALTER TABLE public.exper_digitaltwin OWNER TO atuser;
+
+--
+-- Name: exper_digitaltwin_id_seq; Type: SEQUENCE; Schema: public; Owner: atuser
+--
+
+CREATE SEQUENCE public.exper_digitaltwin_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.exper_digitaltwin_id_seq OWNER TO atuser;
+
+--
+-- Name: exper_digitaltwin_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: atuser
+--
+
+ALTER SEQUENCE public.exper_digitaltwin_id_seq OWNED BY public.exper_digitaltwin.id;
+
+
+--
+-- Name: exper_digitaltwinpreference; Type: TABLE; Schema: public; Owner: atuser
+--
+
+CREATE TABLE public.exper_digitaltwinpreference (
+    id integer NOT NULL,
+    name character varying(100) NOT NULL,
+    pref_value double precision NOT NULL,
+    pref_type integer NOT NULL,
+    digital_twin_id integer
+);
+
+
+ALTER TABLE public.exper_digitaltwinpreference OWNER TO atuser;
+
+--
+-- Name: exper_digitaltwinpreference_id_seq; Type: SEQUENCE; Schema: public; Owner: atuser
+--
+
+CREATE SEQUENCE public.exper_digitaltwinpreference_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.exper_digitaltwinpreference_id_seq OWNER TO atuser;
+
+--
+-- Name: exper_digitaltwinpreference_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: atuser
+--
+
+ALTER SEQUENCE public.exper_digitaltwinpreference_id_seq OWNED BY public.exper_digitaltwinpreference.id;
+
+
+--
+-- Name: exper_digitaltwinrequirement; Type: TABLE; Schema: public; Owner: atuser
+--
+
+CREATE TABLE public.exper_digitaltwinrequirement (
+    id integer NOT NULL,
+    name character varying(100) NOT NULL,
+    lower_limit double precision NOT NULL,
+    upper_limit double precision NOT NULL,
+    digital_twin_id integer
+);
+
+
+ALTER TABLE public.exper_digitaltwinrequirement OWNER TO atuser;
+
+--
+-- Name: exper_digitaltwinrequirement_id_seq; Type: SEQUENCE; Schema: public; Owner: atuser
+--
+
+CREATE SEQUENCE public.exper_digitaltwinrequirement_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.exper_digitaltwinrequirement_id_seq OWNER TO atuser;
+
+--
+-- Name: exper_digitaltwinrequirement_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: atuser
+--
+
+ALTER SEQUENCE public.exper_digitaltwinrequirement_id_seq OWNED BY public.exper_digitaltwinrequirement.id;
 
 
 --
@@ -1835,6 +1950,27 @@ ALTER TABLE ONLY public.exper_customlinks ALTER COLUMN id SET DEFAULT nextval('p
 
 
 --
+-- Name: exper_digitaltwin id; Type: DEFAULT; Schema: public; Owner: atuser
+--
+
+ALTER TABLE ONLY public.exper_digitaltwin ALTER COLUMN id SET DEFAULT nextval('public.exper_digitaltwin_id_seq'::regclass);
+
+
+--
+-- Name: exper_digitaltwinpreference id; Type: DEFAULT; Schema: public; Owner: atuser
+--
+
+ALTER TABLE ONLY public.exper_digitaltwinpreference ALTER COLUMN id SET DEFAULT nextval('public.exper_digitaltwinpreference_id_seq'::regclass);
+
+
+--
+-- Name: exper_digitaltwinrequirement id; Type: DEFAULT; Schema: public; Owner: atuser
+--
+
+ALTER TABLE ONLY public.exper_digitaltwinrequirement ALTER COLUMN id SET DEFAULT nextval('public.exper_digitaltwinrequirement_id_seq'::regclass);
+
+
+--
 -- Name: exper_exercise id; Type: DEFAULT; Schema: public; Owner: atuser
 --
 
@@ -2062,57 +2198,57 @@ ALTER TABLE ONLY public.repo_waypoint ALTER COLUMN id SET DEFAULT nextval('publi
 -- Data for Name: ai_designer1; Type: TABLE DATA; Schema: public; Owner: atuser
 --
 
-COPY public.ai_designer1 (id, config, range, cost, payload) FROM stdin;
-100	*aMM0++*bNM3*cMN3*dLM3*eML3*fOM2+*gMO1+*hKM2*iMK1*jPM2+*kMP1+*lJM2+*mMJ1+^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,11,3	13.543988	3084.5044	11
-101	*aMM0+++*bNM3*cMN3*dLM3*eML3*fOM4*gNN4*hNL4*iMO4*jLN4*kKM4*lLL4*mMK4*nPM2++*oMP1++*pJM2++*qMJ1++^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^fn^io^kp^mq^cg^eh^el,9,3	15.27944	3091.7625	9
-102	*aMM0+*bNM3*cMN3*dLM3+*eML3+*fOM2++*gMO1++*hKM2++*iMK1++*jPM2*kMP1*lJM2*mMJ1^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,11,3	11.40136	3001.9343	11
-103	*aMM0+++++++*bNM3+++*cMN3++*dLM3++*eML3++*fOM2+++*gMO1+++*hKM2+++*iMK1+++^ab^ac^ad^ae^bf^cg^dh^ei,18,3	13.807518	4379.8286	18
-104	*aMM0++++++*bNM3*cMN3*dLM3*eML3*fOM2+++*gMO1+++*hKM2+++*iMK1+++*jPM4*kMP4*lJM4*mMJ4^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,21,3	11.014151	4055.027	21
-105	*aMM0++++++*bNM3++*cMN3++*dLM3++*eML3++*fOM2+++*gMO1+++*hKM2+++*iMK1+++*jPM4*kMP4*lJM4*mMJ4^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,21,3	11.039756	4092.2622	21
-106	*aMM0+++++++++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^el^em^cg^dj^eh,19,3	16.206049	7167.871	19
-107	*aMM0+++++++++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fOM4*gMO4*hKM4*iMK4*jPM4*kON4*lOL4*mNO4*nMP4*oLO4*pKN4*qJM4*rKL4*sNK4*tLK4*uMJ4^ab^ac^ad^ae^bf^cg^dh^ei^fj^fk^fl^gm^gn^go^hp^hq^hr^is^it^iu,19,3	15.848154	7007.6694	19
-108	*aMM0+++++++++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^dj^dk^dl^em^cg^el,17,3	16.913406	7167.871	17
-109	*aMM0++++++++++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fOM4*gNN4*hNL4*iMO4*jLN4*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^cg^eh^el,19,3	16.36555	7481.7295	19
-110	*aMM0++++++*bNM3++*cMN3++*dLM3++*eML3++*fOM2+++*gMO1+++*hKM2+++*iMK1+++*jPM4*kMP4*lJM4*mMJ4^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,20,3	11.454496	4092.2622	20
-111	*aMM0++++++*bNM3++*cMN3++*dLM3++*eML3++*fOM2+++*gMO1+++*hKM2+++*iMK1+++*jPM4*kON4*lOL4*mNO4*nMP4*oLO4*pKN4*qJM4*rKL4*sNK4*tLK4*uMJ4^ab^ac^ad^ae^bf^cg^dh^ei^fj^fk^fl^gm^gn^go^hp^hq^hr^is^it^iu,19,3	12.460136	4092.2622	19
-112	*aMM0+++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fNN3*gLL3^ab^ac^ad^ae^cf^eg,15,3	13.139071	4177.4785	15
-113	*aMM0++++++*bNM3+++*cMN3+++*dLM3+*eML3+*fOM2+++*gMO1+++*hKM2+++*iMK1+++*jPM4*kMP4*lJM4*mMJ4^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,21,3	11.123908	4092.6096	21
-114	*aMM0++++++*bNM3++*cMN3+*dLM3*eML3*fOM2+++*gMO1+++*hKM2+++*iMK1+++*jPM4*kMP4*lJM4*mMJ4^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,22,3	10.81561	4068.905	22
-115	*aMM0++++++*bNM3+*cMN3+*dLM3*eML3*fOM2+++*gMO1+++*hKM2+++*iMK1+++^ab^ac^ad^ae^bf^cg^dh^ei,24,3	9.350168	4064.1653	24
-116	*aMM0+*bNM3*cMN3*dLM3*eML3*fOM4*gMO4*hKM4*iMK4*jPM2++*kMP1++*lJM2++*mMJ1++^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,8,3	23.003311	2680.796	8
-117	*aMM0+*bNM2+*cMN1+*dLM2+*eML1+*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4*nPM4*oMP4*pJM4*qMJ4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^fn^io^kp^mq^cg^dj^el,7,3	14.915645	2361.3445	7
-118	*aMM0+*bNM3*cMN3*dLM3*eML3*fOM2++*gMO1++*hKM2++*iMK1++^ab^ac^ad^ae^bf^cg^dh^ei,9,3	12.608813	2680.796	9
-119	*aMM0++*bNM2+*cMN1+*dLM2+*eML1+*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^cg^dj,10,3	10.896672	2558.928	10
-120	*aMM0+*bNM2+*cMN1+*dLM2+*eML1+*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^el^em^cg^dj^eh,6,3	17.818705	2361.3445	6
-121	*aMM0+*bNM3*cMN3*dLM3*eML3*fOM4*gMO4*hKM4*iMK4*jPM2++*kMP1++*lJM2++*mMJ1++^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,8,3	23.003311	2680.796	8
-122	*aMM0+++++++*bNM3*cMN3*dLM3*eML3*fOM2+++*gMO1+++*hKM2+++*iMK1+++^ab^ac^ad^ae^bf^cg^dh^ei,20,3	12.506371	4337.68	20
-123	*aMM0+++++++*bNM3*cMN3*dLM3*eML3*fOM2+++*gMO1+++*hKM2+++*iMK1+++^ab^ac^ad^ae^bf^cg^dh^ei,19,3	12.86285	4337.68	19
-124	*aMM0+++++++*bNM3++*cMN3+*dLM3*eML3*fOM2+++*gMO1+++*hKM2+++*iMK1+++*jPM4*kMP4*lJM4*mMJ4^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,18,3	13.422877	4351.558	18
-125	*aMM0++++++++*bNM4*cMN4*dLM4*eML4*fOM2+++*gMO1+++*hKM2+++*iMK1+++^ab^ac^ad^ae^bf^cg^dh^ei,41,3	4.6293745	4318.766	41
-126	*aMM0++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^dj^dk^dl^em^eh^el,30,3	8.055374	4478.968	30
-127	*aMM0+++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fOM4*gNN4*hNL4*iMO4*jLN4*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^el^em^cg^dj^eh,32,3	7.5412645	4639.7007	32
-128	*aMM0+++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,34,3	7.070363	4639.7007	34
-129	*aMM0+++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,38,3	6.1708956	4639.7007	38
-130	*aMM0++++*bNM3+*cMN3+*dLM3+*eML3+*fOM2+++*gMO1+++*hKM2+++*iMK1+++*jPM4*kMP4*lJM4*mMJ4^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,23,3	7.3369784	3562.0776	23
-131	*aMM0+++++*bNM3*cMN3*dLM3*eML3*fOM2+++*gMO1+++*hKM2+++*iMK1+++*jPM4*kON4*lOL4*mNO4*nMP4*oLO4*pKN4*qJM4*rKL4*sNK4*tLK4*uMJ4^ab^ac^ad^ae^bf^cg^dh^ei^fj^fk^fl^gm^gn^go^hp^hq^hr^is^it^iu,23,3	9.002437	3790.6033	23
-132	*aMM0++++++*bNM3*cMN3*dLM3*eML3*fOM2+++*gMO1+++*hKM2+++*iMK1+++^ab^ac^ad^ae^bf^cg^dh^ei,23,3	9.651187	4055.027	23
-133	*aMM0+++++++*bNM2++*cMN1++*dLM2++*eML1++*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^cg^eh^el,18,3	10.709842	3955.2285	18
-134	*aMM0+++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fNN3++*gLL3++^ab^ac^ad^ae^cf^eg,15,3	14.055558	4196.096	15
-135	*aMM0+++++++++++*bNM2++++*cMN1++++*dLM2++++*eML1++++*fNN3++*gLL3++^ab^ac^ad^ae^cf^eg,11,3	21.652092	5816.903	11
-136	*aMM0++++++++*bNM3*cMN3*dLM3*eML3*fOM2+++*gMO1+++*hKM2+++*iMK1+++*jPM4*kMP4*lJM4*mMJ4^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,16,3	15.075813	4639.169	16
-137	*aMM0+++++++++*bNM3+++*cMN3+++*dLM3+++*eML3+++*fOM2+++*gMO1+++*hKM2+++*iMK1+++^ab^ac^ad^ae^bf^cg^dh^ei,14,3	17.181198	5016.992	14
-138	*aMM0++*bNM3*cMN3*dLM3*eML3*fOM2+*gMO1+*hKM2*iMK1*jPM2+*kMP1+*lJM2+*mMJ1+^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,11,3	13.543988	3084.5044	11
-139	*aMM0*bNM2+*cMN1+*dLM2+*eML1+*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^dj^el,6,3	17.446821	2178.9517	6
-140	*aMM0+*bNM2+*cMN1+*dLM2+*eML1+*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^cg^eh^el,10,3	7.0306435	2361.3445	10
-141	*aMM0++*bNM2+*cMN1+*dLM2+*eML1+*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^cg^dj,10,3	10.896672	2558.928	10
-142	*aMM0+*bNM3*cMN3*dLM3*eML3*fOM2+*gMO1+*hKM2*iMK1*jPM2+*kMP1+*lJM2+*mMJ1+^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,11,3	11.255534	2886.921	11
-143	*aMM0*bNM2+*cMN1+*dLM2+*eML1+*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^cg^dj^eh,8,3	9.933406	2178.9517	8
-144	*aMM0+*bNM2+*cMN1+*dLM2+*eML1+*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^el,8,3	12.263235	2361.3445	8
-145	*aMM0++*bNM2+*cMN1+*dLM2+*eML1+*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4*nPM2*oMP1*pJM2*qMJ1^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^el^em^fn^io^kp^mq^cg^dj^eh,13,3	9.681664	2870.928	13
-146	*aMM0++++++++++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^cg^eh^el,17,3	17.276598	7641.9307	17
-147	*aMM0++++++++++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fOM4*gNN4*hNL4*iMO4*jLN4*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^cg^eh^el,19,3	16.36555	7481.7295	19
-148	*aMM0++++++++++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^dj^dk^dl^em^cg^eh,20,3	16.217701	7641.9307	20
-149	*aMM0+*bNM2+*cMN1+*dLM2+*eML1+*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4*nPM4*oMP4*pJM4*qMJ4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^fn^io^kp^mq^cg^dj^el,7,3	14.915645	2361.3445	7
+COPY public.ai_designer1 (id, config, range, cost, payload, velocity) FROM stdin;
+100	*aMM0++*bNM3*cMN3*dLM3*eML3*fOM2+*gMO1+*hKM2*iMK1*jPM2+*kMP1+*lJM2+*mMJ1+^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,11,3	13.543988	3084.5044	11	0.1
+101	*aMM0+++*bNM3*cMN3*dLM3*eML3*fOM4*gNN4*hNL4*iMO4*jLN4*kKM4*lLL4*mMK4*nPM2++*oMP1++*pJM2++*qMJ1++^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^fn^io^kp^mq^cg^eh^el,9,3	15.27944	3091.7625	9	0.1
+102	*aMM0+*bNM3*cMN3*dLM3+*eML3+*fOM2++*gMO1++*hKM2++*iMK1++*jPM2*kMP1*lJM2*mMJ1^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,11,3	11.40136	3001.9343	11	0.1
+103	*aMM0+++++++*bNM3+++*cMN3++*dLM3++*eML3++*fOM2+++*gMO1+++*hKM2+++*iMK1+++^ab^ac^ad^ae^bf^cg^dh^ei,18,3	13.807518	4379.8286	18	0.1
+104	*aMM0++++++*bNM3*cMN3*dLM3*eML3*fOM2+++*gMO1+++*hKM2+++*iMK1+++*jPM4*kMP4*lJM4*mMJ4^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,21,3	11.014151	4055.027	21	0.1
+105	*aMM0++++++*bNM3++*cMN3++*dLM3++*eML3++*fOM2+++*gMO1+++*hKM2+++*iMK1+++*jPM4*kMP4*lJM4*mMJ4^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,21,3	11.039756	4092.2622	21	0.1
+106	*aMM0+++++++++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^el^em^cg^dj^eh,19,3	16.206049	7167.871	19	0.1
+107	*aMM0+++++++++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fOM4*gMO4*hKM4*iMK4*jPM4*kON4*lOL4*mNO4*nMP4*oLO4*pKN4*qJM4*rKL4*sNK4*tLK4*uMJ4^ab^ac^ad^ae^bf^cg^dh^ei^fj^fk^fl^gm^gn^go^hp^hq^hr^is^it^iu,19,3	15.848154	7007.6694	19	0.1
+108	*aMM0+++++++++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^dj^dk^dl^em^cg^el,17,3	16.913406	7167.871	17	0.1
+109	*aMM0++++++++++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fOM4*gNN4*hNL4*iMO4*jLN4*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^cg^eh^el,19,3	16.36555	7481.7295	19	0.1
+110	*aMM0++++++*bNM3++*cMN3++*dLM3++*eML3++*fOM2+++*gMO1+++*hKM2+++*iMK1+++*jPM4*kMP4*lJM4*mMJ4^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,20,3	11.454496	4092.2622	20	0.1
+111	*aMM0++++++*bNM3++*cMN3++*dLM3++*eML3++*fOM2+++*gMO1+++*hKM2+++*iMK1+++*jPM4*kON4*lOL4*mNO4*nMP4*oLO4*pKN4*qJM4*rKL4*sNK4*tLK4*uMJ4^ab^ac^ad^ae^bf^cg^dh^ei^fj^fk^fl^gm^gn^go^hp^hq^hr^is^it^iu,19,3	12.460136	4092.2622	19	0.1
+112	*aMM0+++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fNN3*gLL3^ab^ac^ad^ae^cf^eg,15,3	13.139071	4177.4785	15	0.1
+113	*aMM0++++++*bNM3+++*cMN3+++*dLM3+*eML3+*fOM2+++*gMO1+++*hKM2+++*iMK1+++*jPM4*kMP4*lJM4*mMJ4^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,21,3	11.123908	4092.6096	21	0.1
+114	*aMM0++++++*bNM3++*cMN3+*dLM3*eML3*fOM2+++*gMO1+++*hKM2+++*iMK1+++*jPM4*kMP4*lJM4*mMJ4^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,22,3	10.81561	4068.905	22	0.1
+115	*aMM0++++++*bNM3+*cMN3+*dLM3*eML3*fOM2+++*gMO1+++*hKM2+++*iMK1+++^ab^ac^ad^ae^bf^cg^dh^ei,24,3	9.350168	4064.1653	24	0.1
+116	*aMM0+*bNM3*cMN3*dLM3*eML3*fOM4*gMO4*hKM4*iMK4*jPM2++*kMP1++*lJM2++*mMJ1++^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,8,3	23.003311	2680.796	8	0.1
+117	*aMM0+*bNM2+*cMN1+*dLM2+*eML1+*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4*nPM4*oMP4*pJM4*qMJ4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^fn^io^kp^mq^cg^dj^el,7,3	14.915645	2361.3445	7	0.1
+118	*aMM0+*bNM3*cMN3*dLM3*eML3*fOM2++*gMO1++*hKM2++*iMK1++^ab^ac^ad^ae^bf^cg^dh^ei,9,3	12.608813	2680.796	9	0.1
+119	*aMM0++*bNM2+*cMN1+*dLM2+*eML1+*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^cg^dj,10,3	10.896672	2558.928	10	0.1
+120	*aMM0+*bNM2+*cMN1+*dLM2+*eML1+*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^el^em^cg^dj^eh,6,3	17.818705	2361.3445	6	0.1
+121	*aMM0+*bNM3*cMN3*dLM3*eML3*fOM4*gMO4*hKM4*iMK4*jPM2++*kMP1++*lJM2++*mMJ1++^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,8,3	23.003311	2680.796	8	0.1
+122	*aMM0+++++++*bNM3*cMN3*dLM3*eML3*fOM2+++*gMO1+++*hKM2+++*iMK1+++^ab^ac^ad^ae^bf^cg^dh^ei,20,3	12.506371	4337.68	20	0.1
+123	*aMM0+++++++*bNM3*cMN3*dLM3*eML3*fOM2+++*gMO1+++*hKM2+++*iMK1+++^ab^ac^ad^ae^bf^cg^dh^ei,19,3	12.86285	4337.68	19	0.1
+124	*aMM0+++++++*bNM3++*cMN3+*dLM3*eML3*fOM2+++*gMO1+++*hKM2+++*iMK1+++*jPM4*kMP4*lJM4*mMJ4^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,18,3	13.422877	4351.558	18	0.1
+125	*aMM0++++++++*bNM4*cMN4*dLM4*eML4*fOM2+++*gMO1+++*hKM2+++*iMK1+++^ab^ac^ad^ae^bf^cg^dh^ei,41,3	4.6293745	4318.766	41	0.1
+126	*aMM0++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^dj^dk^dl^em^eh^el,30,3	8.055374	4478.968	30	0.1
+127	*aMM0+++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fOM4*gNN4*hNL4*iMO4*jLN4*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^el^em^cg^dj^eh,32,3	7.5412645	4639.7007	32	0.1
+128	*aMM0+++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,34,3	7.070363	4639.7007	34	0.1
+129	*aMM0+++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,38,3	6.1708956	4639.7007	38	0.1
+130	*aMM0++++*bNM3+*cMN3+*dLM3+*eML3+*fOM2+++*gMO1+++*hKM2+++*iMK1+++*jPM4*kMP4*lJM4*mMJ4^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,23,3	7.3369784	3562.0776	23	0.1
+131	*aMM0+++++*bNM3*cMN3*dLM3*eML3*fOM2+++*gMO1+++*hKM2+++*iMK1+++*jPM4*kON4*lOL4*mNO4*nMP4*oLO4*pKN4*qJM4*rKL4*sNK4*tLK4*uMJ4^ab^ac^ad^ae^bf^cg^dh^ei^fj^fk^fl^gm^gn^go^hp^hq^hr^is^it^iu,23,3	9.002437	3790.6033	23	0.1
+132	*aMM0++++++*bNM3*cMN3*dLM3*eML3*fOM2+++*gMO1+++*hKM2+++*iMK1+++^ab^ac^ad^ae^bf^cg^dh^ei,23,3	9.651187	4055.027	23	0.1
+133	*aMM0+++++++*bNM2++*cMN1++*dLM2++*eML1++*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^cg^eh^el,18,3	10.709842	3955.2285	18	0.1
+134	*aMM0+++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fNN3++*gLL3++^ab^ac^ad^ae^cf^eg,15,3	14.055558	4196.096	15	0.1
+135	*aMM0+++++++++++*bNM2++++*cMN1++++*dLM2++++*eML1++++*fNN3++*gLL3++^ab^ac^ad^ae^cf^eg,11,3	21.652092	5816.903	11	0.1
+136	*aMM0++++++++*bNM3*cMN3*dLM3*eML3*fOM2+++*gMO1+++*hKM2+++*iMK1+++*jPM4*kMP4*lJM4*mMJ4^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,16,3	15.075813	4639.169	16	0.1
+137	*aMM0+++++++++*bNM3+++*cMN3+++*dLM3+++*eML3+++*fOM2+++*gMO1+++*hKM2+++*iMK1+++^ab^ac^ad^ae^bf^cg^dh^ei,14,3	17.181198	5016.992	14	0.1
+138	*aMM0++*bNM3*cMN3*dLM3*eML3*fOM2+*gMO1+*hKM2*iMK1*jPM2+*kMP1+*lJM2+*mMJ1+^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,11,3	13.543988	3084.5044	11	0.1
+139	*aMM0*bNM2+*cMN1+*dLM2+*eML1+*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^dj^el,6,3	17.446821	2178.9517	6	0.1
+140	*aMM0+*bNM2+*cMN1+*dLM2+*eML1+*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^cg^eh^el,10,3	7.0306435	2361.3445	10	0.1
+141	*aMM0++*bNM2+*cMN1+*dLM2+*eML1+*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^cg^dj,10,3	10.896672	2558.928	10	0.1
+142	*aMM0+*bNM3*cMN3*dLM3*eML3*fOM2+*gMO1+*hKM2*iMK1*jPM2+*kMP1+*lJM2+*mMJ1+^ab^ac^ad^ae^bf^cg^dh^ei^fj^gk^hl^im,11,3	11.255534	2886.921	11	0.1
+143	*aMM0*bNM2+*cMN1+*dLM2+*eML1+*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^cg^dj^eh,8,3	9.933406	2178.9517	8	0.1
+144	*aMM0+*bNM2+*cMN1+*dLM2+*eML1+*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^el,8,3	12.263235	2361.3445	8	0.1
+145	*aMM0++*bNM2+*cMN1+*dLM2+*eML1+*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4*nPM2*oMP1*pJM2*qMJ1^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^el^em^fn^io^kp^mq^cg^dj^eh,13,3	9.681664	2870.928	13	0.1
+146	*aMM0++++++++++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^cg^eh^el,17,3	17.276598	7641.9307	17	0.1
+147	*aMM0++++++++++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fOM4*gNN4*hNL4*iMO4*jLN4*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^cg^eh^el,19,3	16.36555	7481.7295	19	0.1
+148	*aMM0++++++++++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^dj^dk^dl^em^cg^eh,20,3	16.217701	7641.9307	20	0.1
+149	*aMM0+*bNM2+*cMN1+*dLM2+*eML1+*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4*nPM4*oMP4*pJM4*qMJ4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^fn^io^kp^mq^cg^dj^el,7,3	14.915645	2361.3445	7	0.1
 \.
 
 
@@ -2317,6 +2453,18 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 178	Can change exercise	45	change_exercise
 179	Can delete exercise	45	delete_exercise
 180	Can view exercise	45	view_exercise
+181	Can add digital twin	46	add_digitaltwin
+182	Can change digital twin	46	change_digitaltwin
+183	Can delete digital twin	46	delete_digitaltwin
+184	Can view digital twin	46	view_digitaltwin
+185	Can add digital twin requirement	47	add_digitaltwinrequirement
+186	Can change digital twin requirement	47	change_digitaltwinrequirement
+187	Can delete digital twin requirement	47	delete_digitaltwinrequirement
+188	Can view digital twin requirement	47	view_digitaltwinrequirement
+189	Can add digital twin preference	48	add_digitaltwinpreference
+190	Can change digital twin preference	48	change_digitaltwinpreference
+191	Can delete digital twin preference	48	delete_digitaltwinpreference
+192	Can view digital twin preference	48	view_digitaltwinpreference
 \.
 
 
@@ -2486,6 +2634,9 @@ COPY public.django_content_type (id, app_label, model) FROM stdin;
 43	repo	experorg
 44	exper	customlinks
 45	exper	exercise
+46	exper	digitaltwin
+47	exper	digitaltwinrequirement
+48	exper	digitaltwinpreference
 \.
 
 
@@ -2578,6 +2729,9 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 82	repo	0028_profile_temp_code	2020-10-15 14:45:23.24527+00
 83	repo	0029_merge_20200501_1418	2020-10-15 14:45:23.247895+00
 84	repo	0031_merge_20200909_2122	2020-10-15 14:45:23.250631+00
+85	ai	0002_designer1_velocity	2021-02-17 17:34:22.918406+00
+86	exper	0021_digitaltwin_digitaltwinpreference_digitaltwinrequirement	2021-02-17 17:34:23.034252+00
+87	repo	0032_auto_20201130_1443	2021-02-17 17:34:23.082962+00
 \.
 
 
@@ -2595,6 +2749,30 @@ to9pyu446tkmonc8wrqx9kiaczjynsln	YTg0NTM2N2U1NjE2NGQ5NmZmMzdiODQzZjVlYWFjZjZmMWQ
 --
 
 COPY public.exper_customlinks (id, text, link, link_type, is_team, ai, status, first, last, org_id, position_id, role_id, structure_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: exper_digitaltwin; Type: TABLE DATA; Schema: public; Owner: atuser
+--
+
+COPY public.exper_digitaltwin (id, open_time_interval, save_time_interval, quality_bias, self_bias, temperature, satisficing_factor, user_position_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: exper_digitaltwinpreference; Type: TABLE DATA; Schema: public; Owner: atuser
+--
+
+COPY public.exper_digitaltwinpreference (id, name, pref_value, pref_type, digital_twin_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: exper_digitaltwinrequirement; Type: TABLE DATA; Schema: public; Owner: atuser
+--
+
+COPY public.exper_digitaltwinrequirement (id, name, lower_limit, upper_limit, digital_twin_id) FROM stdin;
 \.
 
 
@@ -3137,7 +3315,7 @@ SELECT pg_catalog.setval('public.auth_group_permissions_id_seq', 1, false);
 -- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atuser
 --
 
-SELECT pg_catalog.setval('public.auth_permission_id_seq', 180, true);
+SELECT pg_catalog.setval('public.auth_permission_id_seq', 192, true);
 
 
 --
@@ -3193,14 +3371,14 @@ SELECT pg_catalog.setval('public.django_admin_log_id_seq', 1, true);
 -- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atuser
 --
 
-SELECT pg_catalog.setval('public.django_content_type_id_seq', 45, true);
+SELECT pg_catalog.setval('public.django_content_type_id_seq', 48, true);
 
 
 --
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atuser
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 84, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 87, true);
 
 
 --
@@ -3208,6 +3386,27 @@ SELECT pg_catalog.setval('public.django_migrations_id_seq', 84, true);
 --
 
 SELECT pg_catalog.setval('public.exper_customlinks_id_seq', 1, false);
+
+
+--
+-- Name: exper_digitaltwin_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atuser
+--
+
+SELECT pg_catalog.setval('public.exper_digitaltwin_id_seq', 1, false);
+
+
+--
+-- Name: exper_digitaltwinpreference_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atuser
+--
+
+SELECT pg_catalog.setval('public.exper_digitaltwinpreference_id_seq', 1, false);
+
+
+--
+-- Name: exper_digitaltwinrequirement_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atuser
+--
+
+SELECT pg_catalog.setval('public.exper_digitaltwinrequirement_id_seq', 1, false);
 
 
 --
@@ -3624,6 +3823,30 @@ ALTER TABLE ONLY public.django_session
 
 ALTER TABLE ONLY public.exper_customlinks
     ADD CONSTRAINT exper_customlinks_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: exper_digitaltwin exper_digitaltwin_pkey; Type: CONSTRAINT; Schema: public; Owner: atuser
+--
+
+ALTER TABLE ONLY public.exper_digitaltwin
+    ADD CONSTRAINT exper_digitaltwin_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: exper_digitaltwinpreference exper_digitaltwinpreference_pkey; Type: CONSTRAINT; Schema: public; Owner: atuser
+--
+
+ALTER TABLE ONLY public.exper_digitaltwinpreference
+    ADD CONSTRAINT exper_digitaltwinpreference_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: exper_digitaltwinrequirement exper_digitaltwinrequirement_pkey; Type: CONSTRAINT; Schema: public; Owner: atuser
+--
+
+ALTER TABLE ONLY public.exper_digitaltwinrequirement
+    ADD CONSTRAINT exper_digitaltwinrequirement_pkey PRIMARY KEY (id);
 
 
 --
@@ -4056,6 +4279,27 @@ CREATE INDEX exper_customlinks_role_id_30317a0f ON public.exper_customlinks USIN
 --
 
 CREATE INDEX exper_customlinks_structure_id_127430c8 ON public.exper_customlinks USING btree (structure_id);
+
+
+--
+-- Name: exper_digitaltwin_user_position_id_65cd6a44; Type: INDEX; Schema: public; Owner: atuser
+--
+
+CREATE INDEX exper_digitaltwin_user_position_id_65cd6a44 ON public.exper_digitaltwin USING btree (user_position_id);
+
+
+--
+-- Name: exper_digitaltwinpreference_digital_twin_id_0bded40b; Type: INDEX; Schema: public; Owner: atuser
+--
+
+CREATE INDEX exper_digitaltwinpreference_digital_twin_id_0bded40b ON public.exper_digitaltwinpreference USING btree (digital_twin_id);
+
+
+--
+-- Name: exper_digitaltwinrequirement_digital_twin_id_ec3076b0; Type: INDEX; Schema: public; Owner: atuser
+--
+
+CREATE INDEX exper_digitaltwinrequirement_digital_twin_id_ec3076b0 ON public.exper_digitaltwinrequirement USING btree (digital_twin_id);
 
 
 --
@@ -4594,6 +4838,30 @@ ALTER TABLE ONLY public.exper_customlinks
 
 ALTER TABLE ONLY public.exper_customlinks
     ADD CONSTRAINT exper_customlinks_structure_id_127430c8_fk_exper_structure_id FOREIGN KEY (structure_id) REFERENCES public.exper_structure(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: exper_digitaltwin exper_digitaltwin_user_position_id_65cd6a44_fk_exper_use; Type: FK CONSTRAINT; Schema: public; Owner: atuser
+--
+
+ALTER TABLE ONLY public.exper_digitaltwin
+    ADD CONSTRAINT exper_digitaltwin_user_position_id_65cd6a44_fk_exper_use FOREIGN KEY (user_position_id) REFERENCES public.exper_userposition(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: exper_digitaltwinpreference exper_digitaltwinpre_digital_twin_id_0bded40b_fk_exper_dig; Type: FK CONSTRAINT; Schema: public; Owner: atuser
+--
+
+ALTER TABLE ONLY public.exper_digitaltwinpreference
+    ADD CONSTRAINT exper_digitaltwinpre_digital_twin_id_0bded40b_fk_exper_dig FOREIGN KEY (digital_twin_id) REFERENCES public.exper_digitaltwin(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: exper_digitaltwinrequirement exper_digitaltwinreq_digital_twin_id_ec3076b0_fk_exper_dig; Type: FK CONSTRAINT; Schema: public; Owner: atuser
+--
+
+ALTER TABLE ONLY public.exper_digitaltwinrequirement
+    ADD CONSTRAINT exper_digitaltwinreq_digital_twin_id_ec3076b0_fk_exper_dig FOREIGN KEY (digital_twin_id) REFERENCES public.exper_digitaltwin(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
