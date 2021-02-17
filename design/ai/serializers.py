@@ -19,7 +19,7 @@ class OpsPlanSerializer(serializers.Serializer):
 
 class OpsServiceSerializer(serializers.Serializer):
 
-    input = serializers.CharField(max_length=10000)
+    input = serializers.CharField(max_length=50000)
 
     startupCost = serializers.FloatField(required=False)
     total_weight_delivered = serializers.FloatField(required=False)

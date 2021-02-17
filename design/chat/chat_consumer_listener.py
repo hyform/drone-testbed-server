@@ -1,0 +1,2 @@
+class ChatConsumerListener:
+    team = None

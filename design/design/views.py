@@ -15,6 +15,7 @@ from exper.models import CustomLinks, Exercise
 from repo.models import Profile, DesignTeam, Study, Experiment, ExperOrg
 import collections
 import json
+from chat.chat_consumer_listener import ChatConsumerListener
 
 
 def ateams_homepage(request):
@@ -79,7 +80,7 @@ def ateams_experiment(request):
             exercises = {}
             archived_exercises = {}
 
-            if profile.organization:               
+            if profile.organization:
                 organization = profile.organization
                 study = profile.study
                 experiment = profile.experiment
@@ -212,7 +213,7 @@ def ateams_temp_user_info(request):
 
 
 def get_cutsom_links(request, st, context):
-    # Get any links which should be displayed to this user           
+    # Get any links which should be displayed to this user
     link_org = None
     link_role = None
     link_structure = None
@@ -293,7 +294,7 @@ def ateams_setup(request):
     response = None
     if request.user.is_authenticated:
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
-        if st:            
+        if st:
             get_cutsom_links(request, st, context)
 
             if st.session.status == Session.SETUP:

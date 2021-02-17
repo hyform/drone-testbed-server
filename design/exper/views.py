@@ -1,12 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from .serializers import SessionSerializer
-from .models import Session, SessionTeam, Position, UserPosition, Group, UserChecklist, Market, Structure, Experiment, Organization, Study, Exercise
+from .models import Session, SessionTeam, Position, UserPosition, Group, UserChecklist, Market, Structure, Experiment, Organization, Study, Exercise, DigitalTwin
 from django.db.models import Q, Subquery
 from django.contrib.auth.models import User
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework.parsers import JSONParser
+from rest_framework.views import APIView
 from repo.models import DesignTeam, Profile, Address, Warehouse, Vehicle, Scenario, Vehicle, Plan, CustomerScenario, Path, PathCustomer
 from repo.models import DataLog
 from repo.serializers import VehicleSerializer, Plan2Serializer, Scenario2Serializer
@@ -16,6 +18,8 @@ from channels.layers import get_channel_layer
 from chat.messaging import new_precheck_message, new_postcheck_message
 import csv
 import json
+from ai.agents.adaptive_team_ai_updated_planner import AdaptiveTeamAIUpdatedPlanner
+from exper.serializers import DigitalTwinSerializer
 
 # Create your views here.
 
@@ -57,6 +61,57 @@ class ExperimenterSessions(generics.ListAPIView):
             return sessions
         else:
             return Session.objects.all().order_by('id')
+
+class DigitalTwinList(generics.ListCreateAPIView):
+    """
+    Show all digital twin object
+    """
+    parser_classes = [JSONParser]
+    serializer_class = DigitalTwinSerializer
+    def get_queryset(self):
+        user = self.request.user
+        organization = user.profile.organization.name
+        organization_digital_twin = []
+        all_digital_twins = DigitalTwin.objects.all()
+        for digital_twin in all_digital_twins:
+            print("restrict visibility to org", digital_twin.user_position.position.structure.organization)
+            organization_digital_twin.append(digital_twin)
+        return organization_digital_twin
+
+class DigitalTwinDetail(APIView):
+    """
+    Show one digital twin object
+    """
+
+    serializer_class = DigitalTwinSerializer
+    def get_object(self, ver):
+        return DigitalTwin.objects.get(id=ver)
+
+    def get(self, request, ver=-1):
+        digital_twin = self.get_object(ver)
+        serializer = DigitalTwinSerializer(digital_twin)
+        return Response(serializer.data)
+
+    def put(self, request, ver=-1):
+
+        # grab the last version of the scenario
+        digital_twin = self.get_object(ver)
+        digital_twin.open_time_interval = request.data['open_time_interval']
+        digital_twin.save_time_interval = request.data['save_time_interval']
+        digital_twin.quality_bias = request.data['quality_bias']
+        digital_twin.self_bias = request.data['self_bias']
+        digital_twin.temperature = request.data['temperature']
+        digital_twin.satisficing_factor = request.data['satisficing_factor']
+        digital_twin.save()
+
+        serializer = DigitalTwinSerializer(digital_twin)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    #def get(self, request, ver=-1):
+    #    digital_twin = DigitalTwin.objects.filter(id=ver)
+    #    serializer = DigitalTwinSerializer(digital_twin)
+    #    return Response(serializer.data)
 
 @api_view(['GET'])
 def log_view(request, session_id):
@@ -139,6 +194,7 @@ def select_study(request):
 @api_view(['PUT'])
 def continue_to_experiment(request):
     if request.user.is_authenticated and request.user.profile.is_experimenter():
+        # start a designer agent as a test
         orgId = request.data.get('orgId')
         studyId = request.data.get('studyId')
         expId = request.data.get('expId')
@@ -202,6 +258,7 @@ def session_status_play(request):
                 session.save()
                 session_channel = Channel.objects.filter(name="Session").first()
                 session_instance = str(session_channel.id) + "___" + str(session.id)
+
                 async_to_sync(get_channel_layer().group_send)(
                     session_instance,
                     {
@@ -371,6 +428,7 @@ def create_session_group(request):
             if sessionIndex == 1:
                 baseConfig = "*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3"
                 Vehicle.objects.create(tag="base", config=baseConfig, result="Success", range=10.0, velocity=20.0, cost=3470.20043945312, payload=5, group=warehouseGroup, session=newSession)
+                print("session vehicle add")
 
         return Response(status=status.HTTP_200_OK)
     return Response(status=status.HTTP_401_UNAUTHORIZED)
@@ -459,3 +517,52 @@ def create_structure(request):
     channel_data = request.data.get('channelData')
     print(str(channel_data))
     return Response(status=status.HTTP_200_OK)
+
+@api_view(['PUT'])
+def start_digital_twin(request):
+    if request.user.is_authenticated:
+        if request.user.profile.is_experimenter():
+            session = Session.objects.filter(id=request.data.get('id')).first()
+            # archive it
+#            session.status = 5
+#            session.save()
+            digital_twin_setups = get_digital_twin_for_session(int(request.data.get('id')))
+            t = AdaptiveTeamAIUpdatedPlanner(session, digital_twin_setups)
+            return Response(status=status.HTTP_200_OK)
+    return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(['GET'])
+def digital_twin(request, session_id):
+    if request.user.is_authenticated and request.user.profile.is_experimenter():
+        session = Session.objects.filter(id=session_id).first()
+        digital_twin_setups = get_digital_twin_for_session(session_id)
+        context = {
+            'session': session,
+            'session_id' : session_id,
+            'digital_twin_setups' : digital_twin_setups
+        }
+        response = HttpResponse(render(request, "digitaltwinedit.html", context))
+    else:
+        response = HttpResponse(render(request, "digitaltwinedit.html", context))
+    return response
+
+def get_digital_twin_for_session(session_id):
+
+    session_user_positions = []
+    user_positions = UserPosition.objects.all()     # for some reason , filter does not work, fix this
+    for user in user_positions:
+        if user.session.id == session_id:
+            session_user_positions.append(user)
+
+    digital_twin_setups = []
+    # query or create digital twin objects
+    for user in session_user_positions:
+        digital_twin_setup = DigitalTwin.objects.filter(user_position=user)
+        if len(digital_twin_setup) == 0:
+            new_setup = DigitalTwin.objects.create(user_position=user)
+            new_setup.save()
+            digital_twin_setups.append(new_setup)
+        else:
+            digital_twin_setups.append(digital_twin_setup[0])
+
+    return digital_twin_setups

@@ -2,6 +2,7 @@ from django.contrib.auth.models import User, Group
 from rest_framework import viewsets, status, mixins, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser
 from rest_framework.renderers import TemplateHTMLRenderer
@@ -85,6 +86,7 @@ class ScenarioDetail(APIView):
         up = UserPosition.objects.filter(Q(user=user)&Q(session=st.session)).first()
         groups = GroupPosition.objects.filter(Q(position=up.position)&Q(position__structure=st.session.structure))
         scenarios = Scenario.objects.filter(Q(group__in=groups.values('group'))&Q(session=st.session))
+        print("correct session id ----------------- " + str(st.session.id) + " " + str(len(scenarios)))
         if scenarios.exists():
             # there is at least one scenario already
             if ver==-1:
@@ -235,6 +237,22 @@ class DataLogList(generics.CreateAPIView):
             serializer.save(user=user, session=st.session, type='client')
         else:
             raise ValidationError('You are not in an active session')
+
+
+class SessionDataLog(generics.ListAPIView):
+    """
+    List all plan entries for the session - short version
+    """
+    def get_queryset(self):
+        user = self.request.user
+        st = SessionTeam.objects.filter(Q(session__status=1)&Q(team=user.profile.team)).first()
+        if st:
+            qs = DataLog.objects.filter(session=st.session, user=user).order_by('time')
+        else:
+            qs = DataLog.objects.none()
+        return qs
+
+    serializer_class = DataLogSerializer
 
 
 class DataLogDetail(generics.RetrieveUpdateDestroyAPIView):

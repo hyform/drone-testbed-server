@@ -13,6 +13,9 @@ import grpc
 from . import uavdesign_pb2_grpc as uavdesign_pb2_grpc
 from . import uavdesign_pb2 as uavdesign_pb2
 
+import time
+
+
 # app = Celery('design')
 channel_layer = get_channel_layer()
 logger = get_task_logger(__name__)
@@ -70,6 +73,7 @@ def eval_design(channel_name, data):
 
 @shared_task
 def evaluation(config, trajectory):
+
     if not config:
         return {}
     payload = 0
@@ -81,13 +85,14 @@ def evaluation(config, trajectory):
         except ValueError:
             pass
     args = []
-    args.append(settings.EVALUATION_APP)    
+    args.append(settings.EVALUATION_APP)
     args.append('-batchmode')
     args.append('-nographics')
     if trajectory:
         args.append('-trajectory')
     args.append('-configuration')
     args.append(config)
+
     process=subprocess.Popen(
         args,
         bufsize=8192,
@@ -97,7 +102,11 @@ def evaluation(config, trajectory):
     out = bytearray()
     err = bytearray()
     done = False
-    while (process.returncode is None) or (not done):
+
+    start_time = time.time()
+
+    while ((process.returncode is None) or (not done)) and (time.time() - start_time < 10):
+
         process.poll()
         done = False
 
@@ -109,7 +118,8 @@ def evaluation(config, trajectory):
                 err = err + data
 
         if process.stdout in ready[0]:
-            data = process.stdout.read(1024)
+            #data = process.stdout.read(1024)
+            data = process.stdout.readline()
             if len(data) == 0:
                 done = True
             else:
@@ -118,9 +128,9 @@ def evaluation(config, trajectory):
     lines = out.splitlines()
     num_lines = len(lines)
     current_line = 0
-        
+
     while current_line < num_lines:
-        print("input: " + str(lines[current_line]))
+        #print("input: " + str(lines[current_line]))
         current_line_str = bytes(lines[current_line]).decode('UTF-8')
         if current_line_str == "RESULTS":
             break
@@ -130,8 +140,8 @@ def evaluation(config, trajectory):
 
     out_data = {}
     if current_line < num_lines:
-        print("input: " + str(lines[current_line]))
-        results = lines[current_line].split()        
+        #print("input: " + str(lines[current_line]))
+        results = lines[current_line].split()
         evaluation_data = {}
         evaluation_data['result'] = bytes(results[0]).decode('UTF-8')
         evaluation_data['range'] = float(results[1])

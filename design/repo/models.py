@@ -4,6 +4,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from exper.models import Group, Session, Organization, Study, Experiment
 
+from datetime import datetime
+
 # Create your models here
 
 class DesignTeam(models.Model):
@@ -16,7 +18,7 @@ class DesignTeam(models.Model):
         return self.name
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)              
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     # 1 = Player
     # 2 = Experimenter
     # 3 = Mediator
@@ -134,7 +136,7 @@ class PathCustomer(models.Model):
 class DataLog(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     session = models.ForeignKey(Session, null=True, on_delete=models.CASCADE)
-    time = models.DateTimeField(auto_now=True)
+    time = models.DateTimeField(default=datetime.now)
     action = models.TextField()
     type = models.CharField(max_length=255, default='client')
 

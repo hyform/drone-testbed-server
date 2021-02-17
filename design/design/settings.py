@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '#@nq8%**@f69lb!@ynhjx6lq)jd##14s#o388676d8f734f36xi@2'
+SECRET_KEY = '#@nq8%942842984294296lq)jd##14s#o388676d8f734f36xi@2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'ai.apps.AiConfig',
     'chat',
     'exper',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -188,6 +189,9 @@ SEQ2SQL_DATA = ATEAMS_DATA + '/' + 'seq2sql_data'
 ATEAMS_SERVICE = '/usr/share/ateams_service'
 EVALUTAION_DIR = ATEAMS_SERVICE + '/' + 'evaluation'
 EVALUATION_APP = EVALUTAION_DIR + '/' + 'evaluation.x86_64'
+
+# Plugins
+DIGITAL_TWIN_ENABLED = True
 
 LOGGING = {
     'version': 1,

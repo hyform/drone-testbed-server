@@ -11,6 +11,7 @@ from collections import OrderedDict
 import json
 import bleach
 from ai.seqtosql.dronebotseqtosql import DroneBotSeqToSQL
+from .chat_consumer_listener import ChatConsumerListener
 
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
@@ -352,9 +353,11 @@ class ChatConsumer(WebsocketConsumer):
                     }
                 )
 
+            #ChatConsumerListener.team.register_chat(message, channel_real_id)
 
-    # receive message from room group
-    def chat_message(self, event):
+
+    # message templates
+    def message_template(self, event):
         message = event['message']
         sender = event['sender']
         channel = event['channel']
@@ -366,88 +369,35 @@ class ChatConsumer(WebsocketConsumer):
             'channel': channel,
             'type': type
         }))
+
+    # messages
+    # Note Channels transforms types aaa.bbb to aaa_bbb defined below
+        
+    # receive message from room group
+    def chat_message(self, event):
+        self.message_template(event)
 
     # request that users in session chat respond
     def session_request(self, event):
-        message = event['message']
-        sender = event['sender']
-        channel = event['channel']
-        type = event['type']
-        # send message to websocket
-        self.send(text_data=json.dumps({
-            'message': message,
-            'sender': sender,
-            'channel': channel,
-            'type': type
-        }))
+        self.message_template(event)
 
     # a response to a user request in session channel
     # also sent on session channel when connecting
     def session_response(self, event):
-        message = event['message']
-        sender = event['sender']
-        channel = event['channel']
-        type = event['type']
-        # send message to websocket
-        self.send(text_data=json.dumps({
-            'message': message,
-            'sender': sender,
-            'channel': channel,
-            'type': type
-        }))
+        self.message_template(event)
 
     # receive message from room group
     def system_command(self, event):
-        message = event['message']
-        sender = event['sender']
-        channel = event['channel']
-        type = event['type']
-        # send message to websocket
-        self.send(text_data=json.dumps({
-            'message': message,
-            'sender': sender,
-            'channel': channel,
-            'type': type
-        }))
+        self.message_template(event)
 
     # a system message sent to a specific user
     def system_usermessage(self, event):
-        message = event['message']
-        sender = event['sender']
-        channel = event['channel']
-        type = event['type']
-        # send message to websocket
-        self.send(text_data=json.dumps({
-            'message': message,
-            'sender': sender,
-            'channel': channel,
-            'type': type
-        }))
+        self.message_template(event)
 
     # a system message sent to a specific user
     def user_precheck(self, event):
-        message = event['message']
-        sender = event['sender']
-        channel = event['channel']
-        type = event['type']
-        # send message to websocket
-        self.send(text_data=json.dumps({
-            'message': message,
-            'sender': sender,
-            'channel': channel,
-            'type': type
-        }))
+        self.message_template(event)
 
     # a system message sent to a specific user
     def user_postcheck(self, event):
-        message = event['message']
-        sender = event['sender']
-        channel = event['channel']
-        type = event['type']
-        # send message to websocket
-        self.send(text_data=json.dumps({
-            'message': message,
-            'sender': sender,
-            'channel': channel,
-            'type': type
-        }))
+        self.message_template(event)

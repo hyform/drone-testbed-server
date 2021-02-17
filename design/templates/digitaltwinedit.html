@@ -1,0 +1,210 @@
+{% block dtd %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3c.org/TR/xhtml11/DTD/xhtml-strict.dd">
+{% endblock dtd %}
+{% block html_tag %}<html xmlns="http://www.w3c.org/1999/xhtml" xml: lang="en-US" lang="en-US">{% endblock html_tag %}
+{% block head %}
+
+<head>
+  {% if redir %}
+  <meta http-equiv="Refresh" content="0; url={{redir}}" />
+  {% endif %}
+  <title>{% block title %}{{ page.title }}{% endblock title %}</title>
+  {% block head_favicon %}
+  <link rel="icon" href="/static/css/images/favicon.ico" type="x-icon" />
+  <link rel="shortcut icon" href="/static/css/images/favicon.ico" type="x-icon" />{% endblock head_favicon %}
+  {% block head_meta %}
+  {% block head_meta_author %}{% endblock head_meta_author %}
+  {% block head_meta_charset %}
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />{% endblock head_meta_charset %}
+  {% block head_meta_contentlanguage %}
+  <meta http-equiv="Content-Language" value="en-US" />{% endblock head_meta_contentlanguage %}
+  {% block head_meta_description %}{% endblock head_meta_description %}
+  {% block head_meta_keywords %}{% endblock head_meta_keywords %}
+  {% block head_meta_othertags %}{% endblock head_meta_othertags %}
+  {% block head_meta_refresh %}{% endblock head_meta_refresh %}
+  {% block head_meta_robots %}{% endblock head_meta_robots %}
+  {% endblock head_meta %}
+  {% block head_rss %}{% endblock head_rss %}
+  {% block head_css %}
+  {% block head_css_site %}
+  <link rel="stylesheet" media="screen" href="/static/css/common.css">
+  <link rel="stylesheet" type="text/css" href="/static/css/ateams.css" />
+  {% endblock head_css_site %}
+  {% block head_css_section %}{% endblock head_css_section %}
+  {% block head_css_page %}{% endblock head_css_page %}
+  {% endblock head_css %}
+  {% block head_section %}{% endblock head_section %}
+  {% block head_page %}{% endblock head_page %}
+
+  <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+</head>{% endblock head %}
+{% block body %}
+
+<body class="source-font">
+  <div id="masthead">
+    {% block masthead %}
+
+    <!-- might want to extend base.html but there is a lot going on in this html page so left it unmodified -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark bebas-font">
+      <a class="navbar-brand" href="{% url 'home' %}">
+        <img src="/static/css/images/hyform-20.png" width="30" height="30" class="d-inline-block align-top" alt="">
+        HyForm Testbed
+      </a>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'ateams_main' %}">A-Teams</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- end #search -->
+    {% endblock masthead %}
+  </div>
+  <div id="pagecell" class="roundTop roundBottom">
+    {% block pagecell %}
+    <div id="pageName">
+      {% block pageName %}{% endblock pageName %}
+    </div>
+    <div id="sidebar">
+      {% block body_sidebar %}{% endblock body_sidebar %}
+    </div>
+    <div id="content">
+
+      <ul class="nav nav-pills" id="pills-tab" role="tablist">
+        {% for setup in digital_twin_setups %}
+          <li class="nav-item">
+            {% if forloop.counter0 == 0 %}
+              <a class="nav-link active" id="{{setup.id}}_tab" data-toggle="pill" href="#pills-{{setup.id}}" role="tab" aria-controls="#pills-{{setup.id}}" aria-selected="true">{{setup.user_position.user.username}}</a>
+            {% else %}
+              <a class="nav-link" id="{{setup.id}}_tab" data-toggle="pill" href="#pills-{{setup.id}}" role="tab" aria-controls="#pills-{{setup.id}}" aria-selected="true">{{setup.user_position.user.username}}</a>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+
+      <div class="tab-content" id="pills-tabContent">
+        {% for setup in digital_twin_setups %}
+
+        {% if forloop.counter0 == 0 %}
+          <div class="tab-pane fade show active" id="pills-{{setup.id}}" role="tabpanel" aria-labelledby="{{setup.id}}_tab">
+        {% else %}
+          <div class="tab-pane fade" id="pills-{{setup.id}}" role="tabpanel" aria-labelledby="{{setup.id}}_tab">
+        {% endif %}
+            <table class="table">
+              <tbody>
+                {% if setup.user_position.position.role.name == "Business" %}
+                {% endif %}
+                {% if setup.user_position.position.role.name == "Planner" %}
+                {% endif %}
+                {% if setup.user_position.position.role.name == "Designer" %}
+                {% endif %}
+
+                <tr><th scope="row">{{setup.user_position.position.role.name}} Role</th></tr>
+                <tr><th scope="row">Open Frequency (min)</th><td><input type="text" name="open_time_interval-{{setup.id}}" value="{{setup.open_time_interval}}"></td></tr>
+                <tr><th scope="row">Save Frequency (min)</th><td><input type="text" name="save_time_interval-{{setup.id}}" value="{{setup.save_time_interval}}"></td></tr>
+                <tr><th scope="row">Quality Bias</th><td><input type="text" name="quality_bias-{{setup.id}}" value="{{setup.quality_bias}}"></td></tr>
+                {% if setup.user_position.position.role.name == "Business" %}
+                  <tr><th scope="row">Self Bias</th><td><input type="text" name="self_bias-{{setup.id}}" value="0" disabled></td></tr>
+                {% else %}
+                  <tr><th scope="row">Self Bias</th><td><input type="text" name="self_bias-{{setup.id}}" value="{{setup.self_bias}}"></td></tr>
+                {% endif %}
+                <tr><th scope="row">Temperature</th><td><input type="text" name="temperature-{{setup.id}}" value="{{setup.temperature}}"></td></tr>
+                <tr><th scope="row">Satisficing</th><td><input type="text" name="satisficing_factor-{{setup.id}}" value="{{setup.satisficing_factor}}"></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          {% endfor %}
+
+      </div>
+
+      <button type="button" class="btn btn-dark" id="update_digital_twin">Update</button>
+      <button type="button" class="btn btn-secondary" id="return_from_digital_twin">Cancel</button>
+
+      <br><br>
+
+      <!--
+
+      <br>
+      Example controls for Requirements and Preferences
+      <br><br>
+      <p>
+        <label for="amount-1">Range Requirement (mi):</label>
+        <input type="text" id="amount-1" readonly style="border:0; color:#f6931f; font-weight:bold;">
+      </p>
+      <div id="slider-range-1"></div>
+      <br>
+
+      <p>
+        <label for="amount">Preference:</label>
+        <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+      </p>
+      <div id="slider-vertical" style="height:50px;"></div>
+
+    -->
+
+    </div>
+
+
+    <div id="footer">
+      {% block body_footer %}
+      {% block body_footer_breadcrumb %}{{ page.breadcrumb }}{% endblock body_footer_breadcrumb %}
+      {% block body_footer_legal %}
+      &copy; 2020 CMU/PSU/ARL</br>
+      <a href="http://guru.psu.edu/POLICIES/Ad42.html" target="_blank">Nondiscrimination Statement</a> -
+      <a href="http://www.psu.edu/ur/copyright.html" target="_blank">Copyright</a> -
+      <a href="http://www.psu.edu/ur/legal.html" target="_blank">Privacy and Legal Statements</a> </p>
+      {% endblock body_footer_legal %}
+      {% endblock body_footer %}
+    </div>
+    {% endblock pagecell %}
+  </div>
+</body>{% endblock body %}
+{% block footer %}
+{% block footer_javascript %}
+{% block footer_javascript_site %}
+<script language="JavaScript" type="text/javascript" src="/static/rest_framework/js/jquery-3.4.1.min.js"></script>
+<script language="JavaScript" type="text/javascript" src="/static/rest_framework/js/jquery-ui.min.js"></script>
+<link href="/static/css/jquery-ui.min.css" rel="stylesheet">
+<script type='application/javascript' src="/static/js/bootstrap.bundle.min.js"></script>
+{% endblock footer_javascript_site %}
+{% block footer_javascript_section %}{% endblock footer_javascript_section %}
+{% block footer_javascript_page %}{% endblock footer_javascript_page %}
+{% endblock footer_javascript %}
+{% endblock footer %}
+
+<script>
+  $( function() {
+    $( "#slider-range-1" ).slider({
+      range: true,
+      min: 0,
+      max: 100,
+      values: [ 10, 100 ],
+      slide: function( event, ui ) {
+        $( "#amount-1" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+      }
+    });
+    $( "#amount-1" ).val( $( "#slider-range-1" ).slider( "values", 0 ) +
+      " - " + $( "#slider-range-1" ).slider( "values", 1 ) );
+  } );
+  $( function() {
+  $( "#slider-vertical" ).slider({
+    orientation: "vertical",
+    range: "min",
+    min: 0,
+    max: 100,
+    value: 60,
+    slide: function( event, ui ) {
+      $( "#amount" ).val( ui.value );
+    }
+  });
+  $( "#amount" ).val( $( "#slider-vertical" ).slider( "value" ) );
+} );
+  </script>
+
+  <script type='text/javascript' src="/static/js/ajax.js"></script>
+  <script type='text/javascript' src="/static/js/digitaltwinedit.js"></script>
+
+</html>

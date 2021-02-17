@@ -27,6 +27,7 @@ urlpatterns = [
     path('playdemo/', views.PDList.as_view()),
     path('playdemo/<int:pk>/', views.PDDetail.as_view()),
     path('datalog/', views.DataLogList.as_view()),
+    path('sessiondatalog/', views.SessionDataLog.as_view()),
     # path('datalog/<int:pk>', views.DataLogDetail.as_view()),
     path('datalog/list/<int:session_id>/', views.DataLogListView.as_view()),
     # path('datalog/admin', views.DLAdminView.as_view()),

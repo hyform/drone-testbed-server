@@ -286,3 +286,12 @@ h5 {
     vertical-align: top;
     min-width: 240px;
 }
+
+.nav-pills > li > a.active {
+    background-color: #444444!important;
+    color: #ffffff!important;
+}
+
+.nav-pills > li > a {
+    color: #444444!important;
+}

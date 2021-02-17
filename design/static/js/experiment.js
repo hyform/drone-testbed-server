@@ -28,6 +28,8 @@ $(document).ready(function () {
         statusId = "#status_" + gottenId;
         buttonId = "#play_button_" + gottenId;
         infoId = "#info_text_" + gottenId;
+        simId = "#sim_button_" + gottenId;
+        editsimId = "#edit_sim_button_" + gottenId;
 
         //Check archive attempt first
         if ($(statusId).text() === "After" && $(buttonId).text() === "Archive") {
@@ -194,6 +196,38 @@ $(document).ready(function () {
         }
     });
 
+    $('.sim_button').on('click', function () {
+      var choice = confirm("Run the Digital Twin Simulation ?");
+      if (choice == true) {
+        runAjaxUrl = ajaxUrl + "start_digital_twin/"
+        gottenId = getId(this);
+        playId = "#play_button_" + gottenId;
+        stopButtonId = "#stop_button_" + gottenId;
+        simButtonId = "#sim_button_" + gottenId;
+        infoId = "#info_text_" + gottenId;
+        $(playId).prop('disabled', true);
+        $(stopButtonId).prop('disabled', true);
+        $(simButtonId).prop('disabled', true);
+        $.ajax({
+            url: runAjaxUrl,
+            method: "PUT",
+            data: {
+                csrfmiddlewaretoken: csrftoken,
+                id: gottenId
+            },
+            success: function (result) {
+                $(infoId).html("Started digital twin. Will beginning of the Archived list below and refresh this page for its progess.");
+            }
+        })
+      }
+    })
+
+    $('.edit_sim_button').on('click', function () {
+      gottenId = getId(this);
+      digitaltwinAjaxUrl = ajaxUrl + "edit_digital_twin/" + gottenId;
+      location.href = digitaltwinAjaxUrl;
+    })
+
     //---------------------------------
     $('#change_user_password_button').on('click', function () {
         passAjaxUrl = ajaxUrl + "change_user_password/"
@@ -240,7 +274,7 @@ $(document).ready(function () {
     });
 
     //----------------------------------
-    
+
     $('#add_session_button').on('click', function () {
         sessionNameNew = $("#session-name-new").val();
         sessionAINew = $("#session-ai-new").prop("checked");
@@ -468,8 +502,8 @@ $(document).ready(function () {
             success: function (result) {
                 //clear new sessions
                 //$('#create-session-modal').modal('hide');
-                location.reload();                 
+                location.reload();
             }
         });
-    });    
+    });
 });

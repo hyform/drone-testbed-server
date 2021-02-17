@@ -51,7 +51,7 @@ class Position(models.Model):
 class Exercise(models.Model):
     name = models.CharField(max_length=250, blank=True)
     experiment = models.ForeignKey(Experiment, null=True, blank=True, on_delete=models.CASCADE)
-    
+
     def __str__(self):
         return self.name
 
@@ -127,3 +127,25 @@ class CustomLinks(models.Model):
     last = models.BooleanField(null=True, blank=True)
     # Add Market here
     # Add int here for session position in exercise
+    #TODO: add in study and experiment filtering
+
+class DigitalTwin(models.Model):
+    user_position = models.ForeignKey(UserPosition, null=True, blank=True, on_delete=models.CASCADE)
+    open_time_interval = models.FloatField(default=1.0)
+    save_time_interval = models.FloatField(default=2.0)
+    quality_bias = models.FloatField(default=0.1)
+    self_bias = models.FloatField(default=0.1)
+    temperature = models.FloatField(default=0.2)
+    satisficing_factor = models.FloatField(default=0.2)
+
+class DigitalTwinRequirement(models.Model):
+    digital_twin = models.ForeignKey(DigitalTwin, null=True, blank=True, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    lower_limit = models.FloatField(default=0.0)
+    upper_limit = models.FloatField(default=0.0)
+
+class DigitalTwinPreference(models.Model):
+    digital_twin = models.ForeignKey(DigitalTwin, null=True, blank=True, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    pref_value = models.FloatField(default=0.0)
+    pref_type = models.IntegerField(default=0)          # maybe 0 : weighted sums, 1 : Pareto direction, 2 : goal based, 3 : other

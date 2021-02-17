@@ -1,0 +1,1059 @@
+﻿session305
+Time,User,Action,Type
+2020-04-08 19:45:10.324929+00:00,cmu_exp,"Welcome to the Online Distributed Interactive Drone Design Study! Please wait a moment for the rest of the participants to log in. Please enter your username (e.g., cmu_01) when you see this message. We will start our study when all participants log into the Hyform website.",chat: Session @40___305
+2020-04-08 19:56:02.980384+00:00,cmu_exp,"Please enter your username (e.g., cmu_01) when you see this message.",chat: Design Specialist @38_35___305
+2020-04-08 19:56:23.437292+00:00,cmu_exp,Thanks,chat: Design Specialist @38_35___305
+2020-04-08 19:57:31.397755+00:00,cmu_03,I'm here,chat: Help @38_35___305
+2020-04-08 19:57:47.303214+00:00,cmu_03, cmu_03,chat: Help @38_35___305
+2020-04-08 19:57:52.225794+00:00,cmu_exp,thanks,chat: Design Specialist @38_35___305
+2020-04-08 19:58:01.936696+00:00,cmu_exp,Please wait a moment for the rest of the participants to log in.,chat: Design Specialist @38_35___305
+2020-04-08 19:58:03.765693+00:00,cmu_03,,chat: Help @38_35___305
+2020-04-08 19:58:09.208648+00:00,cmu_02,cmu_02,chat: Help @38_34___305
+2020-04-08 19:58:17.821549+00:00,cmu_exp,Please wait a moment for the rest of the participants to log in. Thanks.,chat: Design Manager @38_34___305
+2020-04-08 20:00:00.393865+00:00,cmu_04,cmu_04,chat: Help @38_36___305
+2020-04-08 20:00:27.850683+00:00,cmu_06,okay,chat: Help @38_38___305
+2020-04-08 20:00:41.225179+00:00,cmu_03,ok,chat: Help @38_35___305
+2020-04-08 20:00:44.881945+00:00,cmu_06,cmu_06,chat: Help @38_38___305
+2020-04-08 20:05:16.340684+00:00,cmu_exp,Thanks for your patience! We will wait for two more minutes.,chat: Session @40___305
+2020-04-08 20:05:26.271899+00:00,cmu_03,ok,chat: Help @38_35___305
+2020-04-08 20:05:34.586050+00:00,cmu_02,"ok, no problem ",chat: Help @38_34___305
+2020-04-08 20:05:44.242445+00:00,cmu_06,Sure. Np!,chat: Help @38_38___305
+2020-04-08 20:06:09.287867+00:00,cmu_04,okay,chat: Help @38_36___305
+2020-04-08 20:08:33.833182+00:00,cmu_01,cmu-01,chat: Help @38_33___305
+2020-04-08 20:09:07.019773+00:00,cmu_exp,"Thanks, Ting Yen",chat: Business @38_33___305
+2020-04-08 20:09:56.893753+00:00,cmu_01,"no problem, are we waiting for the others? ",chat: Help @38_33___305
+2020-04-08 20:10:01.682198+00:00,cmu_04,??,chat: Help @38_36___305
+2020-04-08 20:11:03.861784+00:00,cmu_03,Are you terminating the session ? ,chat: Help @38_35___305
+2020-04-08 20:11:55.121622+00:00,cmu_exp,no,chat: Design Specialist @38_35___305
+2020-04-08 20:11:58.489414+00:00,cmu_exp,one more minute,chat: Design Specialist @38_35___305
+2020-04-08 20:12:01.889225+00:00,cmu_exp,sorry about that,chat: Design Specialist @38_35___305
+2020-04-08 20:12:15.257482+00:00,cmu_exp,i am moving others...,chat: Business @38_33___305
+2020-04-08 20:13:08.907455+00:00,cmu_exp,"Thank you for your patience! We will begin the tutorial for our study. Your web page will refresh automatically within 10 seconds. If not, you can refresh your browser manually. If you have any other issues, please talk with me through this Help channel. If you cannot send message through Help channel, please refresh your browser manually and try it again.",chat: Session @40___305
+2020-04-08 20:13:40.538921+00:00,cmu_03,ok,chat: Help @38_35___305
+2020-04-08 20:13:50.841124+00:00,cmu_exp,"Please click the âpre-session surveyâ link and complete a pre-session survey. Please let me know (e.g., enter âsurvey completedâ) in this Help channel when you complete the survey.  On the first page of the survey, your User ID is your username (e.g., cmu_01), your role is shown on the top of the Help channel (e.g., Design Specialist). Please let me know if you have any questions. If you cannot send message through Help channel, please refresh your browser manually and try it again.",chat: Session @40___305
+2020-04-08 20:16:35.339032+00:00,cmu_04,survey completed,chat: Help @38_36___305
+2020-04-08 20:16:42.786377+00:00,cmu_01,"I don't understand the question ""What percentage of the time does a computer-aided tool â¦""",chat: Help @38_33___305
+2020-04-08 20:17:02.327261+00:00,cmu_exp,based on your prior experience,chat: Business @38_33___305
+2020-04-08 20:17:03.323937+00:00,cmu_01,does that mean my experience with computer-aided tool?,chat: Help @38_33___305
+2020-04-08 20:17:09.993385+00:00,cmu_01,goatcha! ,chat: Help @38_33___305
+2020-04-08 20:18:26.323803+00:00,cmu_exp,"After you complete the survey, please click one link under Problem Brief and two links under Tutorials and read the Problem Brief and Tutorials carefully. These links will open new tabs in your browser. Please do NOT close these new tabs after you read the Problem Brief and Tutorials because you may need to check these documents frequently during the study.  Please let me know (e.g., enter âproblem brief and tutorials completedâ) in this Help channel when you read through these three documents. If you cannot send message through Help channel, please refresh your browser manually and try it again.",chat: Session @40___305
+2020-04-08 20:19:18.302097+00:00,cmu_01,survey completed,chat: Help @38_33___305
+2020-04-08 20:19:40.383845+00:00,cmu_exp,OK. Time for problem brief and tutorials,chat: Business @38_33___305
+2020-04-08 20:19:40.435229+00:00,cmu_02,survey completed,chat: Help @38_34___305
+2020-04-08 20:19:41.638801+00:00,cmu_06,"I can't see questions ""What percentage of the time does a computer-aided tool â¦"" in the ...",chat: Help @38_38___305
+2020-04-08 20:19:51.525206+00:00,cmu_04,problem brief completed,chat: Help @38_36___305
+2020-04-08 20:19:57.101861+00:00,cmu_04,tutorials completed,chat: Help @38_36___305
+2020-04-08 20:20:18.215017+00:00,cmu_exp,answer these questions based on your prior experience,chat: Operations Specialist 2 @38_38___305
+2020-04-08 20:20:35.434010+00:00,cmu_06,okay,chat: Help @38_38___305
+2020-04-08 20:20:38.553072+00:00,cmu_exp,You are super fast! ,chat: Operations Manager @38_36___305
+2020-04-08 20:20:52.516978+00:00,cmu_04,"thanks, the materials are well organized",chat: Help @38_36___305
+2020-04-08 20:20:54.635773+00:00,cmu_exp,Please wait a moment for your team mates,chat: Operations Manager @38_36___305
+2020-04-08 20:20:56.478068+00:00,cmu_04,sure,chat: Help @38_36___305
+2020-04-08 20:21:38.272744+00:00,cmu_06,survey completed,chat: Help @38_38___305
+2020-04-08 20:23:23.048021+00:00,cmu_03,done with the survey,chat: Help @38_35___305
+2020-04-08 20:24:18.981972+00:00,cmu_01,problem brief and tutorials completed,chat: Help @38_33___305
+2020-04-08 20:24:36.455427+00:00,cmu_exp,Please wait a moment for the rest of the participants to read through tutorials. Thanks for your patience!,chat: Business @38_33___305
+2020-04-08 20:25:40.816921+00:00,cmu_exp,Everything good?,chat: Operations Specialist 1 @38_37___305
+2020-04-08 20:26:55.367991+00:00,cmu_06,problem brief and tutorials completed,chat: Help @38_38___305
+2020-04-08 20:27:22.943354+00:00,cmu_exp,Please wait a moment for the rest of the participants to read through tutorials. Thanks for your patience!,chat: Operations Specialist 2 @38_38___305
+2020-04-08 20:28:09.527966+00:00,cmu_exp,Two more minutes for problem brief and tutorials,chat: Session @40___305
+2020-04-08 20:29:41.004408+00:00,cmu_02,problem brief and tutorials completed,chat: Help @38_34___305
+2020-04-08 20:30:11.413052+00:00,cmu_exp,"Please make sure that you did not close the three new tabs for Problem Brief and Tutorials. Our study has two 20 minutes sessions. We will begin the first 20 min session of our study. Your web page will refresh automatically within 10 seconds. If not, you can refresh your browser manually. If you have any other issues, please talk with me through this Help channel. If you cannot send message through Help channel, please refresh your browser manually and try it again.",chat: Session @40___305
+2020-04-08 20:30:22.967746+00:00,cmu_04,planner;StartSession,client
+2020-04-08 20:30:23.456546+00:00,cmu_04,planner;ScenarioLoaded:Scenario:249,client
+2020-04-08 20:30:23.571215+00:00,cmu_04,planner;ScenarioLoaded:Scenario:249,client
+2020-04-08 20:30:24.370207+00:00,cmu_02,designer;StartSession,client
+2020-04-08 20:30:25.470947+00:00,cmu_06,planner;StartSession,client
+2020-04-08 20:30:27.309910+00:00,cmu_06,planner;ScenarioLoaded:Scenario:249,client
+2020-04-08 20:30:37.616723+00:00,cmu_exp,There is a refresh button on the top of your screen (next to Team Designs or Team Plans). You need to click that refresh button frequently to see your teammateâs design/plan.,chat: Session @40___305
+2020-04-08 20:30:38.006995+00:00,cmu_01,business;StartSession,client
+2020-04-08 20:30:38.691404+00:00,cmu_04,planner;StartSession,client
+2020-04-08 20:30:39.374355+00:00,cmu_04,planner;ScenarioLoaded:Scenario:249,client
+2020-04-08 20:30:39.482681+00:00,cmu_04,planner;ScenarioLoaded:Scenario:249,client
+2020-04-08 20:30:39.713959+00:00,cmu_01,business;ScenarioLoaded:Scenario:249,client
+2020-04-08 20:30:45.096407+00:00,cmu_01,business;SelectNode;105;False,client
+2020-04-08 20:30:50.818665+00:00,cmu_01,business;SelectNode;110;False,client
+2020-04-08 20:30:51.797012+00:00,cmu_01,business;SelectNode;104;False,client
+2020-04-08 20:30:53.638218+00:00,cmu_01,business;SelectNode;109;False,client
+2020-04-08 20:33:54.493012+00:00,cmu_04,planner;StartSession,client
+2020-04-08 20:30:54.898491+00:00,cmu_01,business;SelectNode;111;False,client
+2020-04-08 20:30:55.352680+00:00,cmu_01,business;SelectNode;112;False,client
+2020-04-08 20:30:55.818416+00:00,cmu_01,business;SelectNode;103;False,client
+2020-04-08 20:30:56.539708+00:00,cmu_01,business;SelectNode;107;False,client
+2020-04-08 20:30:56.615545+00:00,cmu_02,designer;LoadVehicles,client
+2020-04-08 20:31:00.138512+00:00,cmu_01,business;SelectNode;108;False,client
+2020-04-08 20:31:00.660329+00:00,cmu_01,business;SelectNode;106;False,client
+2020-04-08 20:31:01.449184+00:00,cmu_01,business;SelectNode;97;False,client
+2020-04-08 20:31:01.702861+00:00,cmu_01,business;SelectNode;93;False,client
+2020-04-08 20:31:02.574453+00:00,cmu_01,business;SelectNode;88;False,client
+2020-04-08 20:31:02.706057+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:31:02.989885+00:00,cmu_01,business;SelectNode;95;False,client
+2020-04-08 20:31:03.006188+00:00,cmu_06,planner;ScenarioLoaded:Scenario:249,client
+2020-04-08 20:31:03.368934+00:00,cmu_01,business;SelectNode;93;True,client
+2020-04-08 20:31:03.502275+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:31:03.704153+00:00,cmu_01,business;SelectNode;92;False,client
+2020-04-08 20:31:03.821818+00:00,cmu_06,planner;ScenarioLoaded:Scenario:249,client
+2020-04-08 20:31:04.270135+00:00,cmu_01,business;SelectNode;93;False,client
+2020-04-08 20:31:04.947970+00:00,cmu_01,business;SelectNode;94;False,client
+2020-04-08 20:31:05.035884+00:00,cmu_01,business;SelectNode;87;False,client
+2020-04-08 20:31:05.420330+00:00,cmu_01,business;SelectNode;90;False,client
+2020-04-08 20:31:05.768308+00:00,cmu_01,business;SelectNode;96;False,client
+2020-04-08 20:31:06.040704+00:00,cmu_exp,The 20 minutes timer started ,chat: Session @40___305
+2020-04-08 20:31:06.178929+00:00,cmu_01,business;SelectNode;91;False,client
+2020-04-08 20:31:06.824866+00:00,cmu_01,business;SelectNode;89;False,client
+2020-04-08 20:31:12.054640+00:00,cmu_01,business;SelectNode;70;False,client
+2020-04-08 20:31:12.407078+00:00,cmu_01,business;SelectNode;68;False,client
+2020-04-08 20:31:12.805209+00:00,cmu_01,business;SelectNode;71;False,client
+2020-04-08 20:31:13.674452+00:00,cmu_01,business;SelectNode;72;False,client
+2020-04-08 20:31:14.053563+00:00,cmu_01,business;SelectNode;67;False,client
+2020-04-08 20:31:14.168304+00:00,cmu_06,planner;RunPathAgent,client
+2020-04-08 20:31:14.804005+00:00,cmu_01,business;SelectNode;75;False,client
+2020-04-08 20:31:15.210939+00:00,cmu_01,business;SelectNode;73;False,client
+2020-04-08 20:31:17.327997+00:00,cmu_01,business;SelectNode;74;False,client
+2020-04-08 20:31:18.240390+00:00,cmu_01,business;SelectNode;75;True,client
+2020-04-08 20:31:18.910402+00:00,cmu_04,hello everyone,chat: All @32___305
+2020-04-08 20:31:19.336419+00:00,cmu_01,business;SelectNode;69;False,client
+2020-04-08 20:31:19.834313+00:00,cmu_01,business;SelectNode;75;False,client
+2020-04-08 20:31:20.358235+00:00,cmu_01,business;SelectNode;76;False,client
+2020-04-08 20:31:24.284278+00:00,cmu_01,business;SelectNode;79;False,client
+2020-04-08 20:31:24.730752+00:00,cmu_01,business;SelectNode;82;False,client
+2020-04-08 20:31:24.984079+00:00,cmu_01,business;SelectNode;85;False,client
+2020-04-08 20:31:25.351951+00:00,cmu_01,business;SelectNode;86;False,client
+2020-04-08 20:31:25.736247+00:00,cmu_01,business;SelectNode;84;False,client
+2020-04-08 20:31:26.044422+00:00,cmu_01,business;SelectNode;81;False,client
+2020-04-08 20:31:26.370161+00:00,cmu_01,business;SelectNode;78;False,client
+2020-04-08 20:31:26.883861+00:00,cmu_01,business;SelectNode;77;False,client
+2020-04-08 20:31:27.200460+00:00,cmu_01,business;SelectNode;83;False,client
+2020-04-08 20:31:27.699494+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:31:27.853005+00:00,cmu_01,business;SelectNode;80;False,client
+2020-04-08 20:31:28.089714+00:00,cmu_06,planner;ScenarioLoaded:Scenario:249,client
+2020-04-08 20:31:28.558872+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:31:28.809379+00:00,cmu_06,planner;ScenarioLoaded:Scenario:249,client
+2020-04-08 20:31:36.492686+00:00,cmu_01,business;SubmitScenario,client
+2020-04-08 20:31:36.699810+00:00,cmu_01,business;ServerMessage; Submit Scenario : Success,client
+2020-04-08 20:31:42.665530+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:31:43.048084+00:00,cmu_06,planner;ScenarioLoaded:Scenario:250,client
+2020-04-08 20:31:43.302992+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:31:43.544366+00:00,cmu_06,planner;ScenarioLoaded:Scenario:250,client
+2020-04-08 20:31:49.751676+00:00,cmu_06,planner;SelectPath;0;base,client
+2020-04-08 20:31:49.755834+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:31:53.283607+00:00,cmu_06,planner;VehiclePathRemoved;0;base,client
+2020-04-08 20:31:53.584414+00:00,cmu_04,planner;StartSession,client
+2020-04-08 20:31:53.860257+00:00,cmu_06,"planner;VehicleDuplicated;0;base;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3;ToIndex=1",client
+2020-04-08 20:31:53.918639+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,6940,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:31:54.313608+00:00,cmu_04,planner;ScenarioLoaded:Scenario:250,client
+2020-04-08 20:31:54.770928+00:00,cmu_06,planner;VehiclePathRemoved;0;base,client
+2020-04-08 20:31:55.418651+00:00,cmu_06,planner;VehiclePathRemoved;1;base,client
+2020-04-08 20:31:56.234607+00:00,cmu_06,planner;VehiclePathRemoved;1;base,client
+2020-04-08 20:31:57.221320+00:00,cmu_06,planner;SelectPath;1;base,client
+2020-04-08 20:31:57.237799+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,6940,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:31:58.622240+00:00,cmu_06,planner;VehicleToggle;1;False;base,client
+2020-04-08 20:31:58.638762+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:31:59.568357+00:00,cmu_06,planner;VehicleToggle;1;True;base,client
+2020-04-08 20:31:59.584377+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,6940,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:32:00.331049+00:00,cmu_04,planner;SelectPath;0;base,client
+2020-04-08 20:32:00.406097+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:41:50.747152+00:00,cmu_06,planner;VehiclePathRemoved;2;base,client
+2020-04-08 20:32:06.526177+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:32:06.811241+00:00,cmu_06,planner;ScenarioLoaded:Scenario:250,client
+2020-04-08 20:32:07.306724+00:00,cmu_06,planner;SelectPath;0;base,client
+2020-04-08 20:32:07.323879+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,6940,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:32:07.636495+00:00,cmu_02,"designer;Opened;base;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:32:13.453454+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,6940,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:32:13.454484+00:00,cmu_06,planner;SelectPath;0;base,client
+2020-04-08 20:32:13.483305+00:00,cmu_03,designer;StartSession,client
+2020-04-08 20:32:14.460682+00:00,cmu_02,designer;LoadVehicles,client
+2020-04-08 20:32:15.491819+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,10411,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:32:15.492559+00:00,cmu_06,"planner;VehicleDuplicated;0;base;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3;ToIndex=2",client
+2020-04-08 20:32:16.451527+00:00,cmu_06,planner;VehiclePathRemoved;0;base,client
+2020-04-08 20:32:17.319021+00:00,cmu_06,planner;VehiclePathRemoved;0;base,client
+2020-04-08 20:32:17.591324+00:00,cmu_03,"designer;MouseClick;NoEvent;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:32:18.686695+00:00,cmu_06,planner;VehiclePathRemoved;0;base,client
+2020-04-08 20:32:21.238074+00:00,cmu_06,planner;SelectPath;0;base,client
+2020-04-08 20:32:21.254845+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,10411,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:32:21.837277+00:00,cmu_06,planner;SelectPath;0;base,client
+2020-04-08 20:32:21.853261+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,10411,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:32:27.901027+00:00,cmu_04,planner;VehicleToggle;0;False;base,client
+2020-04-08 20:32:27.971001+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,0,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:32:28.771297+00:00,cmu_04,planner;VehicleToggle;0;True;base,client
+2020-04-08 20:32:28.834666+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:32:28.866824+00:00,cmu_03,"designer;MouseClick;ToggleFoil;*aMM0+++++*bNM2+++*cMN3+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:32:32.788059+00:00,cmu_03,"designer;MouseClick;ToggleEmpty;*aMM0+++++*bNM2+++*cMN4+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:32:33.138913+00:00,cmu_03,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN0+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:32:33.626104+00:00,cmu_02,hello ,chat: All @32___305
+2020-04-08 20:32:33.739032+00:00,cmu_03,"designer;MouseClick;AssemblyHandle;*aMM0+++++*bNM2+++*cMN0+++*dLM2+++*eML1+++*fNN4^ab^ac^ad^ae^cf,5,3",client
+2020-04-08 20:32:34.373155+00:00,cmu_03,"designer;MouseClick;AssemblyHandle;*aMM0+++++*bNM2+++*cMN0+++*dLM2+++*eML1+++*fNN4*gON4^ab^ac^ad^ae^cf^fg,5,3",client
+2020-04-08 20:32:36.125710+00:00,cmu_03,"designer;ScaleUp;*aMM0+++++*bNM2+++*cMN0+++*dLM2+++*eML1+++*fNN4*gON4^ab^ac^ad^ae^cf^fg,5,3",client
+2020-04-08 20:32:36.568249+00:00,cmu_06,planner;ToggleInfoPanel:True,client
+2020-04-08 20:32:38.006892+00:00,cmu_06,planner;ToggleInfoPanel:False,client
+2020-04-08 20:32:38.364157+00:00,cmu_03,"designer;MouseClick;ToggleCCWMotor;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN4*gON4^ab^ac^ad^ae^cf^fg,5,3",client
+2020-04-08 20:32:39.355469+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:32:39.581566+00:00,cmu_06,planner;ScenarioLoaded:Scenario:250,client
+2020-04-08 20:32:39.908165+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:32:40.187727+00:00,cmu_06,planner;ScenarioLoaded:Scenario:250,client
+2020-04-08 20:32:40.430238+00:00,cmu_03,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN0*gON4^ab^ac^ad^ae^cf^fg,5,3",client
+2020-04-08 20:32:41.379707+00:00,cmu_03,"designer;MouseClick;ToggleCCWMotor;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4^ab^ac^ad^ae^cf^fg,5,3",client
+2020-04-08 20:32:42.736516+00:00,cmu_03,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON0^ab^ac^ad^ae^cf^fg,5,3",client
+2020-04-08 20:32:44.095003+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:32:44.477473+00:00,cmu_06,planner;ScenarioLoaded:Scenario:250,client
+2020-04-08 20:32:45.049739+00:00,cmu_03,"designer;MouseClick;AssemblyHandle;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON0*hOM4^ab^ac^ad^ae^cf^fg^gh,5,3",client
+2020-04-08 20:32:45.165228+00:00,cmu_01,"Hi all, I just submitted a costumor plan ",chat: All @32___305
+2020-04-08 20:32:46.134592+00:00,cmu_03,"designer;MouseClick;AssemblyChange;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON0*hOM4*iOO4^ab^ac^ad^ae^cf^fg^gh^gi,5,3",client
+2020-04-08 20:32:48.236397+00:00,cmu_06,planner;SelectPath;1;base,client
+2020-04-08 20:32:48.237178+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,10411,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:32:52.341485+00:00,cmu_03,"designer;MouseClick;NoEvent;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON0*hOM4*iOO4^ab^ac^ad^ae^cf^fg^gh^gi,5,3",client
+2020-04-08 20:32:56.543668+00:00,cmu_01,can you see that? ,chat: All @32___305
+2020-04-08 20:32:58.485379+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,10411,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:32:58.484253+00:00,cmu_06,planner;SelectPath;0;base,client
+2020-04-08 20:32:59.263618+00:00,cmu_06,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:33:00.460366+00:00,cmu_06,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:33:00.593746+00:00,cmu_06,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:33:05.604886+00:00,cmu_06,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:33:06.174012+00:00,cmu_02,designer;LoadVehicles,client
+2020-04-08 20:33:10.066462+00:00,cmu_06,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:33:10.266617+00:00,cmu_06,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:33:13.973269+00:00,cmu_02,designer;LoadVehicles,client
+2020-04-08 20:33:14.717411+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:33:15.025519+00:00,cmu_06,planner;ScenarioLoaded:Scenario:250,client
+2020-04-08 20:33:19.647756+00:00,cmu_02,designer;ToggleInfoPanel:True,client
+2020-04-08 20:33:19.894957+00:00,cmu_06,planner;RunPathAgent,client
+2020-04-08 20:33:20.046545+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,10411,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:33:20.065665+00:00,cmu_06,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:33:21.102028+00:00,cmu_06,planner;SelectPath;0;base,client
+2020-04-08 20:33:21.119031+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,10411,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:33:21.963167+00:00,cmu_02,designer;ToggleInfoPanel:False,client
+2020-04-08 20:33:22.257903+00:00,cmu_06,planner;RunPathAgent,client
+2020-04-08 20:33:22.420443+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,10411,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:33:22.436328+00:00,cmu_06,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:33:27.327396+00:00,cmu_06,planner;SelectPath;0;base,client
+2020-04-08 20:33:27.329095+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,10411,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:33:28.882181+00:00,cmu_02,designer;LoadVehicles,client
+2020-04-08 20:33:29.443607+00:00,cmu_06,planner;RunPathAgent,client
+2020-04-08 20:33:29.563352+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,10411,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:33:29.579748+00:00,cmu_06,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:33:29.909987+00:00,cmu_04,i don't see it,chat: All @32___305
+2020-04-08 20:33:37.172388+00:00,cmu_exp,Are you still online?,chat: Operations Specialist 1 @38_37___305
+2020-04-08 20:33:39.230823+00:00,cmu_02,i don't see it either ,chat: All @32___305
+2020-04-08 20:33:48.848122+00:00,cmu_02,"designer;MouseClick;NoEvent;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:33:49.995671+00:00,cmu_02,"designer;MouseClick;NoEvent;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:33:52.529234+00:00,cmu_01,business;SubmitScenario,client
+2020-04-08 20:33:52.593670+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:33:52.804809+00:00,cmu_01,business;ServerMessage; Submit Scenario : Success,client
+2020-04-08 20:33:52.826476+00:00,cmu_06,planner;ScenarioLoaded:Scenario:250,client
+2020-04-08 20:33:55.113044+00:00,cmu_06,planner;SelectPath;2;base,client
+2020-04-08 20:33:55.134324+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,10411,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:33:55.228867+00:00,cmu_04,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:33:55.683187+00:00,cmu_06,planner;SelectPath;1;base,client
+2020-04-08 20:33:55.698981+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,10411,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:33:57.265887+00:00,cmu_06,planner;SelectPath;0;base,client
+2020-04-08 20:33:57.267681+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,10411,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:34:01.327383+00:00,cmu_01,business;LoadDatabase,client
+2020-04-08 20:34:01.614905+00:00,cmu_01,business;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:34:05.572195+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:34:05.878530+00:00,cmu_04,"i hit refresh, still don't see it",chat: All @32___305
+2020-04-08 20:34:05.881243+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:34:05.964477+00:00,cmu_06,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:34:06.049229+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:34:06.521563+00:00,cmu_06,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:34:06.562789+00:00,cmu_06,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:34:12.647444+00:00,cmu_06,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:34:13.961794+00:00,cmu_06,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:34:14.467535+00:00,cmu_06,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:34:14.632042+00:00,cmu_06,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:34:15.135319+00:00,cmu_06,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:34:16.302778+00:00,cmu_02,designer;LoadVehicles,client
+2020-04-08 20:34:17.342075+00:00,cmu_02,designer;LoadVehicles,client
+2020-04-08 20:34:19.040620+00:00,cmu_06,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:34:27.280827+00:00,cmu_02,designer;LoadVehicles,client
+2020-04-08 20:34:32.480890+00:00,cmu_02,"designer;Opened;base;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:34:56.527427+00:00,cmu_02,"i see something called ""base"" - is that it? ",chat: All @32___305
+2020-04-08 20:35:09.730886+00:00,cmu_02,with range 10.67 mi and capacity 5 lb,chat: All @32___305
+2020-04-08 20:35:24.409748+00:00,cmu_06,I accidently duplicates base twice.. no idea how to remove it,chat: All @32___305
+2020-04-08 20:35:27.486340+00:00,cmu_04,planner;SelectPath;0;base,client
+2020-04-08 20:35:27.502878+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:35:27.965758+00:00,cmu_02,"designer;Opened;base;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:35:30.475996+00:00,cmu_06,planner;SelectPath;1;base,client
+2020-04-08 20:35:30.477007+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,10411,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:35:31.483799+00:00,cmu_06,planner;SelectPath;2;base,client
+2020-04-08 20:35:31.499323+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,10411,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:35:32.423410+00:00,cmu_06,planner;SelectPath;0;base,client
+2020-04-08 20:35:32.439240+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,10411,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:35:36.668973+00:00,cmu_02,"designer;RunDesignAgent;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:35:37.722939+00:00,cmu_02,"designer;Evaluated;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3;range=10.67638;velocity=8.85766;cost=3470.2",client
+2020-04-08 20:35:42.105727+00:00,cmu_06,planner;VehicleToggle;0;False;base,client
+2020-04-08 20:35:42.122308+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,6940,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:35:43.872750+00:00,cmu_06,planner;VehicleToggle;0;True;base,client
+2020-04-08 20:35:43.889623+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,10411,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:35:44.959042+00:00,cmu_06,planner;VehicleToggle;1;False;base,client
+2020-04-08 20:35:44.975611+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,6940,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:35:45.660954+00:00,cmu_06,planner;VehicleToggle;2;False;base,client
+2020-04-08 20:35:45.677990+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:35:49.426021+00:00,cmu_03,"designer;MouseClick;NoEvent;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON0*hOM4*iOO4^ab^ac^ad^ae^cf^fg^gh^gi,5,3",client
+2020-04-08 20:35:50.483667+00:00,cmu_03,"designer;MouseClick;AssemblyChange;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON0*hOM4*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:35:54.896877+00:00,cmu_02,designer;DesignMode,client
+2020-04-08 20:35:55.271111+00:00,cmu_03,"designer;HotKeyComponentToStructure;Structure;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON0*hOM4*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:35:55.437865+00:00,cmu_03,"designer;HotKeyComponentToMotorCW;MotorCW;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON1*hOM4*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:35:56.337678+00:00,cmu_03,"designer;HotKeyComponentToMotorCW;MotorCW;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON1*hOM4*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:35:56.522522+00:00,cmu_03,"designer;HotKeyComponentToFoil;Foil;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON3*hOM4*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:35:56.923198+00:00,cmu_03,"designer;HotKeyComponentToMotorCCW;MotorCCW;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON2*hOM4*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:35:57.227777+00:00,cmu_03,"designer;HotKeyComponentToFoil;Foil;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON3*hOM4*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:35:58.173345+00:00,cmu_03,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON3*hOM4*iOO0*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:35:59.575510+00:00,cmu_03,"designer;HotKeyComponentToEmpty;None;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON3*hOM4*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:35:59.892768+00:00,cmu_03,"designer;HotKeyComponentToFoil;Foil;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON3*hOM4*iOO3*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:36:01.210324+00:00,cmu_03,"designer;MouseClick;ToggleEmpty;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON3*hOM4*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:36:03.361732+00:00,cmu_03,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON3*hOM4*iOO0*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:36:03.945868+00:00,cmu_03,"designer;HotKeyComponentToEmpty;None;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON3*hOM4*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:36:05.213352+00:00,cmu_03,"designer;MouseClick;NoEvent;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON3*hOM4*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:36:05.513947+00:00,cmu_03,"designer;MouseClick;NoEvent;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON3*hOM4*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:36:05.895167+00:00,cmu_03,"designer;MouseClick;NoEvent;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON3*hOM4*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:36:06.214324+00:00,cmu_03,"designer;MouseClick;ToggleEmpty;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:36:07.415495+00:00,cmu_03,"designer;MouseClick;NoEvent;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:36:07.732862+00:00,cmu_03,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM0*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:36:09.118014+00:00,cmu_03,"designer;MouseClick;ToggleCCWMotor;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM2*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:36:10.436138+00:00,cmu_03,"designer;MouseClick;ToggleCWMotor;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM1*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:36:10.889086+00:00,cmu_03,"designer;MouseClick;ToggleFoil;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM3*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:36:12.871279+00:00,cmu_03,"designer;HotKeyComponentToEmpty;None;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:36:14.472358+00:00,cmu_03,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON0*hOM4*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:36:15.490677+00:00,cmu_03,"designer;HotKeyComponentToEmpty;None;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:36:15.790653+00:00,cmu_03,"designer;HotKeyComponentToEmpty;None;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:36:16.091156+00:00,cmu_03,"designer;HotKeyComponentToEmpty;None;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:36:16.608514+00:00,cmu_03,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON0*hOM4*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:36:16.836827+00:00,cmu_04,planner;LoadDatabase,client
+2020-04-08 20:36:17.153435+00:00,cmu_04,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:36:18.037287+00:00,cmu_04,planner;LoadDatabase,client
+2020-04-08 20:36:18.292765+00:00,cmu_04,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:36:18.326024+00:00,cmu_03,"designer;MouseClick;ToggleCCWMotor;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON2*hOM4*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:36:18.710251+00:00,cmu_03,"designer;HotKeyComponentToEmpty;None;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:36:21.820028+00:00,cmu_04,planner;LoadDatabase,client
+2020-04-08 20:36:22.043349+00:00,cmu_04,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:36:23.291518+00:00,cmu_04,planner;LoadDatabase,client
+2020-04-08 20:36:23.585383+00:00,cmu_04,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:36:24.836095+00:00,cmu_01,business;OrthogonalCamera,client
+2020-04-08 20:36:30.734160+00:00,cmu_04,i only see the vehicle design and no business plan,chat: All @32___305
+2020-04-08 20:36:41.900325+00:00,cmu_06,planner;SelectPath;0;base,client
+2020-04-08 20:36:41.901992+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:36:50.407969+00:00,cmu_05,planner;StartSession,client
+2020-04-08 20:36:50.884168+00:00,cmu_05,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:36:51.186967+00:00,cmu_05,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:37:01.990090+00:00,cmu_05,I am.  ,chat: Help @38_37___305
+2020-04-08 20:37:06.160291+00:00,cmu_02,"designer;RunDesignAgent;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:37:07.138047+00:00,cmu_02,"designer;Evaluated;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3;range=10.67645;velocity=8.857725;cost=3470.2",client
+2020-04-08 20:37:08.847709+00:00,cmu_05,planner;SelectPath;0;base,client
+2020-04-08 20:37:08.864601+00:00,cmu_05,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:37:10.572140+00:00,cmu_exp,Great!,chat: Operations Specialist 1 @38_37___305
+2020-04-08 20:37:11.611242+00:00,cmu_02,designer;DesignMode,client
+2020-04-08 20:37:11.613153+00:00,cmu_01,business;LoadDatabase,client
+2020-04-08 20:37:11.895243+00:00,cmu_01,business;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:37:12.539903+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:37:12.876340+00:00,cmu_06,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:37:13.473260+00:00,cmu_06,planner;SelectPath;0;base,client
+2020-04-08 20:37:13.476054+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:37:14.437057+00:00,cmu_06,planner;SelectPath;1;base,client
+2020-04-08 20:37:14.453368+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,6940,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:37:15.455972+00:00,cmu_06,planner;SelectPath;2;base,client
+2020-04-08 20:37:15.472481+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,10411,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:37:18.407748+00:00,cmu_06,planner;SelectPath;0;base,client
+2020-04-08 20:37:18.450602+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,10411,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:37:20.655360+00:00,cmu_02,designer;ToggleInfoPanel:True,client
+2020-04-08 20:37:23.011477+00:00,cmu_06,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:37:23.628189+00:00,cmu_06,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:37:23.924218+00:00,cmu_06,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:37:25.033734+00:00,cmu_06,planner;RunPathAgent,client
+2020-04-08 20:37:25.164585+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,10411,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:37:25.180194+00:00,cmu_06,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:37:25.337771+00:00,cmu_exp,Let me know if you have any questions.,chat: Operations Specialist 1 @38_37___305
+2020-04-08 20:37:42.889583+00:00,cmu_02,designer;ToggleInfoPanel:False,client
+2020-04-08 20:37:44.499784+00:00,cmu_02,"designer;MouseClick;ToggleCWMotor;*aMM0+++++*bNM1+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:37:45.279932+00:00,cmu_02,"designer;MouseClick;ToggleFoil;*aMM0+++++*bNM3+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:37:46.305563+00:00,cmu_02,"designer;MouseClick;ToggleEmpty;*aMM0+++++*bNM4+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:37:47.067710+00:00,cmu_02,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM0+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:37:47.853951+00:00,cmu_02,"designer;MouseClick;ToggleCCWMotor;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:37:50.472381+00:00,cmu_04,planner;SelectPath;0;base,client
+2020-04-08 20:37:50.488436+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:37:57.419863+00:00,cmu_02,"designer;MouseClick;ToggleCCWMotor;*aMM2+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:37:58.002337+00:00,cmu_05,planner;LoadDatabase,client
+2020-04-08 20:37:58.249113+00:00,cmu_05,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:37:58.305155+00:00,cmu_02,"designer;MouseClick;ToggleCWMotor;*aMM1+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:37:58.933807+00:00,cmu_02,"designer;MouseClick;ToggleFoil;*aMM3+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:37:59.904252+00:00,cmu_02,"designer;MouseClick;ToggleEmpty;*aMM4+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:38:00.501064+00:00,cmu_02,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:38:02.670567+00:00,cmu_02,"designer;MouseClick;ToggleCCWMotor;*aMM2+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:38:03.684767+00:00,cmu_02,"designer;MouseClick;ToggleCWMotor;*aMM1+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:38:04.254410+00:00,cmu_02,"designer;MouseClick;ToggleFoil;*aMM3+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:38:06.337324+00:00,cmu_04,planner;RunPathAgent,client
+2020-04-08 20:38:06.441701+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:38:06.458193+00:00,cmu_04,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:38:06.717129+00:00,cmu_02,"designer;MouseClick;ToggleEmpty;*aMM4+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:38:08.034407+00:00,cmu_02,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:38:10.567917+00:00,cmu_02,"designer;MouseClick;ToggleCCWMotor;*aMM2+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:38:11.769607+00:00,cmu_02,"designer;MouseClick;ToggleCWMotor;*aMM1+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:38:12.418671+00:00,cmu_02,"designer;MouseClick;ToggleFoil;*aMM3+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:38:14.019204+00:00,cmu_01,can you see the costumors I dentified?,chat: All @32___305
+2020-04-08 20:38:19.627929+00:00,cmu_01,business;PerspectiveCamera,client
+2020-04-08 20:38:19.868162+00:00,cmu_04,planner;SelectPath;0;base,client
+2020-04-08 20:38:19.888607+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:38:20.003358+00:00,cmu_02,"designer;MouseClick;ToggleEmpty;*aMM4+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:38:21.302604+00:00,cmu_04,planner;RunPathAgent,client
+2020-04-08 20:38:21.386227+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:38:21.401722+00:00,cmu_04,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:38:22.556186+00:00,cmu_02,"designer;Evaluated;*aMM4+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3;range=-1;velocity=-1;cost=-1",client
+2020-04-08 20:38:22.620546+00:00,cmu_02,"designer;Evaluate;*aMM4+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:38:24.767171+00:00,cmu_02,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:38:25.710065+00:00,cmu_01,business;SelectNode;84;True,client
+2020-04-08 20:38:26.552486+00:00,cmu_02,"designer;Evaluate;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:38:27.615430+00:00,cmu_02,"designer;Evaluated;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3;range=10.67641;velocity=8.857679;cost=3470.2",client
+2020-04-08 20:38:28.883863+00:00,cmu_04,planner;LoadDatabase,client
+2020-04-08 20:38:29.169409+00:00,cmu_04,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:38:31.598370+00:00,cmu_04,planner;LoadDatabase,client
+2020-04-08 20:38:31.838094+00:00,cmu_04,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:38:32.028970+00:00,cmu_03,how do I delete a component ? ,chat: Help @38_35___305
+2020-04-08 20:38:33.349309+00:00,cmu_04,planner;OrthogonalCamera,client
+2020-04-08 20:38:43.326111+00:00,cmu_04,i don't see it,chat: All @32___305
+2020-04-08 20:38:44.203188+00:00,cmu_03,"designer;MouseClick;ToggleCWMotor;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN1*gON4*hOM4*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:38:51.610904+00:00,cmu_03,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN1*gON4*hOM0*iOO4*jNO4^ab^ac^ad^ae^cf^fg^gh^gi^fj,5,3",client
+2020-04-08 20:38:52.396389+00:00,cmu_05,planner;SelectPath;0;base,client
+2020-04-08 20:38:52.412139+00:00,cmu_05,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:38:53.542833+00:00,cmu_04,planner;SelectPath;0;base,client
+2020-04-08 20:38:53.543809+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:38:54.212834+00:00,cmu_03,"designer;MouseClick;AssemblyHandle;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN1*gON4*hOM0*iOO4*jNO4*kPN4^ab^ac^ad^ae^cf^fg^gh^gi^fj^gk,5,3",client
+2020-04-08 20:38:54.997763+00:00,cmu_03,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN1*gON0*hOM0*iOO4*jNO4*kPN4^ab^ac^ad^ae^cf^fg^gh^gi^fj^gk,5,3",client
+2020-04-08 20:38:57.549134+00:00,cmu_03,"designer;MouseClick;ToggleCCWMotor;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN1*gON2*hOM0*iOO4*jNO4*kPN4^ab^ac^ad^ae^cf^fg^gh^gi^fj^gk,5,3",client
+2020-04-08 20:38:58.171853+00:00,cmu_05,planner;LoadDatabase,client
+2020-04-08 20:38:58.410738+00:00,cmu_05,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:39:00.333026+00:00,cmu_03,"designer;MouseClick;ToggleCWMotor;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN1*gON1*hOM0*iOO4*jNO4*kPN4^ab^ac^ad^ae^cf^fg^gh^gi^fj^gk,5,3",client
+2020-04-08 20:39:00.468884+00:00,cmu_03,"designer;HotKeyComponentToEmpty;None;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN1*gON4*hOM0*iOO4*jNO4*kPN4^ab^ac^ad^ae^cf^fg^gh^gi^fj^gk,5,3",client
+2020-04-08 20:39:00.969448+00:00,cmu_03,"designer;HotKeyComponentToEmpty;None;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN1*gON4*hOM0*iOO4*jNO4*kPN4^ab^ac^ad^ae^cf^fg^gh^gi^fj^gk,5,3",client
+2020-04-08 20:39:01.656032+00:00,cmu_03,"designer;MouseClick;ToggleCCWMotor;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN1*gON4*hOM2*iOO4*jNO4*kPN4^ab^ac^ad^ae^cf^fg^gh^gi^fj^gk,5,3",client
+2020-04-08 20:39:01.757283+00:00,cmu_03,"designer;HotKeyComponentToEmpty;None;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN1*gON4*hOM4*iOO4*jNO4*kPN4^ab^ac^ad^ae^cf^fg^gh^gi^fj^gk,5,3",client
+2020-04-08 20:39:03.288925+00:00,cmu_03,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN1*gON0*hOM4*iOO4*jNO4*kPN4^ab^ac^ad^ae^cf^fg^gh^gi^fj^gk,5,3",client
+2020-04-08 20:39:04.890473+00:00,cmu_03,"designer;HotKeyComponentToEmpty;None;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN1*gON4*hOM4*iOO4*jNO4*kPN4^ab^ac^ad^ae^cf^fg^gh^gi^fj^gk,5,3",client
+2020-04-08 20:39:05.690597+00:00,cmu_03,"designer;MouseClick;ToggleFoil;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN3*gON4*hOM4*iOO4*jNO4*kPN4^ab^ac^ad^ae^cf^fg^gh^gi^fj^gk,5,3",client
+2020-04-08 20:39:05.924537+00:00,cmu_03,"designer;HotKeyComponentToEmpty;None;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN4*gON4*hOM4*iOO4*jNO4*kPN4^ab^ac^ad^ae^cf^fg^gh^gi^fj^gk,5,3",client
+2020-04-08 20:39:09.561875+00:00,cmu_03,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN0*gON4*hOM4*iOO4*jNO4*kPN4^ab^ac^ad^ae^cf^fg^gh^gi^fj^gk,5,3",client
+2020-04-08 20:39:09.773181+00:00,cmu_exp,check your tutorial,chat: Design Specialist @38_35___305
+2020-04-08 20:39:10.059184+00:00,cmu_04,planner;LoadDatabase,client
+2020-04-08 20:39:10.346376+00:00,cmu_04,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:39:11.329466+00:00,cmu_03,"designer;HotKeyComponentToEmpty;None;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN4*gON4*hOM4*iOO4*jNO4*kPN4^ab^ac^ad^ae^cf^fg^gh^gi^fj^gk,5,3",client
+2020-04-08 20:39:11.579679+00:00,cmu_03,"designer;MouseClick;NoEvent;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN4*gON4*hOM4*iOO4*jNO4*kPN4^ab^ac^ad^ae^cf^fg^gh^gi^fj^gk,5,3",client
+2020-04-08 20:39:12.163029+00:00,cmu_03,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN0*gON4*hOM4*iOO4*jNO4*kPN4^ab^ac^ad^ae^cf^fg^gh^gi^fj^gk,5,3",client
+2020-04-08 20:39:13.398132+00:00,cmu_03,"designer;MouseClick;ToggleCCWMotor;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*iOO4*jNO4*kPN4^ab^ac^ad^ae^cf^fg^gh^gi^fj^gk,5,3",client
+2020-04-08 20:39:14.215262+00:00,cmu_03,"designer;MouseClick;NoEvent;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*iOO4*jNO4*kPN4^ab^ac^ad^ae^cf^fg^gh^gi^fj^gk,5,3",client
+2020-04-08 20:39:14.582411+00:00,cmu_03,"designer;MouseClick;AssemblyHandle;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*iOO4*jNO4*kPN4^ab^ac^ad^ae^cf^fg^gh^gi^fj^gk,5,3",client
+2020-04-08 20:39:20.553692+00:00,cmu_exp,"use ""d"" ",chat: Design Specialist @38_35___305
+2020-04-08 20:39:25.261960+00:00,cmu_01,business;StartSession,client
+2020-04-08 20:39:28.190108+00:00,cmu_01,business;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:39:28.459770+00:00,cmu_01,business;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:39:30.380322+00:00,cmu_02,@opertions manager: what is our design target? ,chat: All @32___305
+2020-04-08 20:39:48.567385+00:00,cmu_01,I will ask the experiemeter ,chat: All @32___305
+2020-04-08 20:40:07.037138+00:00,cmu_05,I am not quite sure how to situate myself here. ,chat: Help @38_37___305
+2020-04-08 20:40:12.084374+00:00,cmu_01,I submit the selected coustomers but my team says that they can't see it ,chat: Help @38_33___305
+2020-04-08 20:40:16.990788+00:00,cmu_05,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:40:20.224027+00:00,cmu_05,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:40:20.485420+00:00,cmu_02,"designer;MouseClick;NoEvent;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:40:22.342092+00:00,cmu_05,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:40:22.434491+00:00,cmu_01,is there something wrong?,chat: Help @38_33___305
+2020-04-08 20:40:24.126667+00:00,cmu_05,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:40:25.156636+00:00,cmu_05,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:40:25.590384+00:00,cmu_05,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:40:26.112358+00:00,cmu_05,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:40:26.604257+00:00,cmu_05,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:40:26.903624+00:00,cmu_04,"i only just have one plan here, called base",chat: All @32___305
+2020-04-08 20:40:28.590054+00:00,cmu_05,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:40:29.141093+00:00,cmu_05,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:40:29.443848+00:00,cmu_04,i have no alternatives,chat: All @32___305
+2020-04-08 20:40:29.839845+00:00,cmu_05,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:40:31.321088+00:00,cmu_exp,they need to click the refresh button,chat: Business @38_33___305
+2020-04-08 20:40:35.193969+00:00,cmu_05,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:40:36.541822+00:00,cmu_05,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:40:41.049224+00:00,cmu_01,they said they did ,chat: Help @38_33___305
+2020-04-08 20:40:42.550881+00:00,cmu_04,planner;RunPathAgent,client
+2020-04-08 20:40:42.637818+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:40:42.653801+00:00,cmu_04,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:40:57.738954+00:00,cmu_01,I think that's it ,chat: All @32___305
+2020-04-08 20:40:58.936176+00:00,cmu_04,i can't seem to get the AI agent to develop any alternatives either,chat: All @32___305
+2020-04-08 20:41:02.258040+00:00,cmu_04,planner;SelectPath;0;base,client
+2020-04-08 20:41:02.353982+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:41:03.027164+00:00,cmu_exp,talk with your operations manager,chat: Operations Specialist 1 @38_37___305
+2020-04-08 20:41:03.919561+00:00,cmu_04,planner;RunPathAgent,client
+2020-04-08 20:41:03.980823+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:41:03.994502+00:00,cmu_04,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:41:50.612552+00:00,cmu_06,planner;VehiclePathRemoved;2;base,client
+2020-04-08 20:41:08.419066+00:00,cmu_01,even though I didn't name it ,chat: All @32___305
+2020-04-08 20:41:13.477981+00:00,cmu_05,planner;StartSession,client
+2020-04-08 20:41:13.999199+00:00,cmu_05,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:41:14.173181+00:00,cmu_05,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:41:22.259785+00:00,cmu_04,"well, the only plan i seem to be able to get from the AI agent is empty",chat: All @32___305
+2020-04-08 20:41:27.213841+00:00,cmu_04,so i'm getting an error message from it,chat: All @32___305
+2020-04-08 20:41:31.819408+00:00,cmu_exp,You have 10 minutes left.,chat: Session @40___305
+2020-04-08 20:41:32.892771+00:00,cmu_04,i can attempt to make a manual plan,chat: All @32___305
+2020-04-08 20:41:40.448531+00:00,cmu_04,planner;SelectPath;0;base,client
+2020-04-08 20:41:40.519543+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:41:40.910525+00:00,cmu_06,planner;SelectPath;2;base,client
+2020-04-08 20:41:40.912238+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,10411,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:41:43.845371+00:00,cmu_04,planner;LoadDatabase,client
+2020-04-08 20:41:44.109310+00:00,cmu_04,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:41:48.644356+00:00,cmu_06,"planner;VehicleDuplicated;2;base;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3;ToIndex=3",client
+2020-04-08 20:41:48.675650+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,13881,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:41:49.575981+00:00,cmu_06,planner;VehiclePathRemoved;2;base,client
+2020-04-08 20:41:50.596233+00:00,cmu_06,planner;VehiclePathRemoved;2;base,client
+2020-04-08 20:41:50.939114+00:00,cmu_06,planner;VehiclePathRemoved;2;base,client
+2020-04-08 20:41:51.297739+00:00,cmu_06,planner;VehiclePathRemoved;2;base,client
+2020-04-08 20:41:51.643046+00:00,cmu_06,planner;VehiclePathRemoved;1;base,client
+2020-04-08 20:41:51.794267+00:00,cmu_06,planner;VehiclePathRemoved;1;base,client
+2020-04-08 20:41:51.925433+00:00,cmu_06,planner;VehiclePathRemoved;1;base,client
+2020-04-08 20:41:52.287478+00:00,cmu_06,planner;VehiclePathRemoved;0;base,client
+2020-04-08 20:42:01.375557+00:00,cmu_04,i don't seem to be able to manually plot the delivery plan either,chat: All @32___305
+2020-04-08 20:42:06.535206+00:00,cmu_05,planner;LoadDatabase,client
+2020-04-08 20:42:06.768324+00:00,cmu_05,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:42:07.163219+00:00,cmu_03,"designer;Evaluate;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*iOO4*jNO4*kPN4^ab^ac^ad^ae^cf^fg^gh^gi^fj^gk,5,3",client
+2020-04-08 20:42:08.257851+00:00,cmu_03,"designer;Evaluated;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*iOO4*jNO4*kPN4^ab^ac^ad^ae^cf^fg^gh^gi^fj^gk,5,3;range=-0.211509;velocity=7.901043;cost=3548.2",client
+2020-04-08 20:42:11.397903+00:00,cmu_02,"designer;Opened;base;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:42:13.748232+00:00,cmu_01,can you ask the experimenter?,chat: All @32___305
+2020-04-08 20:42:13.976998+00:00,cmu_03,"designer;RunDesignAgent;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*iOO4*jNO4*kPN4^ab^ac^ad^ae^cf^fg^gh^gi^fj^gk,5,3",client
+2020-04-08 20:42:15.185739+00:00,cmu_03,"designer;Evaluated;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*iOO4*jNO4*kPN4^ab^ac^ad^ae^cf^fg^gh^gi^fj^gk,5,3;range=-0.2105815;velocity=7.871004;cost=3548.2",client
+2020-04-08 20:42:27.223335+00:00,cmu_02,"designer;DragComponent;Structure;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:42:27.857528+00:00,cmu_02,"designer;MouseClick;ToggleCCWMotor;*aMM2+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:42:29.207219+00:00,cmu_02,"designer;MouseClick;ToggleCWMotor;*aMM1+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:42:29.723970+00:00,cmu_02,"designer;MouseClick;ToggleFoil;*aMM3+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:42:30.032291+00:00,cmu_04,planner;LoadDatabase,client
+2020-04-08 20:42:30.344782+00:00,cmu_04,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:42:30.651425+00:00,cmu_02,"designer;MouseClick;ToggleEmpty;*aMM4+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:42:30.683012+00:00,cmu_04,planner;LoadDatabase,client
+2020-04-08 20:42:31.017890+00:00,cmu_04,planner;LoadDatabase,client
+2020-04-08 20:42:31.260171+00:00,cmu_04,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:42:31.298837+00:00,cmu_04,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:42:31.612200+00:00,cmu_02,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:42:31.959604+00:00,cmu_03,"designer;MouseClick;NoEvent;*aMM0--*bNM2++*cMN1++*dLM2++*eML1++*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^dj^dk^dl^em^cg^eh^el,10,3",client
+2020-04-08 20:42:32.626769+00:00,cmu_03,"designer;MouseClick;NoEvent;*aMM0--*bNM2++*cMN1++*dLM2++*eML1++*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^dj^dk^dl^em^cg^eh^el,10,3",client
+2020-04-08 20:42:32.793429+00:00,cmu_03,"designer;MouseClick;NoEvent;*aMM0--*bNM2++*cMN1++*dLM2++*eML1++*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^dj^dk^dl^em^cg^eh^el,10,3",client
+2020-04-08 20:42:34.303002+00:00,cmu_04,planner;LoadDatabase,client
+2020-04-08 20:42:34.641912+00:00,cmu_04,planner;LoadDatabase,client
+2020-04-08 20:42:34.715982+00:00,cmu_04,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:42:34.902311+00:00,cmu_04,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:42:35.230379+00:00,cmu_04,planner;LoadDatabase,client
+2020-04-08 20:42:35.366245+00:00,cmu_04,planner;LoadDatabase,client
+2020-04-08 20:42:35.567026+00:00,cmu_03,"designer;MouseClick;NoEvent;*aMM0--*bNM2++*cMN1++*dLM2++*eML1++*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^dj^dk^dl^em^cg^eh^el,10,3",client
+2020-04-08 20:42:35.694731+00:00,cmu_04,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:42:35.745624+00:00,cmu_04,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:42:37.237991+00:00,cmu_03,designer;DesignMode,client
+2020-04-08 20:42:37.863389+00:00,cmu_02,"designer;RunDesignAgent;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:42:38.916910+00:00,cmu_02,"designer;Evaluated;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3;range=10.67641;velocity=8.857662;cost=3470.2",client
+2020-04-08 20:42:47.161617+00:00,cmu_exp,try again. sometimes it take several seconds to update,chat: Business @38_33___305
+2020-04-08 20:42:53.106342+00:00,cmu_04,"i don't seem to be able to get any plans out of the AI planner, nor can i manually create them",chat: Help @38_36___305
+2020-04-08 20:42:56.366105+00:00,cmu_05,planner;SelectPath;0;base,client
+2020-04-08 20:42:56.365336+00:00,cmu_05,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:42:56.628557+00:00,cmu_02,designer;DesignMode,client
+2020-04-08 20:42:58.539915+00:00,cmu_02,"designer;MouseClick;NoEvent;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:43:00.873874+00:00,cmu_02,"designer;MouseClick;NoEvent;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:43:03.328278+00:00,cmu_02,"designer;MouseClick;NoEvent;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:43:03.905235+00:00,cmu_05,"planner;VehicleDuplicated;0;base;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3;ToIndex=1",client
+2020-04-08 20:43:03.921692+00:00,cmu_05,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,6940,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:43:06.119387+00:00,cmu_05,"planner;VehicleDuplicated;1;base;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3;ToIndex=2",client
+2020-04-08 20:43:06.122052+00:00,cmu_05,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,10411,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:43:08.589569+00:00,cmu_05,planner;VehiclePathRemoved;1;base,client
+2020-04-08 20:43:09.488783+00:00,cmu_05,planner;VehiclePathRemoved;2;base,client
+2020-04-08 20:43:10.656231+00:00,cmu_05,planner;VehiclePathRemoved;1;base,client
+2020-04-08 20:43:10.903058+00:00,cmu_01,"okay, thank you!",chat: Help @38_33___305
+2020-04-08 20:43:11.257381+00:00,cmu_05,planner;VehiclePathRemoved;0;base,client
+2020-04-08 20:43:13.289831+00:00,cmu_04,i'm also only seeing one team design and i'm a bit confused about why nothing seems to be working,chat: Help @38_36___305
+2020-04-08 20:43:14.894154+00:00,cmu_05,planner;OrthogonalCamera,client
+2020-04-08 20:43:16.618422+00:00,cmu_05,planner;ResetView,client
+2020-04-08 20:43:18.154700+00:00,cmu_05,planner;ResetView,client
+2020-04-08 20:43:18.332394+00:00,cmu_05,planner;ResetView,client
+2020-04-08 20:43:18.900117+00:00,cmu_exp,you need to check the tutorial,chat: Operations Manager @38_36___305
+2020-04-08 20:43:22.826229+00:00,cmu_05,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:43:25.172021+00:00,cmu_exp,sure,chat: Business @38_33___305
+2020-04-08 20:43:29.874064+00:00,cmu_02,"designer;ScaleUp;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1++++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:43:31.723990+00:00,cmu_02,"designer;ScaleUp;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:43:33.141399+00:00,cmu_02,"designer;MouseClick;ToggleFoil;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML3+++++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:43:33.757864+00:00,cmu_02,"designer;MouseClick;ToggleEmpty;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML4+++++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:43:34.294157+00:00,cmu_02,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML0+++++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:43:34.798471+00:00,cmu_02,"designer;MouseClick;ToggleCCWMotor;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML2+++++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:43:36.023768+00:00,cmu_02,"designer;MouseClick;ToggleCWMotor;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:43:37.511771+00:00,cmu_04,"i am referring to the tutorial, i followed the instructions but i'm only getting an ""empty plan"" error message",chat: Help @38_36___305
+2020-04-08 20:43:37.576200+00:00,cmu_02,"designer;MouseClick;ToggleFoil;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML3+++++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:43:38.719852+00:00,cmu_02,"designer;MouseClick;ToggleEmpty;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML4+++++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:43:39.360620+00:00,cmu_02,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML0+++++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:43:39.858317+00:00,cmu_02,"designer;MouseClick;ToggleCCWMotor;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML2+++++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:43:40.624672+00:00,cmu_02,"designer;MouseClick;ToggleCWMotor;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:43:42.434860+00:00,cmu_exp,you need to select several drones first,chat: Operations Manager @38_36___305
+2020-04-08 20:43:47.340408+00:00,cmu_04,and the manual version doesn't seem to work,chat: Help @38_36___305
+2020-04-08 20:43:48.788750+00:00,cmu_02,"designer;MouseClick;ToggleFoil;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML3+++++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:43:49.441203+00:00,cmu_02,"designer;MouseClick;ToggleEmpty;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML4+++++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:43:50.008570+00:00,cmu_02,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML0+++++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:43:50.658266+00:00,cmu_02,"designer;MouseClick;ToggleCCWMotor;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML2+++++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:43:51.489463+00:00,cmu_02,"designer;MouseClick;ToggleCWMotor;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:43:52.093094+00:00,cmu_04,there is only one though,chat: Help @38_36___305
+2020-04-08 20:43:52.624925+00:00,cmu_02,"designer;ScaleUp;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1++++++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:43:54.558691+00:00,cmu_02,"designer;ScaleUp;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++++++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:43:55.663557+00:00,cmu_02,"designer;ScaleUp;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1++++++++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:44:18.561886+00:00,cmu_04,"folks i think we need more than one drone design for this to work, i only see one",chat: All @32___305
+2020-04-08 20:44:19.372649+00:00,cmu_02,"designer;HotKeyScaleDown;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++++++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:44:20.090760+00:00,cmu_02,"designer;HotKeyScaleDown;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1++++++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:44:20.556658+00:00,cmu_02,"designer;HotKeyScaleDown;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:44:20.763903+00:00,cmu_02,"designer;HotKeyScaleDown;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1++++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:44:20.940198+00:00,cmu_02,"designer;HotKeyScaleDown;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:44:27.288497+00:00,cmu_02,"designer;HotKeyScaleDown;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:44:27.645659+00:00,cmu_02,"designer;HotKeyScaleUp;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:44:27.748490+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:44:27.989737+00:00,cmu_06,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:44:28.577849+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:44:28.664746+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:44:29.044412+00:00,cmu_06,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:44:29.340450+00:00,cmu_06,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:44:30.482865+00:00,cmu_04,"design people, can you check that?",chat: All @32___305
+2020-04-08 20:44:32.452342+00:00,cmu_02,"designer;HotKeyScaleUp;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:44:32.703500+00:00,cmu_06,planner;RunPathAgent,client
+2020-04-08 20:44:32.869032+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,13881,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:44:32.886265+00:00,cmu_06,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:44:33.072304+00:00,cmu_02,"designer;HotKeyScaleUp;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:44:33.523003+00:00,cmu_02,"designer;HotKeyScaleUp;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:44:34.820497+00:00,cmu_02,"designer;HotKeyScaleUp;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:44:35.705760+00:00,cmu_02,"designer;HotKeyScaleUp;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:44:35.981553+00:00,cmu_exp,it works. click the available drone first,chat: Operations Manager @38_36___305
+2020-04-08 20:44:36.156132+00:00,cmu_02,"designer;HotKeyScaleDown;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:44:36.612023+00:00,cmu_02,"designer;HotKeyScaleDown;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:44:37.157781+00:00,cmu_02,"designer;HotKeyScaleUp;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:44:37.354210+00:00,cmu_02,"designer;HotKeyScaleUp;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:44:37.501453+00:00,cmu_02,"designer;HotKeyScaleUp;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:44:38.527716+00:00,cmu_02,"designer;HotKeyScaleUp;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:44:44.905165+00:00,cmu_02,"designer;HotKeyScaleUp;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1++++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:44:45.728009+00:00,cmu_02,"designer;HotKeyScaleDown;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:44:46.509349+00:00,cmu_06,planner;ToggleWeightIcons:True,client
+2020-04-08 20:44:48.739126+00:00,cmu_02,"designer;HotKeyScaleDown;*aMM0++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:44:49.573052+00:00,cmu_02,"designer;HotKeyScaleUp;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:44:51.035250+00:00,cmu_03,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON0*hOM4*iOO4*jNO4*kPN4^ab^ac^ad^ae^cf^fg^gh^gi^fj^gk,5,3",client
+2020-04-08 20:44:51.380042+00:00,cmu_03,"designer;RemovedComponent;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*iOO4*jNO4*kPN4^ab^ac^ad^ae^cf^fg^gh^gi^fj^gk,5,3",client
+2020-04-08 20:44:52.331127+00:00,cmu_03,"designer;MouseClick;NoEvent;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*iOO4*jNO4*kPN4^ab^ac^ad^ae^cf^fg^gh^gi^fj^gk,5,3",client
+2020-04-08 20:45:16.217380+00:00,cmu_02,what am i designing for? ,chat: All @32___305
+2020-04-08 20:44:52.397398+00:00,cmu_03,"designer;RemovedConnector;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*iNO4*jPN4^ab^ac^ad^ae^cf^fg^gh^fi^gj,5,3",client
+2020-04-08 20:44:52.881419+00:00,cmu_03,"designer;MouseClick;AssemblyChange;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*kOO4*iNO4*jPN4^ab^ac^ad^ae^cf^fg^gh^gk^fi^gj,5,3",client
+2020-04-08 20:44:53.072530+00:00,cmu_06,planner;RunPathAgent,client
+2020-04-08 20:44:53.218050+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,13881,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:44:53.234717+00:00,cmu_06,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:44:53.297921+00:00,cmu_03,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON0*hOM4*kOO4*iNO4*jPN4^ab^ac^ad^ae^cf^fg^gh^gk^fi^gj,5,3",client
+2020-04-08 20:44:53.347208+00:00,cmu_03,"designer;RemovedComponent;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*kOO4*iNO4*jPN4^ab^ac^ad^ae^cf^fg^gh^gk^fi^gj,5,3",client
+2020-04-08 20:44:53.515107+00:00,cmu_04,planner;LoadDatabase,client
+2020-04-08 20:44:53.747805+00:00,cmu_03,"designer;RemovedComponent;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*kOO4*iNO4*jPN4^ab^ac^ad^ae^cf^fg^gh^gk^fi^gj,5,3",client
+2020-04-08 20:44:53.774961+00:00,cmu_04,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:44:54.074778+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:44:54.141254+00:00,cmu_03,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON0*hOM4*kOO4*iNO4*jPN4^ab^ac^ad^ae^cf^fg^gh^gk^fi^gj,5,3",client
+2020-04-08 20:44:54.251144+00:00,cmu_03,"designer;RemovedComponent;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*kOO4*iNO4*jPN4^ab^ac^ad^ae^cf^fg^gh^gk^fi^gj,5,3",client
+2020-04-08 20:44:54.581847+00:00,cmu_06,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:44:54.766380+00:00,cmu_03,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM0*kOO4*iNO4*jPN4^ab^ac^ad^ae^cf^fg^gh^gk^fi^gj,5,3",client
+2020-04-08 20:44:54.916251+00:00,cmu_03,"designer;RemovedComponent;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*kOO4*iNO4*jPN4^ab^ac^ad^ae^cf^fg^gh^gk^fi^gj,5,3",client
+2020-04-08 20:44:55.191727+00:00,cmu_06,planner;OrthogonalCamera,client
+2020-04-08 20:44:55.991472+00:00,cmu_06,planner;OrthogonalCamera,client
+2020-04-08 20:44:58.709128+00:00,cmu_06,planner;ResetView,client
+2020-04-08 20:44:58.829231+00:00,cmu_04,planner;SelectPath;0;base,client
+2020-04-08 20:44:58.845535+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:45:00.042422+00:00,cmu_06,planner;PerspectiveCamera,client
+2020-04-08 20:45:02.157502+00:00,cmu_06,planner;ToggleWeightIcons:False,client
+2020-04-08 20:45:02.627438+00:00,cmu_06,planner;ToggleWeightIcons:True,client
+2020-04-08 20:45:10.174609+00:00,cmu_02,"i can change the design, but i don't know the design objectives ",chat: All @32___305
+2020-04-08 20:45:13.364814+00:00,cmu_03,yup,chat: Help @38_35___305
+2020-04-08 20:45:17.228314+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,13881,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:45:17.230294+00:00,cmu_06,planner;SelectPath;0;base,client
+2020-04-08 20:45:17.231871+00:00,cmu_06,planner;SelectPath;1;base,client
+2020-04-08 20:45:17.257416+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,13881,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:45:18.031358+00:00,cmu_04,"i've clicked it, it turns green, then i tried the AI planner and it says ""empty plan""",chat: Help @38_36___305
+2020-04-08 20:45:24.490990+00:00,cmu_06,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:45:26.117398+00:00,cmu_04,and the manual drag and drop isn't working either,chat: Help @38_36___305
+2020-04-08 20:45:30.448799+00:00,cmu_02,"designer;HotKeyScaleDown;*aMM0++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:45:30.805867+00:00,cmu_02,"designer;HotKeyScaleDown;*aMM0+++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:45:31.146711+00:00,cmu_02,"designer;HotKeyScaleUp;*aMM0++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:45:31.337258+00:00,cmu_02,"designer;HotKeyScaleUp;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:45:31.486121+00:00,cmu_02,"designer;HotKeyScaleUp;*aMM0++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:45:32.075647+00:00,cmu_02,"designer;HotKeyScaleUp;*aMM0+++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:45:32.286886+00:00,cmu_02,"designer;HotKeyScaleUp;*aMM0++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:45:32.544361+00:00,cmu_02,"designer;HotKeyScaleDown;*aMM0+++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:45:32.697252+00:00,cmu_02,"designer;HotKeyScaleDown;*aMM0++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:45:32.869311+00:00,cmu_02,"designer;HotKeyScaleDown;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:45:33.046465+00:00,cmu_02,"designer;HotKeyScaleDown;*aMM0++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:45:38.856226+00:00,cmu_02,"designer;HotKeyScaleDown;*aMM0++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:45:44.268887+00:00,cmu_04,well presumably the business people have some ideas,chat: All @32___305
+2020-04-08 20:45:53.433336+00:00,cmu_exp,it may because your drone does not have enough range or payload,chat: Operations Manager @38_36___305
+2020-04-08 20:45:59.428651+00:00,cmu_04,perhaps the idea is that they want a few alternatives that trade off speed for more deliveries or something similar,chat: All @32___305
+2020-04-08 20:46:14.074744+00:00,cmu_04,planner;SelectPath;0;base,client
+2020-04-08 20:46:14.076350+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:46:22.045815+00:00,cmu_01,"well, designing for the selected costumers ",chat: All @32___305
+2020-04-08 20:46:22.098313+00:00,cmu_04,planner;SelectPath;0;base,client
+2020-04-08 20:46:22.114672+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:46:22.245434+00:00,cmu_04,planner;SelectPath;0;base,client
+2020-04-08 20:46:22.285657+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:46:24.135981+00:00,cmu_02,"designer;Opened;base;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:46:30.342107+00:00,cmu_04,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:46:31.458762+00:00,cmu_05,planner;LoadDatabase,client
+2020-04-08 20:46:31.774191+00:00,cmu_05,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:46:35.284092+00:00,cmu_05,planner;ResetView,client
+2020-04-08 20:46:36.153813+00:00,cmu_05,planner;ResetView,client
+2020-04-08 20:46:47.054131+00:00,cmu_04,i don't see any selected customers,chat: All @32___305
+2020-04-08 20:46:48.376116+00:00,cmu_exp,You have 5 minutes left.,chat: Session @40___305
+2020-04-08 20:46:56.923073+00:00,cmu_01,"I have sent out the selected costumers, do you all have access to that?",chat: All @32___305
+2020-04-08 20:47:05.361959+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:47:05.364134+00:00,cmu_04,planner;SelectPath;0;base,client
+2020-04-08 20:47:05.689403+00:00,cmu_04,planner;SelectPath;0;base,client
+2020-04-08 20:47:05.710121+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:47:06.303380+00:00,cmu_01,business;LoadDatabase,client
+2020-04-08 20:47:06.671565+00:00,cmu_01,business;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:47:08.715177+00:00,cmu_04,planner;RunPathAgent,client
+2020-04-08 20:47:08.797974+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:47:08.818718+00:00,cmu_04,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:47:13.061381+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:47:13.609646+00:00,cmu_06,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:47:13.725057+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:47:14.099685+00:00,cmu_06,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:47:23.991984+00:00,cmu_04,"i think that there is a problem, the drone may not have enough range for me to even create an operational plan",chat: All @32___305
+2020-04-08 20:48:16.607641+00:00,cmu_01,business;SelectNode;109;True,client
+2020-04-08 20:47:31.799491+00:00,cmu_04,planner;RunPathAgent,client
+2020-04-08 20:47:31.860365+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:47:31.876152+00:00,cmu_04,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:47:34.024021+00:00,cmu_04,planner;SelectPath;0;base,client
+2020-04-08 20:47:34.041234+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:47:34.824693+00:00,cmu_04,planner;RunPathAgent,client
+2020-04-08 20:47:34.899831+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:47:34.913272+00:00,cmu_04,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:47:36.399271+00:00,cmu_04,planner;LoadDatabase,client
+2020-04-08 20:47:36.681541+00:00,cmu_04,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:47:47.857939+00:00,cmu_02,"designer;SubmitToDB;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3;test1",client
+2020-04-08 20:47:48.871130+00:00,cmu_02,"designer;Evaluated;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3;range=10.67639;velocity=8.857729;cost=3470.2",client
+2020-04-08 20:47:51.385165+00:00,cmu_02,designer;SubmittingToDB;Submitting:range(mi)=10.67639:velocity(mph)=8.857729:cost($)=3470.2:capacity(lb)=5;tag=test1,client
+2020-04-08 20:47:51.405246+00:00,cmu_02,designer;ServerMessage; Submit Vehicle : Success,client
+2020-04-08 20:49:19.575454+00:00,cmu_06,planner;ManualPathAdded;VehicleIndex=4;AddedIndex=77,client
+2020-04-08 20:47:54.986119+00:00,cmu_01,"okay, so I will try to reduce the selected costomers",chat: All @32___305
+2020-04-08 20:47:57.182322+00:00,cmu_02,designer;LoadVehicles,client
+2020-04-08 20:47:57.585013+00:00,cmu_01,business;SelectNode;79;True,client
+2020-04-08 20:47:58.927898+00:00,cmu_01,business;OrthogonalCamera,client
+2020-04-08 20:48:00.241642+00:00,cmu_01,business;SelectNode;85;True,client
+2020-04-08 20:48:01.831341+00:00,cmu_01,business;SelectNode;82;True,client
+2020-04-08 20:48:02.911483+00:00,cmu_01,business;SelectNode;86;True,client
+2020-04-08 20:48:03.327709+00:00,cmu_01,business;SelectNode;84;True,client
+2020-04-08 20:48:03.761246+00:00,cmu_01,business;SelectNode;77;True,client
+2020-04-08 20:48:04.189554+00:00,cmu_01,business;SelectNode;81;True,client
+2020-04-08 20:48:04.617385+00:00,cmu_01,business;SelectNode;78;True,client
+2020-04-08 20:48:05.519472+00:00,cmu_01,business;SelectNode;83;True,client
+2020-04-08 20:48:05.845343+00:00,cmu_01,business;SelectNode;80;True,client
+2020-04-08 20:49:19.739028+00:00,cmu_01,business;ServerMessage; Submit Scenario : Success,client
+2020-04-08 20:48:09.122159+00:00,cmu_04,planner;LoadDatabase,client
+2020-04-08 20:48:09.549876+00:00,cmu_04,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:48:09.576964+00:00,cmu_01,business;OrthogonalCamera,client
+2020-04-08 20:48:12.516420+00:00,cmu_06,planner;OrthogonalCamera,client
+2020-04-08 20:48:13.149484+00:00,cmu_06,planner;SelectPath;0;base,client
+2020-04-08 20:48:13.166278+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,13881,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:48:13.366192+00:00,cmu_04,planner;SelectPath;0;base,client
+2020-04-08 20:48:13.436839+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:48:13.790197+00:00,cmu_04,planner;SelectPath;1;test1,client
+2020-04-08 20:48:13.790959+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,6940,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:48:15.087168+00:00,cmu_01,business;SelectNode;106;True,client
+2020-04-08 20:48:15.285855+00:00,cmu_04,planner;SelectPath;0;base,client
+2020-04-08 20:48:15.318034+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,6940,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:48:15.905152+00:00,cmu_06,planner;OrthogonalCamera,client
+2020-04-08 20:48:16.278089+00:00,cmu_04,planner;SelectPath;1;test1,client
+2020-04-08 20:48:16.324444+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,6940,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:48:17.049226+00:00,cmu_01,business;SelectNode;108;True,client
+2020-04-08 20:48:17.602166+00:00,cmu_06,planner;PerspectiveCamera,client
+2020-04-08 20:48:17.746157+00:00,cmu_01,business;SelectNode;104;True,client
+2020-04-08 20:48:18.089915+00:00,cmu_04,planner;RunPathAgent,client
+2020-04-08 20:48:18.201678+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,6940,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:48:18.217220+00:00,cmu_04,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:48:18.331200+00:00,cmu_01,business;SelectNode;110;True,client
+2020-04-08 20:48:18.797230+00:00,cmu_01,business;SelectNode;103;True,client
+2020-04-08 20:48:19.611073+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:48:19.670422+00:00,cmu_01,business;SelectNode;112;True,client
+2020-04-08 20:48:19.881258+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:48:19.946545+00:00,cmu_06,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:48:20.315002+00:00,cmu_06,planner;ScenarioLoaded:Scenario:251,client
+2020-04-08 20:48:21.149655+00:00,cmu_01,business;SelectNode;105;True,client
+2020-04-08 20:48:21.647365+00:00,cmu_01,business;SelectNode;111;True,client
+2020-04-08 20:48:22.315181+00:00,cmu_01,business;SelectNode;107;True,client
+2020-04-08 20:48:22.541682+00:00,cmu_06,planner;SelectPath;4;test1,client
+2020-04-08 20:48:22.566131+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,17351,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:50:32.945666+00:00,cmu_04,the business plan is too ambitious as well,chat: All @32___305
+2020-04-08 20:48:25.099109+00:00,cmu_05,planner;ResetView,client
+2020-04-08 20:48:25.951160+00:00,cmu_01,business;SubmitScenario,client
+2020-04-08 20:48:26.247265+00:00,cmu_04,planner;VehiclePathRemoved;0;base,client
+2020-04-08 20:48:26.307477+00:00,cmu_01,business;ServerMessage; Submit Scenario : Success,client
+2020-04-08 20:48:27.269845+00:00,cmu_04,planner;VehiclePathRemoved;1;test1,client
+2020-04-08 20:48:27.466227+00:00,cmu_05,planner;LoadDatabase,client
+2020-04-08 20:48:27.782236+00:00,cmu_05,planner;ScenarioLoaded:Scenario:252,client
+2020-04-08 20:48:27.923334+00:00,cmu_04,planner;VehiclePathRemoved;0;base,client
+2020-04-08 20:48:28.731109+00:00,cmu_06,planner;VehicleToggle;4;False;test1,client
+2020-04-08 20:48:28.760685+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,13881,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:48:29.561401+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,17351,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:48:29.563111+00:00,cmu_06,planner;SelectPath;4;test1,client
+2020-04-08 20:48:29.942466+00:00,cmu_06,planner;SelectPath;4;test1,client
+2020-04-08 20:48:29.959226+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,17351,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:48:30.014420+00:00,cmu_04,planner;RunPathAgent,client
+2020-04-08 20:48:30.118880+00:00,cmu_06,planner;SelectPath;4;test1,client
+2020-04-08 20:48:30.139186+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,17351,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:48:30.160057+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,6940,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:48:30.176802+00:00,cmu_04,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:48:31.156269+00:00,cmu_06,planner;RunPathAgent,client
+2020-04-08 20:48:31.320050+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,17351,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:48:31.451815+00:00,cmu_06,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:48:31.663318+00:00,cmu_04,planner;SelectPath;1;test1,client
+2020-04-08 20:48:31.688037+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,6940,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:48:32.588237+00:00,cmu_04,planner;RunPathAgent,client
+2020-04-08 20:48:32.633998+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,6940,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:48:32.662243+00:00,cmu_04,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:48:33.515169+00:00,cmu_06,planner;ToggleWeightIcons:False,client
+2020-04-08 20:48:33.957260+00:00,cmu_06,planner;ToggleWeightIcons:True,client
+2020-04-08 20:48:36.495431+00:00,cmu_01,try again with the updated one ,chat: All @32___305
+2020-04-08 20:48:36.639165+00:00,cmu_04,planner;LoadDatabase,client
+2020-04-08 20:48:36.934292+00:00,cmu_04,planner;ScenarioLoaded:Scenario:252,client
+2020-04-08 20:48:37.753966+00:00,cmu_04,planner;LoadDatabase,client
+2020-04-08 20:48:38.003616+00:00,cmu_04,planner;ScenarioLoaded:Scenario:252,client
+2020-04-08 20:48:38.097756+00:00,cmu_06,planner;SelectPath;4;test1,client
+2020-04-08 20:48:38.113749+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,17351,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:48:38.692390+00:00,cmu_04,planner;LoadDatabase,client
+2020-04-08 20:48:38.997366+00:00,cmu_04,planner;ScenarioLoaded:Scenario:252,client
+2020-04-08 20:48:39.928552+00:00,cmu_06,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:48:41.046592+00:00,cmu_04,planner;RunPathAgent,client
+2020-04-08 20:48:41.162352+00:00,cmu_04,"planner;PathMetrics;Profit,1000,OperatingCost,216,StartUpCost,6940,Number of Deliveries,6,MassDelivered,10,Parcel,10,Food,0",client
+2020-04-08 20:48:41.178839+00:00,cmu_04,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:48:42.425431+00:00,cmu_01,and see how it goes,chat: All @32___305
+2020-04-08 20:48:47.177968+00:00,cmu_04,got it,chat: All @32___305
+2020-04-08 20:48:49.193732+00:00,cmu_04,i have a basic plan now,chat: All @32___305
+2020-04-08 20:48:53.693044+00:00,cmu_06,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:48:53.937103+00:00,cmu_04,the range is still very long,chat: All @32___305
+2020-04-08 20:48:54.044215+00:00,cmu_06,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:49:01.879707+00:00,cmu_01,let me try it agian ,chat: All @32___305
+2020-04-08 20:49:03.000414+00:00,cmu_06,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:49:04.310145+00:00,cmu_01,business;SelectNode;97;True,client
+2020-04-08 20:49:05.687410+00:00,cmu_01,business;SelectNode;92;True,client
+2020-04-08 20:49:06.161053+00:00,cmu_01,business;SelectNode;90;True,client
+2020-04-08 20:49:06.634659+00:00,cmu_04,planner;SubmitPlanToDB;plan 1:plan 1,client
+2020-04-08 20:49:06.685056+00:00,cmu_06,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:49:06.737156+00:00,cmu_01,business;SelectNode;93;True,client
+2020-04-08 20:49:06.753530+00:00,cmu_04,planner;ServerMessage; Submit Plan : Success,client
+2020-04-08 20:49:07.309994+00:00,cmu_01,business;SelectNode;88;True,client
+2020-04-08 20:49:07.903292+00:00,cmu_01,business;SelectNode;87;True,client
+2020-04-08 20:49:08.443459+00:00,cmu_04,planner;LoadDatabase,client
+2020-04-08 20:49:08.928308+00:00,cmu_04,planner;ScenarioLoaded:Scenario:252,client
+2020-04-08 20:49:09.459260+00:00,cmu_01,business;SelectNode;94;True,client
+2020-04-08 20:49:10.725631+00:00,cmu_01,business;SelectNode;96;True,client
+2020-04-08 20:49:10.889830+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:49:11.183521+00:00,cmu_01,business;SelectNode;89;True,client
+2020-04-08 20:49:11.549457+00:00,cmu_01,business;SelectNode;91;True,client
+2020-04-08 20:49:11.619032+00:00,cmu_06,planner;ScenarioLoaded:Scenario:252,client
+2020-04-08 20:49:12.632097+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:49:12.985135+00:00,cmu_04,check out plan 1,chat: All @32___305
+2020-04-08 20:49:13.190720+00:00,cmu_06,planner;ScenarioLoaded:Scenario:252,client
+2020-04-08 20:49:13.506569+00:00,cmu_06,"planner;PathMetrics;Profit,200,OperatingCost,107,StartUpCost,17351,Number of Deliveries,1,MassDelivered,2,Parcel,2,Food,0",client
+2020-04-08 20:49:13.523809+00:00,cmu_06,planner;ManualPathAdded;VehicleIndex=4;AddedIndex=81,client
+2020-04-08 20:49:13.673353+00:00,cmu_01,business;SelectNode;95;True,client
+2020-04-08 20:49:16.734033+00:00,cmu_02,designer;LoadVehicles,client
+2020-04-08 20:49:19.511599+00:00,cmu_01,business;SubmitScenario,client
+2020-04-08 20:49:19.572969+00:00,cmu_06,"planner;PathMetrics;Profit,300,OperatingCost,113,StartUpCost,17351,Number of Deliveries,2,MassDelivered,3,Parcel,3,Food,0",client
+2020-04-08 20:49:20.627974+00:00,cmu_06,planner;RunPathAgent,client
+2020-04-08 20:49:20.793305+00:00,cmu_06,"planner;PathMetrics;Profit,2100,OperatingCost,539,StartUpCost,17351,Number of Deliveries,9,MassDelivered,19,Parcel,17,Food,2",client
+2020-04-08 20:49:20.828389+00:00,cmu_06,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:49:21.167248+00:00,cmu_04,you can see it serves some of the buildings in the southwest,chat: All @32___305
+2020-04-08 20:49:22.036155+00:00,cmu_05,planner;StartSession,client
+2020-04-08 20:49:22.398325+00:00,cmu_01,business;LoadDatabase,client
+2020-04-08 20:49:23.074071+00:00,cmu_05,planner;ScenarioLoaded:Scenario:253,client
+2020-04-08 20:49:23.300315+00:00,cmu_01,business;ScenarioLoaded:Scenario:253,client
+2020-04-08 20:49:23.331947+00:00,cmu_05,planner;ScenarioLoaded:Scenario:253,client
+2020-04-08 20:49:23.689679+00:00,cmu_01,business;LoadDatabase,client
+2020-04-08 20:49:23.831514+00:00,cmu_04,planner;LoadDatabase,client
+2020-04-08 20:49:24.514506+00:00,cmu_06,planner;RunPathAgent,client
+2020-04-08 20:49:24.682034+00:00,cmu_01,"business;PathMetrics;Profit,1000,OperatingCost,216,StartUpCost,6940,Number of Deliveries,6,MassDelivered,10,Parcel,10,Food,0",client
+2020-04-08 20:49:24.742771+00:00,cmu_01,business;Opened;plan 1,client
+2020-04-08 20:49:24.792210+00:00,cmu_01,business;ScenarioLoaded:Scenario:253,client
+2020-04-08 20:49:24.905410+00:00,cmu_01,"business;PathMetrics;Profit,1000,OperatingCost,216,StartUpCost,6940,Number of Deliveries,6,MassDelivered,10,Parcel,10,Food,0",client
+2020-04-08 20:49:24.939542+00:00,cmu_01,business;Opened;plan 1,client
+2020-04-08 20:49:24.976352+00:00,cmu_04,planner;ScenarioLoaded:Scenario:253,client
+2020-04-08 20:49:25.008086+00:00,cmu_06,"planner;PathMetrics;Profit,2100,OperatingCost,539,StartUpCost,17351,Number of Deliveries,9,MassDelivered,19,Parcel,17,Food,2",client
+2020-04-08 20:49:25.024319+00:00,cmu_06,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:49:25.229845+00:00,cmu_04,planner;LoadDatabase,client
+2020-04-08 20:49:25.753002+00:00,cmu_04,planner;ScenarioLoaded:Scenario:253,client
+2020-04-08 20:49:26.783816+00:00,cmu_04,planner;SelectPath;0;base,client
+2020-04-08 20:49:26.815795+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,6940,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:49:27.156091+00:00,cmu_04,planner;SelectPath;1;test1,client
+2020-04-08 20:49:27.172142+00:00,cmu_04,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,6940,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:49:28.117540+00:00,cmu_04,planner;RunPathAgent,client
+2020-04-08 20:49:28.214931+00:00,cmu_04,"planner;PathMetrics;Profit,1000,OperatingCost,152,StartUpCost,6940,Number of Deliveries,4,MassDelivered,10,Parcel,10,Food,0",client
+2020-04-08 20:49:28.230995+00:00,cmu_04,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:49:28.843123+00:00,cmu_05,planner;LoadDatabase,client
+2020-04-08 20:49:29.278394+00:00,cmu_05,planner;ScenarioLoaded:Scenario:253,client
+2020-04-08 20:49:34.393712+00:00,cmu_02,"designer;HotKeyScaleDown;*aMM0+++++*bNM2++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:49:34.869711+00:00,cmu_02,"designer;HotKeyScaleUp;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:49:35.509748+00:00,cmu_02,"designer;HotKeyScaleUp;*aMM0+++++*bNM2++++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:49:35.877921+00:00,cmu_02,"designer;HotKeyScaleDown;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:49:36.031936+00:00,cmu_05,planner;SelectPath;0;test1,client
+2020-04-08 20:49:36.047972+00:00,cmu_05,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:49:37.277764+00:00,cmu_02,"designer;HotKeyScaleDown;*aMM0+++++*bNM2++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:49:37.660225+00:00,cmu_02,"designer;HotKeyScaleUp;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:49:38.635224+00:00,cmu_04,planner;SubmitPlanToDB;plan 2:plan 2,client
+2020-04-08 20:51:10.028037+00:00,cmu_05,planner;ManualPathAdded;PayloadConstraint,client
+2020-04-08 20:49:38.781192+00:00,cmu_04,planner;ServerMessage; Submit Plan : Success,client
+2020-04-08 20:49:42.634857+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:49:43.244129+00:00,cmu_06,planner;ScenarioLoaded:Scenario:253,client
+2020-04-08 20:49:43.609556+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:49:43.867990+00:00,cmu_04,i submitted plan 2,chat: All @32___305
+2020-04-08 20:49:44.157408+00:00,cmu_06,planner;ScenarioLoaded:Scenario:253,client
+2020-04-08 20:49:44.818561+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:49:45.428401+00:00,cmu_05,"planner;PathMetrics;Profit,400,OperatingCost,116,StartUpCost,3470,Number of Deliveries,1,MassDelivered,2,Parcel,0,Food,2",client
+2020-04-08 20:49:45.431830+00:00,cmu_05,planner;ManualPathAdded;VehicleIndex=0;AddedIndex=106,client
+2020-04-08 20:49:45.637168+00:00,cmu_06,planner;ScenarioLoaded:Scenario:253,client
+2020-04-08 20:49:46.140206+00:00,cmu_06,planner;SelectPath;4;test1,client
+2020-04-08 20:49:46.156076+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,17351,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:49:47.198338+00:00,cmu_06,planner;SelectPath;4;test1,client
+2020-04-08 20:49:47.218782+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,17351,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:49:47.565172+00:00,cmu_06,planner;SelectPath;4;test1,client
+2020-04-08 20:49:47.581760+00:00,cmu_06,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,17351,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:49:47.925692+00:00,cmu_02,designer;LoadVehicles,client
+2020-04-08 20:49:47.988622+00:00,cmu_04,it covers the northwest,chat: All @32___305
+2020-04-08 20:49:48.530065+00:00,cmu_06,planner;RunPathAgent,client
+2020-04-08 20:49:48.740223+00:00,cmu_06,"planner;PathMetrics;Profit,2300,OperatingCost,438,StartUpCost,17351,Number of Deliveries,9,MassDelivered,21,Parcel,19,Food,2",client
+2020-04-08 20:49:48.761248+00:00,cmu_06,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:49:50.223035+00:00,cmu_06,planner;RunPathAgent,client
+2020-04-08 20:49:50.572246+00:00,cmu_06,"planner;PathMetrics;Profit,2300,OperatingCost,438,StartUpCost,17351,Number of Deliveries,9,MassDelivered,21,Parcel,19,Food,2",client
+2020-04-08 20:49:50.593049+00:00,cmu_06,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:49:51.812096+00:00,cmu_01,business;LoadDatabase,client
+2020-04-08 20:49:52.268401+00:00,cmu_01,business;ScenarioLoaded:Scenario:253,client
+2020-04-08 20:49:53.860187+00:00,cmu_02,"designer;MouseClick;ToggleCCWMotor;*aMM2+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:49:54.020221+00:00,cmu_01,"business;PathMetrics;Profit,1000,OperatingCost,152,StartUpCost,6940,Number of Deliveries,4,MassDelivered,10,Parcel,10,Food,0",client
+2020-04-08 20:49:54.036996+00:00,cmu_01,business;Opened;plan 2,client
+2020-04-08 20:49:54.162774+00:00,cmu_02,"designer;HotKeyComponentToStructure;Structure;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:49:54.667503+00:00,cmu_03,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON0*hOM4*kOO4*iNO4*jPN4^ab^ac^ad^ae^cf^fg^gh^gk^fi^gj,5,3",client
+2020-04-08 20:49:54.744128+00:00,cmu_03,"designer;RemovedComponent;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*kOO4*iNO4*jPN4^ab^ac^ad^ae^cf^fg^gh^gk^fi^gj,5,3",client
+2020-04-08 20:49:54.874762+00:00,cmu_06,planner;SelectPath;4;test1,client
+2020-04-08 20:49:54.891384+00:00,cmu_06,"planner;PathMetrics;Profit,2300,OperatingCost,438,StartUpCost,17351,Number of Deliveries,9,MassDelivered,21,Parcel,19,Food,2",client
+2020-04-08 20:49:55.745194+00:00,cmu_03,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON0*hOM4*kOO4*iNO4*jPN4^ab^ac^ad^ae^cf^fg^gh^gk^fi^gj,5,3",client
+2020-04-08 20:49:56.128754+00:00,cmu_03,"designer;RemovedComponent;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*kOO4*iNO4*jPN4^ab^ac^ad^ae^cf^fg^gh^gk^fi^gj,5,3",client
+2020-04-08 20:49:56.348886+00:00,cmu_06,planner;RunPathAgent,client
+2020-04-08 20:49:56.584094+00:00,cmu_03,"designer;RemovedComponent;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*kOO4*iNO4*jPN4^ab^ac^ad^ae^cf^fg^gh^gk^fi^gj,5,3",client
+2020-04-08 20:49:56.604678+00:00,cmu_06,"planner;PathMetrics;Profit,2300,OperatingCost,438,StartUpCost,17351,Number of Deliveries,9,MassDelivered,21,Parcel,19,Food,2",client
+2020-04-08 20:49:56.621277+00:00,cmu_06,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:49:56.829652+00:00,cmu_03,"designer;RemovedComponent;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*kOO4*iNO4*jPN4^ab^ac^ad^ae^cf^fg^gh^gk^fi^gj,5,3",client
+2020-04-08 20:49:57.029615+00:00,cmu_03,"designer;RemovedComponent;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*kOO4*iNO4*jPN4^ab^ac^ad^ae^cf^fg^gh^gk^fi^gj,5,3",client
+2020-04-08 20:49:57.717478+00:00,cmu_06,planner;RunPathAgent,client
+2020-04-08 20:49:57.780531+00:00,cmu_03,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*kOO0*iNO4*jPN4^ab^ac^ad^ae^cf^fg^gh^gk^fi^gj,5,3",client
+2020-04-08 20:49:57.937727+00:00,cmu_06,"planner;PathMetrics;Profit,2300,OperatingCost,438,StartUpCost,17351,Number of Deliveries,9,MassDelivered,21,Parcel,19,Food,2",client
+2020-04-08 20:49:57.954257+00:00,cmu_06,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:49:58.307389+00:00,cmu_01,"business;PathMetrics;Profit,1000,OperatingCost,216,StartUpCost,6940,Number of Deliveries,6,MassDelivered,10,Parcel,10,Food,0",client
+2020-04-08 20:49:58.324190+00:00,cmu_01,business;Opened;plan 1,client
+2020-04-08 20:49:58.360131+00:00,cmu_02,"designer;MouseClick;AssemblyHandle;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fOM4^ab^ac^ad^ae^bf,5,3",client
+2020-04-08 20:49:59.775447+00:00,cmu_02,"designer;MouseClick;NoEvent;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fOM4^ab^ac^ad^ae^bf,5,3",client
+2020-04-08 20:50:01.177985+00:00,cmu_05,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:50:01.690541+00:00,cmu_05,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:50:01.971556+00:00,cmu_03,"designer;Evaluate;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*kOO0*iNO4*jPN4^ab^ac^ad^ae^cf^fg^gh^gk^fi^gj,5,3",client
+2020-04-08 20:50:02.394266+00:00,cmu_03,"designer;Evaluated;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*kOO0*iNO4*jPN4^ab^ac^ad^ae^cf^fg^gh^gk^fi^gj,5,3;range=-1.387003;velocity=0;cost=4948.2",client
+2020-04-08 20:50:02.608810+00:00,cmu_06,planner;LoadDatabase,client
+2020-04-08 20:50:03.092035+00:00,cmu_06,planner;ScenarioLoaded:Scenario:253,client
+2020-04-08 20:50:03.253223+00:00,cmu_02,"designer;RemovedComponent;*aMM0+++++*bNM4+++*cMN1+++*dLM2+++*eML1+++*fOM4^ab^ac^ad^ae^bf,5,3",client
+2020-04-08 20:50:04.265475+00:00,cmu_01,"business;PathMetrics;Profit,1000,OperatingCost,152,StartUpCost,6940,Number of Deliveries,4,MassDelivered,10,Parcel,10,Food,0",client
+2020-04-08 20:50:04.281948+00:00,cmu_01,business;Opened;plan 2,client
+2020-04-08 20:50:05.358387+00:00,cmu_05,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:50:05.512554+00:00,cmu_01,"business;PathMetrics;Profit,1000,OperatingCost,152,StartUpCost,6940,Number of Deliveries,4,MassDelivered,10,Parcel,10,Food,0",client
+2020-04-08 20:50:05.529206+00:00,cmu_01,business;Opened;plan 2,client
+2020-04-08 20:50:06.459867+00:00,cmu_02,"designer;MouseClick;ToggleStructure;*aMM0+++++*bNM0+++*cMN1+++*dLM2+++*eML1+++*fOM4^ab^ac^ad^ae^bf,5,3",client
+2020-04-08 20:50:07.060729+00:00,cmu_02,"designer;MouseClick;ToggleCCWMotor;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fOM4^ab^ac^ad^ae^bf,5,3",client
+2020-04-08 20:50:07.167134+00:00,cmu_01,"business;PathMetrics;Profit,1000,OperatingCost,216,StartUpCost,6940,Number of Deliveries,6,MassDelivered,10,Parcel,10,Food,0",client
+2020-04-08 20:50:07.184020+00:00,cmu_01,business;Opened;plan 1,client
+2020-04-08 20:50:08.140246+00:00,cmu_01,"business;PathMetrics;Profit,1000,OperatingCost,152,StartUpCost,6940,Number of Deliveries,4,MassDelivered,10,Parcel,10,Food,0",client
+2020-04-08 20:50:08.156990+00:00,cmu_01,business;Opened;plan 2,client
+2020-04-08 20:50:09.323185+00:00,cmu_04,i think the drone we have still sucks too much to be able to get more than a few parcels back and forth,chat: All @32___305
+2020-04-08 20:50:13.749602+00:00,cmu_02,"designer;RemovedConnector;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:50:18.142852+00:00,cmu_04,it needs much more range,chat: All @32___305
+2020-04-08 20:50:18.818264+00:00,cmu_06,Yes,chat: All @32___305
+2020-04-08 20:50:19.728374+00:00,cmu_05,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:50:20.492029+00:00,cmu_05,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:50:20.978751+00:00,cmu_05,planner;ManualPathAdded;RangeTooLong,client
+2020-04-08 20:50:24.612770+00:00,cmu_05,planner;SelectPath;1;base,client
+2020-04-08 20:50:24.629631+00:00,cmu_05,"planner;PathMetrics;Profit,400,OperatingCost,116,StartUpCost,6940,Number of Deliveries,1,MassDelivered,2,Parcel,0,Food,2",client
+2020-04-08 20:50:29.711390+00:00,cmu_06,"planner;PathMetrics;Profit,1000,OperatingCost,152,StartUpCost,6940,Number of Deliveries,4,MassDelivered,10,Parcel,10,Food,0",client
+2020-04-08 20:50:29.728287+00:00,cmu_06,planner;Opened;plan 2,client
+2020-04-08 20:50:30.496421+00:00,cmu_05,planner;VehiclePathRemoved;1;base,client
+2020-04-08 20:50:31.362178+00:00,cmu_05,planner;VehiclePathRemoved;0;test1,client
+2020-04-08 20:50:33.866373+00:00,cmu_05,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:50:33.983908+00:00,cmu_05,planner;VehicleToggle;0;False;test1,client
+2020-04-08 20:50:35.030723+00:00,cmu_05,planner;VehicleToggle;1;False;base,client
+2020-04-08 20:50:35.046740+00:00,cmu_05,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,0,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:50:38.169915+00:00,cmu_06,"planner;PathMetrics;Profit,1000,OperatingCost,216,StartUpCost,6940,Number of Deliveries,6,MassDelivered,10,Parcel,10,Food,0",client
+2020-04-08 20:50:38.186530+00:00,cmu_06,planner;Opened;plan 1,client
+2020-04-08 20:50:41.563197+00:00,cmu_06,"planner;PathMetrics;Profit,1000,OperatingCost,152,StartUpCost,6940,Number of Deliveries,4,MassDelivered,10,Parcel,10,Food,0",client
+2020-04-08 20:50:41.579957+00:00,cmu_06,planner;Opened;plan 2,client
+2020-04-08 20:50:43.997970+00:00,cmu_04,we can't deliver to more than a few houses at a time with only a short range,chat: All @32___305
+2020-04-08 20:50:44.273846+00:00,cmu_06,planner;RunPathAgent,client
+2020-04-08 20:50:44.554798+00:00,cmu_06,"planner;PathMetrics;Profit,1000,OperatingCost,152,StartUpCost,6940,Number of Deliveries,4,MassDelivered,10,Parcel,10,Food,0",client
+2020-04-08 20:50:44.571199+00:00,cmu_06,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:50:45.696111+00:00,cmu_06,planner;RunPathAgent,client
+2020-04-08 20:50:45.810312+00:00,cmu_06,"planner;PathMetrics;Profit,1000,OperatingCost,152,StartUpCost,6940,Number of Deliveries,4,MassDelivered,10,Parcel,10,Food,0",client
+2020-04-08 20:50:45.826965+00:00,cmu_06,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:50:47.654740+00:00,cmu_06,planner;SelectPath;1;test1,client
+2020-04-08 20:50:47.665362+00:00,cmu_06,"planner;PathMetrics;Profit,1000,OperatingCost,152,StartUpCost,6940,Number of Deliveries,4,MassDelivered,10,Parcel,10,Food,0",client
+2020-04-08 20:50:49.095142+00:00,cmu_06,planner;RunPathAgent,client
+2020-04-08 20:50:49.197123+00:00,cmu_06,"planner;PathMetrics;Profit,1000,OperatingCost,152,StartUpCost,6940,Number of Deliveries,4,MassDelivered,10,Parcel,10,Food,0",client
+2020-04-08 20:50:49.217920+00:00,cmu_06,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:50:50.629419+00:00,cmu_06,planner;RunPathAgent,client
+2020-04-08 20:50:50.723442+00:00,cmu_06,"planner;PathMetrics;Profit,1000,OperatingCost,152,StartUpCost,6940,Number of Deliveries,4,MassDelivered,10,Parcel,10,Food,0",client
+2020-04-08 20:50:50.739690+00:00,cmu_06,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:50:51.353244+00:00,cmu_06,planner;RunPathAgent,client
+2020-04-08 20:50:51.583552+00:00,cmu_06,"planner;PathMetrics;Profit,1000,OperatingCost,152,StartUpCost,6940,Number of Deliveries,4,MassDelivered,10,Parcel,10,Food,0",client
+2020-04-08 20:50:51.605680+00:00,cmu_06,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:50:53.743477+00:00,cmu_01,gotchat,chat: All @32___305
+2020-04-08 20:50:56.722161+00:00,cmu_03,"designer;MouseClick;AssemblyChange;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*kOO0*iNO4*jPN4^ab^ac^ad^ae^cf^fg^gh^gk^fi^gj^bf,5,3",client
+2020-04-08 20:50:59.173608+00:00,cmu_03,"designer;MouseClick;ToggleCCWMotor;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*kOO2*iNO4*jPN4^ab^ac^ad^ae^cf^fg^gh^gk^fi^gj^bf,5,3",client
+2020-04-08 20:50:59.307321+00:00,cmu_03,"designer;RemovedComponent;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*kOO4*iNO4*jPN4^ab^ac^ad^ae^cf^fg^gh^gk^fi^gj^bf,5,3",client
+2020-04-08 20:51:00.795817+00:00,cmu_06,"planner;PathMetrics;Profit,1000,OperatingCost,152,StartUpCost,6940,Number of Deliveries,4,MassDelivered,10,Parcel,10,Food,0",client
+2020-04-08 20:51:00.812438+00:00,cmu_06,planner;Opened;plan 2,client
+2020-04-08 20:51:01.804743+00:00,cmu_01,business;SelectNode;68;True,client
+2020-04-08 20:51:02.868149+00:00,cmu_06,"planner;PathMetrics;Profit,1000,OperatingCost,216,StartUpCost,6940,Number of Deliveries,6,MassDelivered,10,Parcel,10,Food,0",client
+2020-04-08 20:51:02.884679+00:00,cmu_06,planner;Opened;plan 1,client
+2020-04-08 20:51:03.863064+00:00,cmu_05,planner;SelectPath;0;test1,client
+2020-04-08 20:51:03.879199+00:00,cmu_05,"planner;PathMetrics;Profit,0,OperatingCost,0,StartUpCost,3470,Number of Deliveries,0,MassDelivered,0,Parcel,0,Food,0",client
+2020-04-08 20:51:04.274196+00:00,cmu_06,planner;RunPathAgent,client
+2020-04-08 20:51:04.518860+00:00,cmu_06,"planner;PathMetrics;Profit,1000,OperatingCost,152,StartUpCost,6940,Number of Deliveries,4,MassDelivered,10,Parcel,10,Food,0",client
+2020-04-08 20:51:04.536147+00:00,cmu_06,planner;ServerMessage; Return AI Plan : Success,client
+2020-04-08 20:51:07.595267+00:00,cmu_05,"planner;PathMetrics;Profit,300,OperatingCost,50,StartUpCost,3470,Number of Deliveries,1,MassDelivered,3,Parcel,3,Food,0",client
+2020-04-08 20:51:07.611624+00:00,cmu_05,planner;ManualPathAdded;VehicleIndex=0;AddedIndex=91,client
+2020-04-08 20:51:07.760251+00:00,cmu_exp,"You have 1 minute left.  Business manager, please select the best plan of your team if you did not do so.",chat: Session @40___305
+2020-04-08 20:51:08.590442+00:00,cmu_05,planner;ManualPathAdded;PayloadConstraint,client
+2020-04-08 20:51:14.839325+00:00,cmu_01,business;SelectNode;71;True,client
+2020-04-08 20:51:15.245513+00:00,cmu_01,business;SelectNode;67;True,client
+2020-04-08 20:51:16.005351+00:00,cmu_01,business;SelectNode;76;True,client
+2020-04-08 20:51:16.439692+00:00,cmu_01,business;SelectNode;75;True,client
+2020-04-08 20:51:16.563916+00:00,cmu_06,planner;Opened;plan 2,client
+2020-04-08 20:51:16.562948+00:00,cmu_06,"planner;PathMetrics;Profit,1000,OperatingCost,152,StartUpCost,6940,Number of Deliveries,4,MassDelivered,10,Parcel,10,Food,0",client
+2020-04-08 20:51:17.555065+00:00,cmu_01,business;SelectNode;72;True,client
+2020-04-08 20:51:17.900033+00:00,cmu_01,business;SelectNode;73;True,client
+2020-04-08 20:51:19.034875+00:00,cmu_01,business;SelectNode;70;True,client
+2020-04-08 20:51:20.214462+00:00,cmu_01,business;SelectNode;69;True,client
+2020-04-08 20:51:21.223479+00:00,cmu_01,business;SelectNode;74;True,client
+2020-04-08 20:51:22.205054+00:00,cmu_02,and the design team still doesn't have desgn requrements from operations ,chat: All @32___305
+2020-04-08 20:51:23.360886+00:00,cmu_05,planner;ManualPathAdded;PayloadConstraint,client
+2020-04-08 20:51:31.252035+00:00,cmu_05,planner;SelectPath;1;base,client
+2020-04-08 20:51:31.267950+00:00,cmu_05,"planner;PathMetrics;Profit,300,OperatingCost,50,StartUpCost,6940,Number of Deliveries,1,MassDelivered,3,Parcel,3,Food,0",client
+2020-04-08 20:51:33.732384+00:00,cmu_05,"planner;PathMetrics;Profit,700,OperatingCost,117,StartUpCost,6940,Number of Deliveries,2,MassDelivered,7,Parcel,7,Food,0",client
+2020-04-08 20:51:33.752686+00:00,cmu_05,planner;ManualPathAdded;VehicleIndex=1;AddedIndex=96,client
+2020-04-08 20:51:34.480707+00:00,cmu_01,business;BusinessPlanSelected:plan 2:0,client
+2020-04-08 20:51:36.143790+00:00,cmu_05,planner;ManualPathAdded;PayloadConstraint,client
+2020-04-08 20:51:38.268329+00:00,cmu_04,planner;LoadDatabase,client
+2020-04-08 20:51:38.784925+00:00,cmu_04,planner;ScenarioLoaded:Scenario:253,client
+2020-04-08 20:51:42.261977+00:00,cmu_02,"designer;RunDesignAgent;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:51:42.913765+00:00,cmu_05,planner;VehicleToggle;1;False;base,client
+2020-04-08 20:51:42.929774+00:00,cmu_05,"planner;PathMetrics;Profit,300,OperatingCost,50,StartUpCost,3470,Number of Deliveries,1,MassDelivered,3,Parcel,3,Food,0",client
+2020-04-08 20:51:43.269475+00:00,cmu_02,"designer;Evaluated;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3;range=10.67648;velocity=8.857733;cost=3470.2",client
+2020-04-08 20:51:45.769394+00:00,cmu_02,designer;DesignMode,client
+2020-04-08 20:51:49.135027+00:00,cmu_04,we need longer range,chat: All @32___305
+2020-04-08 20:51:54.966010+00:00,cmu_04,we have this as a starting point,chat: All @32___305
+2020-04-08 20:51:57.751001+00:00,cmu_01,business;BusinessPlanSelected:plan 2:0,client
+2020-04-08 20:52:02.199039+00:00,cmu_02,"designer;RunDesignAgent;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",client
+2020-04-08 20:52:03.248864+00:00,cmu_02,"designer;Evaluated;*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3;range=10.67635;velocity=8.85769;cost=3470.2",client
+2020-04-08 20:52:06.212343+00:00,cmu_02,designer;DesignMode,client
+2020-04-08 20:52:06.522218+00:00,cmu_04,crank up the max range and we can service more than a few houses,chat: All @32___305
+2020-04-08 20:52:08.333360+00:00,cmu_03,"designer;SubmitToDB;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*kOO4*iNO4*jPN4^ab^ac^ad^ae^cf^fg^gh^gk^fi^gj^bf,5,3;Bad prototype",client
+2020-04-08 20:52:09.666329+00:00,cmu_03,"designer;Evaluated;*aMM0+++++*bNM2+++*cMN2+++*dLM2+++*eML1+++*fNN2*gON4*hOM4*kOO4*iNO4*jPN4^ab^ac^ad^ae^cf^fg^gh^gk^fi^gj^bf,5,3;range=-0.2107798;velocity=7.920071;cost=3548.2",client
+2020-04-08 20:52:10.188556+00:00,cmu_exp,"Thank you! The time is up. Your web page will refresh automatically within 10 seconds. If not, you can refresh your browser manually.",chat: Session @40___305
+2020-04-08 20:52:11.045624+00:00,cmu_03,designer;SubmittingToDBFailure;Failure: not submitted,client
+2020-04-08 20:52:37.351253+00:00,cmu_exp,"Please click the âmid-session surveyâ link and complete a mid-session survey. Please let me know (e.g., enter âsurvey completedâ) in this Help channel when you complete the survey.  On the first page of the survey, your User ID is your username (e.g., cmu_01), your role is shown on the top of the Help channel (e.g., Design Specialist). Please let me know if you have any questions. If you cannot send message through Help channel, please refresh your browser manually and try it again.",chat: Session @40___305
+2020-04-08 20:52:52.654042+00:00,cmu_03,ok,chat: Help @38_35___305
+2020-04-08 20:54:27.161434+00:00,cmu_04,survey complete,chat: Help @38_36___305
+2020-04-08 20:55:04.100037+00:00,cmu_02,survey_completed,chat: Help @38_34___305
+2020-04-08 20:55:06.642858+00:00,cmu_05,,chat: Help @38_37___305
+2020-04-08 20:55:28.659060+00:00,cmu_06,survey completed,chat: Help @38_38___305
+2020-04-08 20:55:34.849454+00:00,cmu_03,done with survey,chat: Help @38_35___305
+2020-04-08 20:55:57.633586+00:00,cmu_01,survey completed,chat: Help @38_33___305
+2020-04-08 20:56:48.469974+00:00,cmu_exp,"Thank you. We will start the next phase of our study. Your web page will refresh automatically within 10 seconds. If not, you can refresh your browser manually. If you have any other issues, please talk with me through this Help channel. If you cannot send message through Help channel, please refresh your browser manually and try it again.",chat: Session @40___305

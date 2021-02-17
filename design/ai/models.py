@@ -80,7 +80,7 @@ class OpsService(object):
 
         # startup cost
         self.startupCost = 0
-        total_vehicle_range = 0
+        total_vehicle_time = 0
         self.total_weight_delivered = 0
         self.total_food_delivered = 0
         self.total_parcel_delivered = 0
@@ -148,14 +148,14 @@ class OpsService(object):
                     float(plan_path['warehouse']['address']['x']),
                     float(plan_path['customers'][len(plan_path['customers']) - 1]['address']['z']),
                     float(plan_path['warehouse']['address']['z']));
-                end_time += (float) (path_range / float(plan_path['vehicle']['velocity']));
+                end_time += float(path_range / float(plan_path['vehicle']['velocity']));
 
                 # increment end time based on plan duration
                 if end_time > plan_duration:
                     plan_duration = end_time
 
                 # increment plan variables
-                total_vehicle_range += path_range
+                total_vehicle_time += float(path_range / float(plan_path['vehicle']['velocity']))
                 self.total_weight_delivered += path_capacity
                 self.total_food_delivered += food_delivered
                 self.total_parcel_delivered += parcel_delivered
@@ -179,7 +179,7 @@ class OpsService(object):
 
         # calculate operational cost, profit, and fixed cost
         # 100 is just a constant set to represent a cost per mile
-        self.operating_cost = int(total_vehicle_range * 100)
+        self.operating_cost = int(total_vehicle_time * 100)
 
         # 200 and 100 are based on the problem statement
         self.profit = 200 * self.total_food_delivered + 100 * self.total_parcel_delivered
@@ -227,9 +227,6 @@ class OpsPlan(object):
             else:
                 inputdemands.append(0)
 
-
-        print(str(len(inputdemands)) + " input check")
-
         # add vehicles based on the plan paths, where each path has a vehicle
         for vehicle_path in plan_json['paths']:
             vehicles.append([1,                                   # quantity
@@ -268,7 +265,6 @@ class OpsPlan(object):
             for i in range(len(pathdata)):
                 travel_path = pathdata[i]
                 vehiclePaths.append(travel_path)
-                print(travel_path)
 
             # unsatisfied nodes
             unsatisfied = self.intersection(unsatisfied, results[0])
@@ -279,10 +275,9 @@ class OpsPlan(object):
             for j in range(len(p)):
                 if(int(p[j]) != 0): # not warehouse
                     plan_json['paths'][i]['customers'].append(plan_json['scenario']['customers'][int(p[j]) - 1]); # index - 1 since the warehouse is in the first position
-                    print(str(i) + " " + str(len(plan_json['paths'][i]['customers'])) + " " + str(p[j]));
 
         self.output = str(plan_json)
-        print(self.output);
+        #print(self.output)
 
     def create_data_model( self, sc, inputdemands, inputdemandstype, num_vehicles,
             vehicle_range, vehicle_velocity, vehicle_payload_capacity, positions):
