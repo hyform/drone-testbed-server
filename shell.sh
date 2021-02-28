@@ -16,6 +16,16 @@ pip3 install pandas==1.1.5
 pip3 install torch==1.5.1+cpu torchvision==0.6.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
 pip3 install tabulate==0.8.7
 pip3 install celery==5.0.5
+pip3 install redis==3.5.3
 sudo -u postgres psql -f /vagrant/psql-script
-sudo mkdir /usr/share/ateams_service
-sudo cp -r /vagrant/evaluation /usr/share/ateams_service
+mkdir /usr/share/ateams_service
+cp -r /vagrant/evaluation /usr/share/ateams_service
+useradd celery
+mkdir /etc/conf.d
+cp /vagrant/celery/celery /etc/conf.d/celery
+cp /vagrant/celery/celery.conf /etc/tmpfiles.d/celery.conf
+cp /vagrant/celery/celery.service /etc/systemd/system/celery.service
+systemd-tmpfiles --create
+systemctl daemon-reload
+systemctl enable celery.service
+systemctl start celery.service
