@@ -99,7 +99,7 @@ def send_intervention(num, session_id):
 
             instance2 = str(operationsChannel.id) + "___" + str(session_id)
             async_to_sync(get_channel_layer().group_send)(
-                instance,
+                instance2,
                 {
                     'type': 'chat.message',
                     'message': Interventions.COMMUNICATION_1,
@@ -110,7 +110,7 @@ def send_intervention(num, session_id):
 
             instance3 = str(problemManagerChannel.id) + "___" + str(session_id)
             async_to_sync(get_channel_layer().group_send)(
-                instance,
+                instance3,
                 {
                     'type': 'chat.message',
                     'message': Interventions.COMMUNICATION_1,
@@ -132,7 +132,7 @@ def send_intervention(num, session_id):
 
             instance2 = str(operationsChannel.id) + "___" + str(session_id)
             async_to_sync(get_channel_layer().group_send)(
-                instance,
+                instance2,
                 {
                     'type': 'chat.message',
                     'message': Interventions.COMMUNICATION_2,
@@ -143,7 +143,7 @@ def send_intervention(num, session_id):
 
             instance3 = str(problemManagerChannel.id) + "___" + str(session_id)
             async_to_sync(get_channel_layer().group_send)(
-                instance,
+                instance3,
                 {
                     'type': 'chat.message',
                     'message': Interventions.COMMUNICATION_2,
@@ -165,7 +165,7 @@ def send_intervention(num, session_id):
 
             instance2 = str(operationsChannel.id) + "___" + str(session_id)
             async_to_sync(get_channel_layer().group_send)(
-                instance,
+                instance2,
                 {
                     'type': 'chat.message',
                     'message': Interventions.COMMUNICATION_3,
@@ -176,7 +176,7 @@ def send_intervention(num, session_id):
 
             instance3 = str(problemManagerChannel.id) + "___" + str(session_id)
             async_to_sync(get_channel_layer().group_send)(
-                instance,
+                instance3,
                 {
                     'type': 'chat.message',
                     'message': Interventions.COMMUNICATION_3,
