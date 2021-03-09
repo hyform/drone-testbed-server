@@ -3,6 +3,7 @@ from rest_framework import serializers
 from repo.models import DesignTeam, Profile, Vehicle, Address, Customer, CustomerScenario, Warehouse, Scenario, Waypoint, Path, PathCustomer, Plan, DataLog
 from repo.models import VehicleDemo, ScenarioDemo, OpsPlanDemo, PlayDemo
 from exper.models import Group, Session
+from datetime import datetime, timedelta
 
 
 class TeamSerializer(serializers.ModelSerializer):
@@ -155,6 +156,31 @@ class Plan2Serializer(serializers.Serializer):
             p_dict = PathSerializer(path).data
             ret.append(p_dict)
         return ret
+
+class MediationCountSerializer(serializers.Serializer):
+    session_id = serializers.IntegerField()
+    starttime = serializers.DateTimeField(default=datetime.now()-timedelta(minutes=5))
+    interval = serializers.DurationField(default=timedelta(minutes=5))
+    endtime = serializers.DateTimeField(default=datetime.now())
+    comms_ops = serializers.IntegerField()
+    comms_design = serializers.IntegerField()
+    comms_pm = serializers.IntegerField()
+    act_ops_iter = serializers.IntegerField()
+    act_ops_submit = serializers.IntegerField()
+    act_ops_AI = serializers.IntegerField()
+    act_design_iter = serializers.IntegerField()
+    act_design_submit = serializers.IntegerField()
+    act_design_AI = serializers.IntegerField()
+
+class MediationChatSerializer(serializers.Serializer):
+    session_id = serializers.IntegerField()
+    starttime = serializers.DateTimeField(default=datetime.now()-timedelta(minutes=5))
+    interval = serializers.DurationField(default=timedelta(minutes=5))
+    endtime = serializers.DateTimeField(default=datetime.now())
+    semantics = serializers.FloatField(default=0.0)
+    parameter = serializers.IntegerField()
+    strategy = serializers.IntegerField()
+
 
 class PlanShortSerializer(serializers.ModelSerializer):
     class Meta:

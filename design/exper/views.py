@@ -20,6 +20,9 @@ import csv
 import json
 from ai.agents.adaptive_team_ai_updated_planner import AdaptiveTeamAIUpdatedPlanner
 from exper.serializers import DigitalTwinSerializer
+from api.models import SessionTimer
+from datetime import datetime
+from ai.tasks import mediation_loop
 
 # Create your views here.
 
@@ -248,6 +251,27 @@ def session_status_play(request):
                     new_status = Session.PRESESSION
                 elif session.status == Session.PRESESSION:
                     new_status = Session.RUNNING
+                    
+                    if session.structure.name == "Process Manager":
+                        if session.use_process_ai:
+                            print("AI Process Manager")
+                            session_channel = Channel.objects.filter(name="Session").first()
+                            if session_channel:
+                                session_instance = str(session_channel.id) + "___" + str(session.id)
+                                data = {}
+                                data['session_id'] = session.id
+                                mediation_loop.delay(session_instance, data)
+                        else:
+                            print("Human Process Manager")
+
+                            # Update the session's RUNNING start timer
+                            running_timer = SessionTimer.objects.filter(session=session).filter(timer_type=SessionTimer.RUNNING_START).first()
+                            if running_timer:
+                                running_timer.datetime = datetime.now()
+                                running_timer.save()
+                            else:
+                                SessionTimer.objects.create(timer_type=SessionTimer.RUNNING_START, session=session)
+
                 elif session.status == Session.RUNNING:
                     new_status = Session.POSTSESSION
                 elif session.status == Session.POSTSESSION:
@@ -404,9 +428,12 @@ def create_session_group(request):
             sessionUseAI = item['ai']
             sessionStructureId = item['structure']
             sessionStructure = Structure.objects.filter(id=sessionStructureId).first()
+            sessionUseAIProcess = item['process']
+            if sessionStructure.name != 'Process Manager':
+                sessionUseAIProcess = False
             sessionMarketId = item['market']
             sessionMarket = Market.objects.filter(id=sessionMarketId).first()
-            newSession = Session.objects.create(name=sessionName, experiment=experiment, exercise=newExercise, index=sessionIndex, prior_session=None, structure=sessionStructure, market=sessionMarket, use_ai=sessionUseAI, status=4)
+            newSession = Session.objects.create(name=sessionName, experiment=experiment, exercise=newExercise, index=sessionIndex, prior_session=None, structure=sessionStructure, market=sessionMarket, use_ai=sessionUseAI, use_process_ai=sessionUseAIProcess, status=4)
             sessionTeam = SessionTeam.objects.create(team=team, session=newSession)
             structurePositions = list(Position.objects.filter(structure=sessionStructure).order_by('name'))
 

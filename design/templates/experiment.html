@@ -63,15 +63,12 @@
                             <div class="col-1 border p-0 text-center">Structure</div>
                             <div class="col-1 border p-0 text-center">Market</div>
                             <div class="col-1 border p-0 text-center">Status</div>
-                            <div class="col-1 border p-0 text-center">Controls</div>
-                            <div class="col-2 border p-0 text-center">Information</div>
-                            <div class="col-1 border p-0 text-center">Controls</div>
-                            <div class="col-1 border p-0 text-center">Digital Twin</div>
+                            <div class="col-3 border p-0 text-center">Controls</div>
+                            <div class="col-2 border p-0 text-center">Controls</div>
                         </div>
                     </li>
                     {% for exercise, sessions in exercises.items %}
-                        <!-- <div class="border border-dark"> -->
-                        <div>
+                    <div class="border border-dark">
                         {% for sess in sessions %}
                         {% if sess.status == 1 or sess.status == 4 or sess.status == 5 or sess.status == 6 or sess.status == 7 or sess.status == 8 %}
                         <li class="list-group-item p-0">
@@ -85,7 +82,9 @@
                                     {% endfor %}
                                 </div>
                                 <div class="col-1 border p-0">{{sess.use_ai}}</div>
-                                <div class="col-1 border p-0">{{sess.structure}}</div>
+                                <div class="col-1 border p-0">
+                                    {{sess.structure}} {% if sess.use_process_ai %}<div style="color:red; font-weight: bold;">(AI)</div>{% endif %}
+                                </div>
                                 <div class="col-1 border p-0">{{sess.market}}</div>
                                 {% if sess.status == 1 %}
                                 <div class="col-1 border p-0 running-status" id="status_{{sess.id}}">{{"Running"}}</div>
@@ -132,15 +131,11 @@
                                     <div id="info_text_{{sess.id}}"><b>Archive</b> the Session and end the Exercise</div>
                                     {% endif %}
                                 </div>
-                                <div class="col-1 border p-0 text-center">
+                                <div class="col-2 border p-0 text-center">
                                     {% if sess.status != 5 %}
                                     <button type="button" class="btn ctrl_button stop_button" id="stop_button_{{sess.id}}">Stop</button>
                                     <button type="button" class="btn ctrl_button archive_button" id="archive_button_{{sess.id}}">Archive</button>
                                     {% endif %}
-                                </div>
-                                <div class="col-1 border p-0 text-center">
-                                    <button type="button" class="btn ctrl_button edit_sim_button" id="edit_sim_button_{{sess.id}}">edit</button>
-                                    <button type="button" class="btn ctrl_button sim_button" id="sim_button_{{sess.id}}">run</button>
                                 </div>
                             </div>
                         </li>
@@ -187,7 +182,9 @@
                                     {% endfor %}
                                 </div>
                                 <div class="col-1 border p-0">{{sess.use_ai}}</div>
-                                <div class="col-2 border p-0">{{sess.structure}}</div>
+                                <div class="col-2 border p-0">
+                                    {{sess.structure}} {% if sess.use_process_ai %}<div style="color:red; font-weight: bold;">(AI)</div>{% endif %}
+                                </div>
                                 <div class="col-2 border p-0">{{sess.market}}</div>
                                 <div class="col-1 border p-0"><a href="/repo/datalog/list/{{sess.id}}" target="_blank">Log</a></div>
                                 <div class="col-1 border p-0"><a href="/exper/session/dump/{{sess.id}}" target="_blank">CSV</a></div>
@@ -249,7 +246,7 @@
     <!--
         Pop-up wizard for creating new session
     -->
-    <div class="modal fade" id="create-session-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="create-session-modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -308,6 +305,15 @@
                                             <option value="{{structure.id}}">{{structure.name}}</option>
                                             {% endfor %}
                                         </select>
+                                    </div>
+                                </div>
+
+                                <div class="row hidden-row" id="process-check">
+                                    <div class="col-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="session-ai-process-new">
+                                            <label class="form-check-label" for="session-process-ai-new">use Process Manager AI</label>
+                                        </div>
                                     </div>
                                 </div>
 

@@ -1,0 +1,199 @@
+html, body {
+    height: 100%;
+}
+
+.class {
+    font-family: Georgia, serif;
+}
+
+.border-minimal {
+    border-style: groove;
+    border-width: thin;
+}
+
+.border-minimal-2 {
+    border-style: solid;
+    border-width: thin;
+}
+
+.design-color {
+    background-color: #ffc3b6;
+}
+
+.ops-color {
+    background-color: #cefaff;
+}
+
+.business-color {
+    background-color: #fcffd4;
+}
+
+.all-color {
+    background-color: #e2ffd4;
+}
+
+.mediation-container {
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    gap: 0px 0px;
+    grid-template-areas:
+      ". timer timer . interventions"
+      "stream1 stream2 stream3 stream4 interventions"
+      "stream1 stream2 stream3 stream4 interventions"
+      "stream1 stream2 stream3 stream4 interventions"
+      "stream1 stream2 stream3 stream4 interventions"
+      "stream1 stream2 stream3 stream4 interventions"
+      "stream1 stream2 stream3 stream4 interventions"
+      "chat1 chat1 chat2 chat2 interventions"
+      "chat1 chat1 chat2 chat2 interventions"
+      "chat1 chat1 chat2 chat2 interventions"
+      "chat3 chat3 chat4 chat4 interventions"
+      "chat3 chat3 chat4 chat4 interventions"
+      "chat3 chat3 chat4 chat4 interventions"
+      "help help help help interventions";
+}
+
+.stream1 { 
+    grid-area: stream1;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.stream2 { 
+    grid-area: stream2; 
+
+    display: flex;
+    flex-direction: column;
+}
+
+.stream3 { 
+    grid-area: stream3; 
+
+    display: flex;
+    flex-direction: column;
+}
+
+.stream4 { 
+    grid-area: stream4; 
+
+    display: flex;
+    flex-direction: column;
+}
+
+.interventions { 
+    grid-area: interventions;
+
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    gap: 0px 0px;
+    grid-template-areas:
+      "mtimer"
+      "m1"
+      "m2"
+      "m3"
+      "m4"
+      "m5"
+      "m6"
+      "m7"
+      "m8"
+      "m9"
+      "m10"
+      "m11"
+      "m12"
+      "m13";
+}
+
+.m1 { grid-area: m1; }
+
+.m2 { grid-area: m2; }
+
+.m3 { grid-area: m3; }
+
+.m4 { grid-area: m4; }
+
+.m5 { grid-area: m5; }
+
+.m6 { grid-area: m6; }
+
+.m7 { grid-area: m7; }
+
+.m8 { grid-area: m8; }
+
+.m9 { grid-area: m9; }
+
+.m10 { grid-area: m10; }
+
+.m11 { grid-area: m11; }
+
+.m12 { grid-area: m12; }
+
+.m13 { grid-area: m13; }
+
+.mtimer { grid-area: mtimer; }
+
+.timer { 
+    grid-area: timer; 
+}
+
+.chat1 { 
+    grid-area: chat1; 
+
+    display: flex;
+    flex-direction: column;
+}
+
+.chat2 { 
+    grid-area: chat2; 
+    
+    display: flex;
+    flex-direction: column;
+}
+
+.chat3 { 
+    grid-area: chat3;
+    
+    display: flex;
+    flex-direction: column;
+ }
+
+.chat4 { 
+    grid-area: chat4; 
+    
+    display: flex;
+    flex-direction: column;
+}
+
+.help { grid-area: help; }
+
+.intervention-button {
+    height: 100%;
+    width: 100%;
+    font-family: 'Trebuchet MS', Arial, sans-serif;
+    font-size: 14px;
+}
+
+.message-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.stream-label {
+    text-align: center;
+    font-weight: bold;
+}
+
+.chat-label {
+    text-align: center;
+    font-weight: bold;
+}
+
+.scroller {
+    overflow: scroll;   
+}

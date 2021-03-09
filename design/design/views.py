@@ -16,6 +16,9 @@ from repo.models import Profile, DesignTeam, Study, Experiment, ExperOrg
 import collections
 import json
 from chat.chat_consumer_listener import ChatConsumerListener
+from process.mediation import Interventions
+from api.models import SessionTimer
+from datetime import datetime
 
 
 def ateams_homepage(request):
@@ -42,6 +45,8 @@ def ateams_homepage(request):
                         context['redir'] = "/ops/"
                     elif position.role.name == "Designer":
                         context['redir'] = "/design/"
+                    elif position.role.name == "Process":
+                        context['redir'] = "/process/"
             elif st.session.status == Session.POSTSESSION:
                 context['redir'] = "/postsession/"
             response = HttpResponse(render(request, "home.html", context))
@@ -217,6 +222,8 @@ def get_cutsom_links(request, st, context):
     link_org = None
     link_role = None
     link_structure = None
+    link_study = None
+    link_experiment = None
     link_position = None
     link_is_team = None
     link_ai = None
@@ -225,6 +232,12 @@ def get_cutsom_links(request, st, context):
     link_last = None
 
     link_org = st.team.organization
+    if st.session.exercise:
+        if st.session.exercise.experiment:
+            link_experiment = st.session.exercise.experiment
+            if link_experiment:
+                if link_experiment.study:
+                    link_study = link_experiment.study
     link_position = position = UserPosition.objects.filter(Q(session=st.session)&Q(user=request.user)).first().position
     link_structure = st.session.structure
     if link_position:
@@ -248,6 +261,10 @@ def get_cutsom_links(request, st, context):
 
     custom_links = CustomLinks.objects.filter(
         Q(org__isnull=True) | Q(org=link_org)
+        ).filter(
+            Q(study__isnull=True) | Q(study=link_study)
+        ).filter(
+            Q(experiment__isnull=True) | Q(experiment=link_experiment)            
         ).filter(
             Q(role__isnull=True) | Q(role=link_role)
         ).filter(
@@ -317,6 +334,8 @@ def ateams_setup(request):
                             context['redir'] = "/ops/"
                         elif position.role.name == "Designer":
                             context['redir'] = "/design/"
+                        elif position.role.name == "Process":
+                            context['redir'] = "/process/"
                 elif st.session.status == Session.POSTSESSION:
                     context['redir'] = "/postsession/"
                 response = HttpResponse(render(request, "setup.html", context))
@@ -395,6 +414,8 @@ def ateams_presession(request):
                             context['redir'] = "/ops/"
                         elif position.role.name == "Designer":
                             context['redir'] = "/design/"
+                        elif position.role.name == "Process":
+                            context['redir'] = "/process/"
                 elif st.session.status == Session.POSTSESSION:
                     context['redir'] = "/postsession/"
                 response = HttpResponse(render(request, "presession.html", context))
@@ -482,6 +503,33 @@ def ateams_business(request):
     else:
         response = HttpResponse(render(request, "home.html"))
     return response
+
+@login_required
+def ateams_process(request):
+    context = {}
+    response = None
+    if request.user.is_authenticated:
+        st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
+        if st:
+            if st.session.status == Session.RUNNING:                                
+                context = Interventions.add_intervention_constants(context)                
+                response = HttpResponse(render(request, "intervention.html", context))
+            else:
+                if st.session.status == Session.SETUP:
+                    context['redir'] = "/setup/"
+                elif st.session.status == Session.PRESESSION:
+                    context['redir'] = "/presession/"
+                elif st.session.status == Session.POSTSESSION:
+                    context['redir'] = "/postsession/"
+                context = Interventions.add_intervention_constants(context)
+                response = HttpResponse(render(request, "intervention.html", context))
+        else:
+            context['redir'] = "/"
+            context = Interventions.add_intervention_constants(context)
+            response = HttpResponse(render(request, "intervention.html", context))
+    else:
+        response = HttpResponse(render(request, "home.html"))
+    return response 
 
 @login_required
 def ateams_postsession(request):
@@ -573,6 +621,8 @@ def ateams_postsession(request):
                             context['redir'] = "/ops/"
                         elif position.role.name == "Designer":
                             context['redir'] = "/design/"
+                        elif position.role.name == "Process":
+                            context['redir'] = "/process/"
                 response = HttpResponse(render(request, "postsession.html", context))
         else:
             context['redir'] = "/"

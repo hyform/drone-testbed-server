@@ -99,3 +99,7 @@ html, h2, h3, h4, h5, h6, div, ul, li, p, a {
 .ctrl_button {
     padding: 2px;
 }
+
+.hidden-row {
+    display: none;
+}

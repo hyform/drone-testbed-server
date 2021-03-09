@@ -16,6 +16,8 @@ from .database_helper import DatabaseHelper
 from repo.serializers import PlanSerializer
 #from .generate_role_sequences import GenerateRoleSequences
 
+from api.messaging import twin_info_message, twin_complete_message
+
 
 # initializes a team of agents based on an experimental session and then starts a team simulation in a new thread
 class AdaptiveTeamAIUpdatedPlanner():
@@ -124,6 +126,8 @@ class AdaptiveTeamAIUpdatedPlanner():
         try:
 
             print("action",action)
+            twin_info_message("action")
+            twin_info_message(action)
 
             # probably need to develop a event object, instead of using lists
             t = action[0]
@@ -216,6 +220,8 @@ class AdaptiveTeamAIUpdatedPlanner():
                         self.db_helper.submit_data_log(usr, "BusinessPlanSelected;" + closest_plan_json['tag'] + ";" + str(closest_plan_json['id']) + ";" + plan_str + ";" + metricstr, self.real_time, t)
                         self.write_business_metrics(t, usr, "Selected", result.profit, result.startupCost, result.number_deliveries, "")
                         print("-------------------------------- Business Selected --------------------------------", metricstr)
+                        twin_info_message("-------------------------------- Business Selected --------------------------------")
+                        twin_info_message(metricstr)
 
                 # save selected event for at the end of the session
                 if action_info[0] == "Selected" and t < 18 and self.business_select_event is None:
@@ -273,8 +279,11 @@ class AdaptiveTeamAIUpdatedPlanner():
                             self.db_helper.submit_data_log(usr, "SubmitPlanToDB;" + plan['tag'] + ";" + plan_str + ";" + metrics, self.real_time, self.current_time)
                             self.write_planner_metrics(self.current_time, usr, "Submit", result.profit, result.startupCost, result.number_deliveries)
                             print("---- Submit Plan ---- ", metrics)
+                            twin_info_message("---- Submit Plan ---- ")
+                            twin_info_message(metrics)
                         else:
                             print("plan had zero profit : not submitting")
+                            twin_info_message("plan had zero profit : not submitting")
 
                 # opens the closest plan
                 if "Open" in tokens[0]:
@@ -334,6 +343,7 @@ class AdaptiveTeamAIUpdatedPlanner():
                                 paths.append(path_obj)
                             except Exception as e:
                                 print(e)
+                                twin_info_message(e)
 
                     plan['paths'] = paths
                     plan['scenario'] = scenario_obj
@@ -482,6 +492,7 @@ class AdaptiveTeamAIUpdatedPlanner():
 
         except Exception as e:
             print("---- RNN parser error ----")
+            twin_info_message("---- RNN parser error ----")
             traceback.print_exc()
             pass
 
@@ -627,6 +638,7 @@ class AdaptiveTeamAIUpdatedPlanner():
                                     max_path_len = event_path_length
                             except Exception as f:
                                 print(f)
+                                twin_info_message(f)
                         if "$" in location_tokens[i]:
                             token_test = location_tokens[i].replace("Manual","")
                             if "Path" in token_test:
@@ -663,6 +675,7 @@ class AdaptiveTeamAIUpdatedPlanner():
                 #traceback.print_exc()
                 if show_error:
                     print("RNN generated sequence parse errors in planner database ")
+                    twin_info_message("RNN generated sequence parse errors in planner database ")
                 show_error = False
 
 
@@ -705,6 +718,7 @@ class AdaptiveTeamAIUpdatedPlanner():
         self.team_data[usr] = None
         self.team_time_events[usr] = business_time_events
         print(self.team_time_events[usr])
+        twin_info_message(self.team_time_events[usr])
         self.assign_events_to_user(usr, seq_events)
 
     def sample_design_sequence_starting_open_design(self, range_vehicle, capacity_vehicle, cost_vehicle):
@@ -891,6 +905,8 @@ class AdaptiveTeamAIUpdatedPlanner():
                 valid = False
                 print("error : ++++++++++++++++++++++ invalid action queue ++++++++++++++++++++++ ")
                 print(self.actions_queue)
+                twin_info_message("error : ++++++++++++++++++++++ invalid action queue ++++++++++++++++++++++ ")
+                twin_info_message(self.actions_queue)
             time_check = self.actions_queue[i][0]
 
     # create integer sample from a distribution
@@ -933,19 +949,22 @@ class AdaptiveTeamAIUpdatedPlanner():
         return json.dumps(plan_json)
 
     def write_designer_metrics(self, t, usr, event_type, vehicle_range, vehicle_capacity, vehicle_cost, config):
-        print("commented out")
+        #print("commented out")
+        x = 0
         #with open("designer.txt", "a") as myfile:
         #    myfile.write(str(self.session.id) + "\t" + usr + "\t" + str(t) + "\t" + event_type + "\t" + str(vehicle_range) + "\t" + str(vehicle_capacity) + "\t" + str(vehicle_cost) + "\t" + config + "\n")
         #    myfile.close()
 
     def write_planner_metrics(self, t, usr, event_type, profit, startupCost, no_deliveries):
-        print("commented out")
+        #print("commented out")
+        x = 0
         #with open("planner.txt", "a") as myfile:
         #    myfile.write(str(self.session.id) + "\t" + usr + "\t" + str(t) + "\t" + event_type + "\t" + str(profit) + "\t" + str(startupCost) + "\t" + str(no_deliveries) + "\n")
         #    myfile.close()
 
     def write_business_metrics(self, t, usr, event_type, profit, startupCost, no_deliveries, scenario_str = ""):
-        print("commented out")
+        #print("commented out")
+        x = 0
         #with open("business.txt", "a") as myfile:
         #    myfile.write(str(self.session.id) + "\t" + usr + "\t" + str(t) + "\t" + event_type + "\t" + str(profit) + "\t" + str(startupCost) + "\t" + str(no_deliveries) + "\t" + str(scenario_str) + "\n")
         #    myfile.close()

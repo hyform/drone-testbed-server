@@ -21,9 +21,11 @@
                 {{position_name}}
                 {% endif %}
             </div>
+            {% if not mediator %}
             <div class="col-3">
                 <a href="/info/" target="_blank">Info</a>
             </div>
+            {% endif %}
             <div class="col-2">
                 <a target="_parent" href="{% url 'logout' %}">logout</a>
             </div>
@@ -32,6 +34,7 @@
         <div class="outer-container">
             <ul id="channel-list" class="list-unstyled channel-list"></ul>
         </div>
+        {% if not mediator %}
         <div class="message-controls">
             <div class="col-9 chat-message">
               <textarea id="message" placeholder="Type Here" type="text" autofocus autocomplete="off"
@@ -41,6 +44,7 @@
                 <button id="send" type="submit" class="btn primary-btn btn-xs">Send</button>
             </div>
         </div>
+        {% endif %}
     </div>
 
     <script type='application/javascript' src="/static/js/jquery-3.4.1.min.js"></script>

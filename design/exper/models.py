@@ -36,6 +36,12 @@ class Structure(models.Model):
     def __str__(self):
         return self.name
 
+# If a structure appears in this table, then it is only available to the Organizations it is linked to in this table
+# This will be loose enforcement for now. Basically it only filters out options in session creation
+class StructureOrganization(models.Model):
+    structure = models.ForeignKey(Structure, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+
 class Role(models.Model):
     name = models.CharField(max_length=50)
     def __str__(self):
@@ -64,6 +70,7 @@ class Session(models.Model):
     structure = models.ForeignKey(Structure, on_delete=models.CASCADE)
     market = models.ForeignKey(Market, on_delete=models.CASCADE)
     use_ai = models.BooleanField()
+    use_process_ai = models.BooleanField(default=False)
 
     NONE = 0
     RUNNING = 1
@@ -117,6 +124,8 @@ class CustomLinks(models.Model):
     TUTORIAL = 4
     link_type = models.IntegerField(null=True, blank=True)
     org = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.SET_NULL)
+    study = models.ForeignKey(Study, null=True, blank=True, on_delete=models.SET_NULL)
+    experiment = models.ForeignKey(Experiment, null=True, blank=True, on_delete=models.SET_NULL)
     role = models.ForeignKey(Role, null=True, blank=True, on_delete=models.SET_NULL)
     structure = models.ForeignKey(Structure, null=True, blank=True, on_delete=models.SET_NULL)
     position = models.ForeignKey(Position, null=True, blank=True, on_delete=models.SET_NULL)

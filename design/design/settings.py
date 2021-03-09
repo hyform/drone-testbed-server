@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'chat',
     'exper',
     'api',
+    'process',
 ]
 
 MIDDLEWARE = [

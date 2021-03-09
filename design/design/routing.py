@@ -4,6 +4,7 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 # import chat.routing
 from django.conf.urls import url
 from chat.consumers import ChatConsumer
+from api.consumers import APIConsumer
 from ai.consumers import TaskConsumer
 
 application = ProtocolTypeRouter({
@@ -12,6 +13,7 @@ application = ProtocolTypeRouter({
         URLRouter([
             #chat.routing.websocket_urlpatterns
             url(r'ws/chat/$', ChatConsumer),
+            url(r'ws/api/$', APIConsumer),
             url(r'ws/tasks/$', TaskConsumer)
         ])
     ),

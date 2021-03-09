@@ -17,7 +17,10 @@ def index(request):
     experimenter = False
     if request.user.is_authenticated:        
         if request.user.profile.is_experimenter():
-            experimenter = True            
+            experimenter = True
+        elif request.user.profile.is_mediator():
+            context['position_name'] = 'Mediator'
+            context['mediator'] = True 
         else: #TODO: to a is_player here instead of just the else, then handle the other condition(s)
             st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
             if st:

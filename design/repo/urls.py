@@ -30,6 +30,9 @@ urlpatterns = [
     path('sessiondatalog/', views.SessionDataLog.as_view()),
     # path('datalog/<int:pk>', views.DataLogDetail.as_view()),
     path('datalog/list/<int:session_id>/', views.DataLogListView.as_view()),
+    path('mediator/count/<int:session_id>/', views.MediationCountView.as_view()),
+    path('mediator/count/<int:session_id>/section/<int:section_id>/', views.MediationCountView.as_view()),
+    path('mediator/chat/<int:session_id>/section/<int:section_id>/', views.MediationChatView.as_view()),
     # path('datalog/admin', views.DLAdminView.as_view()),
 ]
 
