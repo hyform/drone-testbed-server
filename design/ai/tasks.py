@@ -235,7 +235,7 @@ def mediation(i, session_id):
     print(i, session.name, session.index)
     if i<7:
         # first step is to schedule the next time to call
-        mediation.s(i+1, session_id).apply_async(countdown=3)
+        mediation.s(i+1, session_id).apply_async(countdown=150)
         # we don't care about the first 2 times (time 0 and time 2.5 minutes)
         if i<2:
             print('waiting for next interval')
