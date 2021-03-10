@@ -11,8 +11,9 @@ from .mediation import Interventions
 
 # num is 1 to 13
 def send_intervention(num, session_id):
-    structure = Structure.objects.filter(name="Process Manager").first()
-    if structure:
+    session = Session.objects.filter(id=session_id)
+    structure = session.structure
+    if structure and structure.name == "Process Manager" or structure.name == "Process Manager (AI)":
         channels = Channel.objects.filter(structure=structure)
 
         designerChannel = channels.filter(name="Designer").first()
