@@ -31,25 +31,31 @@ def ateams_homepage(request):
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES) & Q(
             team=request.user.profile.team)).first()
         if st:
-            if st.session.status == Session.SETUP:
-                context['redir'] = "/setup/"
-            elif st.session.status == Session.PRESESSION:
-                context['redir'] = "/presession/"
-            elif st.session.status == Session.RUNNING:
-                position = UserPosition.objects.filter(
-                    Q(session=st.session) & Q(user=request.user)).first().position
-                if position:
-                    if position.role.name == "Business":
-                        context['redir'] = "/business/"
-                    elif position.role.name == "OpsPlanner":
-                        context['redir'] = "/ops/"
-                    elif position.role.name == "Designer":
-                        context['redir'] = "/design/"
-                    elif position.role.name == "Process":
-                        context['redir'] = "/process/"
-            elif st.session.status == Session.POSTSESSION:
-                context['redir'] = "/postsession/"
-            response = HttpResponse(render(request, "home.html", context))
+            up = UserPosition.objects.filter(Q(user=request.user)&Q(session=st.session)).first()
+            if up:
+                if st.session.status == Session.SETUP:
+                    context['redir'] = "/setup/"
+                elif st.session.status == Session.PRESESSION:
+                    context['redir'] = "/presession/"
+                elif st.session.status == Session.RUNNING:
+                    position = UserPosition.objects.filter(
+                        Q(session=st.session) & Q(user=request.user)).first().position
+                    if position:
+                        if position.role.name == "Business":
+                            context['redir'] = "/business/"
+                        elif position.role.name == "OpsPlanner":
+                            context['redir'] = "/ops/"
+                        elif position.role.name == "Designer":
+                            context['redir'] = "/design/"
+                        elif position.role.name == "Process":
+                            context['redir'] = "/process/"
+                elif st.session.status == Session.POSTSESSION:
+                    context['redir'] = "/postsession/"
+                response = HttpResponse(render(request, "home.html", context))
+            else:
+                # User in team, but not assigned a role, so boot them
+                logout(request)
+                response = HttpResponse(render(request, "home.html"))
         else:
             if not experimenter:
                 logout(request)
@@ -281,6 +287,8 @@ def get_cutsom_links(request, st, context):
             Q(first__isnull=True) | Q(first=link_first)
         ).filter(
             Q(last__isnull=True) | Q(last=link_last)
+        ).filter(
+            Q(active=True)
         )
 
     if custom_links:

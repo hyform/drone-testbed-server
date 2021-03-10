@@ -4,7 +4,7 @@ from asgiref.sync import async_to_sync
 
 from channels.layers import get_channel_layer
 
-def event_info_message(channel, position, info):
+def event_info_message(channel, position, info, time):
     async_to_sync(get_channel_layer().group_send)(
         channel,
         {
@@ -12,6 +12,7 @@ def event_info_message(channel, position, info):
             'type': 'event.info',
             'position': position,
             'info': info,
+            'time': time,
         }
     )
 

@@ -497,12 +497,14 @@ class ChatConsumer(WebsocketConsumer):
         type = event['type']
         position = event['position']
         info = event['info'] # event.info
+        time = event['time']
         # send message to websocket
         self.send(text_data=json.dumps({
             'channel': channel,
             'type': type,
             'position': position,
             'info': info,
+            'time': time,
         }))
 
     def twin_start(self, event):

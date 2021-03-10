@@ -1,6 +1,61 @@
 document.addEventListener("DOMContentLoaded", function (event) {
     var ajaxUrl = getAjaxUrl("process");
 
+    var sendButton = $("#send");
+    var messageText = $("#message");
+
+    sendButton.prop("disabled", true);
+
+    var timer = document.getElementById("timer");
+    var mtimer = document.getElementById("mtimer");
+
+    var totalMinutes = 20;
+    var segmentMinutes = 2.5;
+    var interventionSeconds = 15;
+
+    var totalSeconds = Math.round(totalMinutes * 60);
+    var segmentSeconds = Math.round(segmentMinutes * 60);
+    
+    var timeLeft = totalSeconds;
+    var countdown = totalSeconds;
+    var segmentCountdown = segmentSeconds;
+    var interventionCountdown = -10; //-10 is for inactive
+
+    function disable_interventions() {
+        document.getElementById("inter-1").disabled = true;
+        document.getElementById("inter-2").disabled = true;
+        document.getElementById("inter-3").disabled = true;
+        document.getElementById("inter-4").disabled = true;
+        document.getElementById("inter-5").disabled = true;
+        document.getElementById("inter-6").disabled = true;
+        document.getElementById("inter-7").disabled = true;
+        document.getElementById("inter-8").disabled = true;
+        document.getElementById("inter-9").disabled = true;
+        document.getElementById("inter-10").disabled = true;
+        document.getElementById("inter-11").disabled = true;
+        document.getElementById("inter-12").disabled = true;
+        document.getElementById("inter-13").disabled = true;
+
+        mtimer.innerText = "";
+        interventionCountdown = -10;
+    }
+
+    function enable_interventions() {
+        document.getElementById("inter-1").disabled = false;
+        document.getElementById("inter-2").disabled = false;
+        document.getElementById("inter-3").disabled = false;
+        document.getElementById("inter-4").disabled = false;
+        document.getElementById("inter-5").disabled = false;
+        document.getElementById("inter-6").disabled = false;
+        document.getElementById("inter-7").disabled = false;
+        document.getElementById("inter-8").disabled = false;
+        document.getElementById("inter-9").disabled = false;
+        document.getElementById("inter-10").disabled = false;
+        document.getElementById("inter-11").disabled = false;
+        document.getElementById("inter-12").disabled = false;
+        document.getElementById("inter-13").disabled = false;
+    }
+
     function intervention_handler(event) {
         selectAjaxUrl = ajaxUrl + "intervention/"
         $.ajax({
@@ -11,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 intervention: event.data.intervention
             },
             success: function (result) {
-                //call function to disable buttons
+                disable_interventions();
             }
         });
     }
@@ -28,12 +83,24 @@ document.addEventListener("DOMContentLoaded", function (event) {
     $("#inter-10").click({intervention: 10}, intervention_handler);
     $("#inter-11").click({intervention: 11}, intervention_handler);
     $("#inter-12").click({intervention: 12}, intervention_handler);
-    $("#inter-13").click({intervention: 13}, intervention_handler);
-    
-    var elapsedTime = null;
-    var timeLeft = null;
-    var countdown = null;
-    function elapsed_time() {
+    $("#inter-13").click({intervention: 13}, intervention_handler);    
+
+    disable_interventions();    
+
+    // Set countdown to the number of seconds left
+    function advance_session() {
+        selectAjaxUrl = ajaxUrl + "session_status_postsession/"
+        $.ajax({
+            url: selectAjaxUrl,
+            method: "PUT",
+            data: {
+                csrfmiddlewaretoken: csrftoken,
+            }
+        });
+    }
+
+    // Set countdown to the number of seconds left
+    function seconds_left() {
         selectAjaxUrl = ajaxUrl + "elapsed_time/"
         $.ajax({
             url: selectAjaxUrl,
@@ -42,24 +109,62 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 csrfmiddlewaretoken: csrftoken,
             },
             success: function (result) {
-                var resultJson = JSON.parse(result);
-                elapsedTime = resultJson.elapsed_time;
-                timeLeft = 900 - parseInt(elapsedTime);
+                var resultJson = JSON.parse(result);     
+                elapsedSeconds = resultJson.elapsed_seconds;
+                timeLeft = totalSeconds - parseInt(elapsedSeconds);
                 countdown = timeLeft;
+                segmentCountdown = countdown % segmentSeconds;
+                if(segmentCountdown == 0) {
+                    segmentCountdown = segmentSeconds;
+                }
+
+                //Don't stop after initial 2.5 minutes
+                if(countdown / segmentSeconds > 7) {
+                    segmentCountdown = segmentCountdown + segmentSeconds;
+                }
             }
         });
     }
+    seconds_left();
+    setInterval(function(){      
+        /*  
+        if(countdown < 0) {
+            advance_session();
+        }
+        */
 
-    //elapsed_time();
-    /*
-    countdown = 900;
+        //Check to see if intervention countdown finished
+        //Could check against a single value like 0 or -1, but "just in case"
+        //let's do a range
+        if(interventionCountdown < 0 && interventionCountdown > -5) {            
+            disable_interventions();
+            interventionCountdown = -10;
+        }
 
-    var timer = document.getElementById("timer");
-    setInterval(function(){ 
-        timer.innerText = countdown;
+        if(segmentCountdown < 0 && countdown > 10) { //Don't trigger on final segment
+            segmentCountdown = countdown % segmentSeconds;
+            interventionCountdown = interventionSeconds;
+            enable_interventions();
+        }
+
+        mins = Math.floor(segmentCountdown / 60);
+        secs = segmentCountdown % 60;
+        zero = "";
+        if(secs < 10) {
+            zero = "0";
+        }
+        if(countdown < segmentSeconds) {
+            timer.innerText = "Complete";
+        } else {
+            timer.innerText = "Next intervention in " + mins + ":" + zero + secs;
+        }
         countdown = countdown - 1;
+        segmentCountdown = segmentCountdown - 1;
+        if(interventionCountdown >= 0) {
+            mtimer.innerText = "Choose now " + interventionCountdown;
+            interventionCountdown = interventionCountdown - 1;
+        }
     }, 1000);
-    */
 
     var connection = null;
     var sessionChannelId = null;
@@ -92,6 +197,20 @@ document.addEventListener("DOMContentLoaded", function (event) {
         return wsurl;
     }
 
+    var send = function () {
+        if (connection) {
+            var messageBundle = {
+                type: "message",
+                channel: helpChannelId,
+                message: messageText.val(),
+                channel_position: "Process Manager",
+                channel_team_id: null
+            };
+            messageText.val("");
+            connection.send(JSON.stringify(messageBundle));
+        }
+    };
+
     var sendResponse = function (channelId) {
         if (connection) {
             var messageBundle = {
@@ -117,6 +236,20 @@ document.addEventListener("DOMContentLoaded", function (event) {
         connection = new WebSocket(url);
 
         connection.onopen = function () {
+            sendButton.prop("disabled", false);
+            //Remove all previous handlers. If a connection closes, multiple click handlers can be
+            //handled otherwise and messages will send out multiple times
+            sendButton.off();
+            sendButton.on('click', send);
+
+            messageText.off();
+            messageText.keypress(function (event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if (keycode == '13') {
+                    event.preventDefault();
+                    send();
+                }
+            });
         };
 
         connection.onclose = function (e) {
@@ -153,17 +286,20 @@ document.addEventListener("DOMContentLoaded", function (event) {
             if (messageType === "event.info") {                
                 var position = jsonMessage.position;
                 var info = jsonMessage.info;
+                var time = jsonMessage.time;
+                var elapsedSeconds = parseInt(time);
 
-                //TODO: session get time from actual message
-                var date = new Date();
-                var hours = date.getHours();
-                var minutes = date.getMinutes();
+                mins = Math.floor(elapsedSeconds / 60);
+                secs = elapsedSeconds % 60;
+                zero = "";
+                if(secs < 10) {
+                    zero = "0";
+                }
 
                 if(position === "Designer 1")
                 {
                     var newMessage = document.createElement("li");
-                    var newMessageText = hours + ":" + minutes + " " + info;
-                    console.log(info);
+                    var newMessageText = mins + ":" + zero + secs + " " + info;
 
                     if(info === last1) {
                         c1 = c1+1;
@@ -186,8 +322,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 if(position === "Designer 2")
                 {
                     var newMessage = document.createElement("li");
-                    var newMessageText = hours + ":" + minutes + " " + info;
-                    console.log(info);
+                    var newMessageText = mins + ":" + zero + secs + " " + info;
 
                     if(info === last2) {
                         c2 = c2+1;
@@ -210,8 +345,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 if(position === "Ops Planner 1")
                 {
                     var newMessage = document.createElement("li");
-                    var newMessageText = hours + ":" + minutes + " " + info;
-                    console.log(info);
+                    var newMessageText = mins + ":" + zero + secs + " " + info;
 
                     if(info === last3) {
                         c3 = c3+1;
@@ -234,8 +368,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 if(position === "Ops Planner 2")
                 {
                     var newMessage = document.createElement("li");
-                    var newMessageText = hours + ":" + minutes + " " + info;
-                    console.log(info);
+                    var newMessageText = mins + ":" + zero + secs + " " + info;
 
                     if(info === last4) {
                         c4 = c4+1;

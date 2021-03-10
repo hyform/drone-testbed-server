@@ -20,8 +20,9 @@ from exper.models import UserPosition, SessionTeam, GroupPosition, Session
 from django.db.models import Q
 from chat.messaging import new_vehicle_message, new_plan_message, new_scenario_message
 from api.messaging import event_info_message
+from api.models import SessionTimer
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from functools import reduce
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
@@ -333,10 +334,18 @@ class DataLogList(generics.CreateAPIView):
                     if action:
                         up = UserPosition.objects.filter(Q(user=user)&Q(session=st.session)).first()
                         if up:
-                            print(channel)
-                            print(up.position.name)
-                            print(action)
-                            event_info_message(channel, up.position.name, action)
+                            running_timer = SessionTimer.objects.filter(session=st.session).filter(timer_type=SessionTimer.RUNNING_START).first()
+                            elapsed_seconds = -1
+                            if running_timer:
+                                current_time = datetime.now(timezone.utc)
+                                running_timestamp = running_timer.timestamp
+                                if running_timestamp:
+                                    time_difference = current_time - running_timestamp
+                                    elapsed_seconds = round(time_difference.total_seconds())
+                            else:
+                                elapsed_seconds = 0          
+
+                            event_info_message(channel, up.position.name, action, elapsed_seconds)
 
             serializer.save(user=user, session=st.session, type='client')
         else:

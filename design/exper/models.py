@@ -116,6 +116,7 @@ class UserChecklist(models.Model):
     postcheck = models.BooleanField(default=False)
 
 class CustomLinks(models.Model):
+    active = models.BooleanField(default=True)
     text = models.CharField(max_length=255)
     link = models.CharField(max_length=2048)
     SURVEY = 1

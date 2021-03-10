@@ -39,8 +39,7 @@ html, body {
     grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     gap: 0px 0px;
     grid-template-areas:
-      ". timer timer . interventions"
-      "stream1 stream2 stream3 stream4 interventions"
+      "logout timer timer . interventions"
       "stream1 stream2 stream3 stream4 interventions"
       "stream1 stream2 stream3 stream4 interventions"
       "stream1 stream2 stream3 stream4 interventions"
@@ -52,6 +51,7 @@ html, body {
       "chat3 chat3 chat4 chat4 interventions"
       "chat3 chat3 chat4 chat4 interventions"
       "chat3 chat3 chat4 chat4 interventions"
+      "help help help help interventions"
       "help help help help interventions";
 }
 
@@ -135,10 +135,26 @@ html, body {
 
 .m13 { grid-area: m13; }
 
-.mtimer { grid-area: mtimer; }
+.mtimer { 
+    grid-area: mtimer; 
+
+    text-align: center;
+    font-weight: bold;
+    font-size: 30px;
+}
 
 .timer { 
     grid-area: timer; 
+
+    text-align: center;
+    font-weight: bold;
+    font-size: 30px;
+}
+
+.logout { 
+    grid-area: logout; 
+
+    text-align: center;
 }
 
 .chat1 { 
@@ -169,7 +185,12 @@ html, body {
     flex-direction: column;
 }
 
-.help { grid-area: help; }
+.help { 
+    grid-area: help;
+    
+    display: flex;
+    flex-direction: column;
+}
 
 .intervention-button {
     height: 100%;
@@ -196,4 +217,33 @@ html, body {
 
 .scroller {
     overflow: scroll;   
+}
+
+.message-controls {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    padding-bottom: 5px;
+}
+
+.chat-message {
+    margin: 0;
+    padding: 0;
+    min-width: 20px;
+}
+
+.chat-send {
+    margin: 0;
+    padding: 0;
+    min-width: 20px;
+}
+
+.btn {
+    background-color: #4682B4;
+    min-width: 100%;
+    text-align: center;
+    color: white;
+    border: 0;
+    padding-left: 0;
+    padding-right: 0;
 }

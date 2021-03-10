@@ -274,6 +274,7 @@ $(document).ready(function () {
     });
 
     //----------------------------------
+    /*
     $('#select-structure-new').on('change', function () {
         if($("#select-structure-new option:selected" ).text() === "Process Manager") {
             $("#process-check").removeClass('hidden-row');
@@ -281,6 +282,7 @@ $(document).ready(function () {
             $("#process-check").addClass('hidden-row');
         }
     });
+    */
 
 
     $('#add_session_button').on('click', function () {
