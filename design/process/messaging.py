@@ -13,7 +13,7 @@ from .mediation import Interventions
 def send_intervention(num, session_id):
     session = Session.objects.filter(id=session_id)
     structure = session.structure
-    if structure and structure.name == "Process Manager" or structure.name == "Process Manager (AI)":
+    if structure.name == "Process Manager" or structure.name == "Process Manager (AI)":
         channels = Channel.objects.filter(structure=structure)
 
         designerChannel = channels.filter(name="Designer").first()
