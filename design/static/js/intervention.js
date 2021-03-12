@@ -126,12 +126,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
         });
     }
     seconds_left();
-    setInterval(function(){      
-        /*  
+    setInterval(function(){
+        //Progress to PostSession      
         if(countdown < 0) {
             advance_session();
         }
-        */
 
         //Check to see if intervention countdown finished
         //Could check against a single value like 0 or -1, but "just in case"
@@ -464,9 +463,13 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 } if(channelId === helpChannelId) {
                     chatId = "chat-list-5";
                 }
-                var channelMessages = document.getElementById(chatId);
-                channelMessages.appendChild(newMessage);
-                newMessage.scrollIntoView(false);
+
+                //TODO: figure out where empty mediation chatId is coming from
+                if(chatId != "") {
+                    var channelMessages = document.getElementById(chatId);
+                    channelMessages.appendChild(newMessage);
+                    newMessage.scrollIntoView(false);
+                }
             }
         };
     };

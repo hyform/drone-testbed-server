@@ -29,15 +29,6 @@
           Hi {{ user.username }}!
           <br><br>
           {% if survey_links or form_links or brief_links%}
-            {% if survey_links %}
-              <h2>Surveys</h2>
-              {% for survey_link in survey_links %}
-              <a href="{{survey_link.link}}" target="_blank">{{survey_link.text}}</a><br>
-              {% endfor %}
-              <br>
-              <br>
-            {% endif %}
-
             {% if form_links %}
               <h2>Forms</h2>
               {% for form_link in form_links %}
@@ -46,6 +37,15 @@
               <br>
               <br>
             {% endif %}
+
+            {% if survey_links %}
+              <h2>Surveys</h2>
+              {% for survey_link in survey_links %}
+              <a href="{{survey_link.link}}" target="_blank">{{survey_link.text}}</a><br>
+              {% endfor %}
+              <br>
+              <br>
+            {% endif %}            
 
             {% if brief_links %}
               <h2>Problem Brief</h2>

@@ -124,6 +124,23 @@ html, body {
     }
 }
 
+.channel-label-new-priority-messages {
+    background-color: #BC8F8F;
+    animation: new-priority-pulse 2s infinite;
+}
+
+@keyframes new-priority-pulse {
+    0% {
+        background-color: #BC8F8F;
+    }
+    50% {
+        background-color: #e90606;
+    }
+    100% {
+        background-color: #BC8F8F;
+    }
+}
+
 .message-list-container {
     display: flex;
     flex-direction: column;

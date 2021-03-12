@@ -122,6 +122,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
         channelLabel.classList.remove("channel-label-default");
         channelLabel.classList.remove("channel-label-new-messages");
+        channelLabel.classList.remove("channel-label-new-priority-messages");        
         channelLabel.classList.add("channel-label-active");
         channelMessages.style.display = "flex";
         channel.classList.add("channel-100");
@@ -486,7 +487,15 @@ document.addEventListener("DOMContentLoaded", function (event) {
                                 var newMessage = document.createElement("li");
                                 var newMessageText = '<b style="color:' + sender_color[sender] + '">' + sender + ' : </b>' + message;
                                 newMessage.innerHTML = newMessageText;
-                                getChannelLabel(channel).classList.add("channel-label-new-messages");
+                                if((sender === "Process Manager") && !teamId) {
+                                    console.log("priority message");
+                                    getChannelLabel(channel).classList.add("channel-label-new-priority-messages");
+                                    var audio = new Audio('/static/audio/priority_message_notification.mp3');
+                                    audio.play();
+                                } else {
+                                    console.log("regular message");
+                                    getChannelLabel(channel).classList.add("channel-label-new-messages");
+                                }
                                 var channelMessages = getChannelMessages(channel);
                                 channelMessages.childNodes[0].appendChild(newMessage);
                                 newMessage.scrollIntoView(false);
