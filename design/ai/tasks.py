@@ -16,6 +16,7 @@ from . import uavdesign_pb2 as uavdesign_pb2
 from repo.views import MediationCountView, MediationChatView
 from process.messaging import send_intervention
 from exper.models import Session
+from chat.models import Channel
 
 import time
 
@@ -228,14 +229,18 @@ def evaluation(config, trajectory):
     return out_data
 
 @shared_task
-def mediation(i, session_id):
+def mediation(seg_num, seg_len, i, session_id):
     # This routine will call itself many times to determine the correct mediation to send out
     # get the current session
     session = Session.objects.get(id=session_id)
+    if session.status != Session.RUNNING:
+        print("Session no longer running, so exit mediation loop")
+        return
+
     print(i, session.name, session.index)
-    if i<7:
+    if i < seg_num -1:
         # first step is to schedule the next time to call
-        mediation.s(i+1, session_id).apply_async(countdown=150)
+        mediation.s(seg_num, seg_len, i+1, session_id).apply_async(countdown=seg_len)
         # we don't care about the first 2 times (time 0 and time 2.5 minutes)
         if i<2:
             print('waiting for next interval')
@@ -305,11 +310,55 @@ def mediation(i, session_id):
 
     else:
         print('done looping')
+        end_running.s(session_id).apply_async(countdown=seg_len)
     return i
 
 @shared_task
+def end_running(session_id):
+    session = Session.objects.filter(id=session_id).first()
+    if session:
+        if session.status == Session.RUNNING:
+            session.status = Session.POSTSESSION
+            session.save()
+            session_channel = Channel.objects.filter(name="Session").first()
+            session_instance = str(session_channel.id) + "___" + str(session.id)
+
+            async_to_sync(get_channel_layer().group_send)(
+                session_instance,
+                {
+                    'type': 'system.command',
+                    'message': "refresh",
+                    'sender': "System",
+                    'channel': session_instance
+                }
+            )
+
+            exercise = session.exercise
+            if exercise:
+                experiment = exercise.experiment
+                if experiment:
+                    study = experiment.study
+                    if study:
+                        organization = study.organization
+                        if organization:
+                            help_channel = Channel.objects.filter(name="Help").first()
+                            channel_instance = str(help_channel.id) + "_organization_" + str(organization.id)
+                            async_to_sync(get_channel_layer().group_send)(
+                                channel_instance,
+                                {
+                                    'type': 'system.command',
+                                    'message': "experimenter-reload",
+                                    'sender': "System",
+                                    'channel': channel_instance
+                                }
+                            )
+
+@shared_task
 def mediation_loop(channel_name, data):
+    seg_num = settings.INTER_SEG_NUM
+    seg_len = settings.INTER_SEG_LEN
+
     # this routine will start up the mediation cycle
     print('session_id: ', data['session_id'])
-    mediation.s(0, data['session_id']).apply_async()
+    mediation.s(seg_num, seg_len, 0, data['session_id']).apply_async()
     async_to_sync(channel_layer.send)(channel_name, {"type": "task.return","results": 0})

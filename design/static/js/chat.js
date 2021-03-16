@@ -6,7 +6,27 @@ document.addEventListener("DOMContentLoaded", function (event) {
     var nothing = "";
     var check = "&check;";
     var responseChannel = null;
+    var elapsedTime = 0;
 
+    //Set timer on user chat
+    const elapsedSeconds = JSON.parse(document.getElementById('elapsed_seconds').textContent);    
+    if(elapsedSeconds && elapsedSeconds !== "") {
+        elapsedTime = parseInt(elapsedSeconds);
+        var runningTimer = document.getElementById('running-timer');
+        runningTimer.removeAttribute('hidden'); 
+        
+        setInterval(function(){
+            mins = Math.floor(elapsedTime / 60);
+            secs = elapsedTime % 60;
+            zero = "";
+            if(secs < 10) {
+                zero = "0";
+            }
+            runningTimer.innerText = mins + ":" + zero + secs;
+            elapsedTime = elapsedTime + 1;
+        }, 1000);
+    }
+    
 
     //Get a teamId for the Experimenter chat views
     var urlParams = new URLSearchParams(window.location.search);
@@ -335,10 +355,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 }
             } else if (messageType === "system.command") {
                 if (message.startsWith("refresh")) {
-                    if (teamId && message.endsWith("exper")) {
+                    //if (teamId && message.endsWith("exper")) {
+                    if (teamId) {
                         // Experimemter chat should only reload itself, not the whole page
                         location.reload();
-                    } else if (teamId) {
+                    //} else if (teamId) {
                         // do nothing in this case
                     } else {
                         parent.location.reload();
@@ -369,6 +390,29 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 }
             } else if (messageType === "session.response" && !teamId) {
                 // Do nothin in this case
+            } else if (messageType === "session.time" && teamId) {
+                //Set timer on user chat                
+                elapsedTime = parseInt(message);
+                var timerHeader = document.getElementById('timer-header');
+                timerHeader.removeAttribute('hidden');
+                var timerRow = document.getElementById('timer-row');
+                timerRow.removeAttribute('hidden');
+                var runningTimer = document.getElementById('running-timer-exper');
+                runningTimer.removeAttribute('hidden'); 
+                
+                setInterval(function(){
+                    mins = Math.floor(elapsedTime / 60);
+                    secs = elapsedTime % 60;
+                    zero = "";
+                    if(secs < 10) {
+                        zero = "0";
+                    }
+                    runningTimer.innerText = mins + ":" + zero + secs;
+                    elapsedTime = elapsedTime + 1;
+                }, 1000);
+
+            } else if (messageType === "session.time" && !teamId) {
+                // Do nothin in this case
             } else if (messageType === "system.usermessage" && !teamId) {
                 // System message for a non-exper user, so stick in all channels
                 var channelList = document.getElementById("channel-list");
@@ -376,7 +420,15 @@ document.addEventListener("DOMContentLoaded", function (event) {
                     var channels = channelList.children;
                     for (var i = 0; i < channels.length; i++) {
                         var newMessage = document.createElement("li");
-                        var newMessageText = '<b style="color:blue">' + sender + ' : </b>' + message;
+                        var timerText = "";
+                        var runningTimer = document.getElementById('running-timer');
+                        if(!runningTimer) {
+                            runningTimer = document.getElementById('running-timer-exper');
+                            timerText = runningTimer.innerText;
+                        } else {
+                            timerText = runningTimer.innerText;
+                        }
+                        var newMessageText = timerText + " " + '<b style="color:blue">' + sender + ' : </b>' + message;
                         newMessage.innerHTML = newMessageText;
                         var channel = channels[i];
                         var channelMessages = getChannelMessages(channel);
@@ -410,7 +462,15 @@ document.addEventListener("DOMContentLoaded", function (event) {
                         var channel = channels[i];
                         if (channelId === getChannelId(channel)) {
                             var newMessage = document.createElement("li");
-                            var newMessageText = '<b style="color:blue">' + sender + ' : </b>' + message;
+                            var timerText = "";
+                            var runningTimer = document.getElementById('running-timer');
+                            if(!runningTimer) {
+                                runningTimer = document.getElementById('running-timer-exper');
+                                timerText = runningTimer.innerText;
+                            } else {
+                                timerText = runningTimer.innerText;
+                            }
+                            var newMessageText = timerText + " " + '<b style="color:blue">' + sender + ' : </b>' + message;
                             newMessage.innerHTML = newMessageText;
                             var channelMessages = getChannelMessages(channel);
                             channelMessages.childNodes[0].appendChild(newMessage);
@@ -460,7 +520,15 @@ document.addEventListener("DOMContentLoaded", function (event) {
                     var channels = channelList.children;
                     for (var i = 0; i < channels.length; i++) {
                         var newMessage = document.createElement("li");
-                        var newMessageText = '<b style="color:red">' + sender + ' : </b>' + message;
+                        var timerText = "";
+                        var runningTimer = document.getElementById('running-timer');
+                        if(!runningTimer) {
+                            runningTimer = document.getElementById('running-timer-exper');
+                            timerText = runningTimer.innerText;
+                        } else {
+                            timerText = runningTimer.innerText;
+                        }
+                        var newMessageText = timerText + " " + '<b style="color:red">' + sender + ' : </b>' + message;
                         newMessage.innerHTML = newMessageText;
                         var channel = channels[i];
                         var channelMessages = getChannelMessages(channel);
@@ -478,14 +546,34 @@ document.addEventListener("DOMContentLoaded", function (event) {
                         if (channelId === thisChannelId) {
                             if (channel === activeChannel) {
                                 var newMessage = document.createElement("li");
-                                var newMessageText = '<b style="color:' + sender_color[sender] + '">' + sender + ' : </b>' + message;
+                                var timerText = "";
+                                var runningTimer = document.getElementById('running-timer');
+                                if(!runningTimer) {
+                                    runningTimer = document.getElementById('running-timer-exper');
+                                    timerText = runningTimer.innerText;
+                                } else {
+                                    timerText = runningTimer.innerText;
+                                }
+                                var newMessageText = timerText + " " + '<b style="color:' + sender_color[sender] + '">' + sender + ' : </b>' + message;
                                 newMessage.innerHTML = newMessageText;
+                                if((sender === "Process Manager") && !teamId) {
+                                    var audio = new Audio('/static/audio/priority_message_notification.mp3');
+                                    audio.play();
+                                }
                                 var channelMessages = getChannelMessages(channel);
                                 channelMessages.childNodes[0].appendChild(newMessage);
                                 newMessage.scrollIntoView(false);
                             } else {
                                 var newMessage = document.createElement("li");
-                                var newMessageText = '<b style="color:' + sender_color[sender] + '">' + sender + ' : </b>' + message;
+                                var timerText = "";
+                                var runningTimer = document.getElementById('running-timer');
+                                if(!runningTimer) {
+                                    runningTimer = document.getElementById('running-timer-exper');
+                                    timerText = runningTimer.innerText;
+                                } else {
+                                    timerText = runningTimer.innerText;
+                                }
+                                var newMessageText = timerText + " " + '<b style="color:' + sender_color[sender] + '">' + sender + ' : </b>' + message;
                                 newMessage.innerHTML = newMessageText;
                                 if((sender === "Process Manager") && !teamId) {
                                     console.log("priority message");

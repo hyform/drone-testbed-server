@@ -17,6 +17,8 @@
 
 <body>
     {% if not redir %}
+    {{ INTER_SEG_NUM|json_script:"seg_num" }}
+    {{ INTER_SEG_LEN|json_script:"seg_len" }}
     <div class="mediation-container">
         <div class="stream1 border-minimal">
             <div class="stream-label design-color">Designer 1 Actions</div>
@@ -85,7 +87,16 @@
             </div>            
         </div>        
         <div class="timer" id="timer"></div>
-        <div class="logout"><a target="_parent" href="{% url 'logout' %}">logout</a></div>
+        <div class="logout">
+            <div class="row">
+                <div class="col-6">
+                    <a href="/info/" target="_blank">Info</a>
+                </div>
+                <div class="col-6">
+                    <a target="_parent" href="{% url 'logout' %}">logout</a>
+                </div>
+            </div>
+        </div>
         <div class="chat1 border-minimal">
             <div class="chat-label design-color">Designer Chat</div>
             <div class="scroller">

@@ -7,6 +7,8 @@ from .models import ChannelPosition, Channel
 from repo.models import Profile
 from rest_framework import generics
 from exper.models import UserPosition, SessionTeam, Session, UserChecklist
+from api.models import SessionTimer
+from datetime import datetime, timezone
 
 
 # Create your views here.
@@ -18,9 +20,6 @@ def index(request):
     if request.user.is_authenticated:        
         if request.user.profile.is_experimenter():
             experimenter = True
-        elif request.user.profile.is_mediator():
-            context['position_name'] = 'Mediator'
-            context['mediator'] = True 
         else: #TODO: to a is_player here instead of just the else, then handle the other condition(s)
             st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
             if st:
@@ -29,6 +28,26 @@ def index(request):
                     position = up.position
                     if position:
                         context['position_name'] = position.name
+
+                        # Get time if running
+                        elapsed_seconds_str = ""
+                        if st.session.status == Session.RUNNING:
+                            running_timer = SessionTimer.objects.filter(session=st.session).filter(timer_type=SessionTimer.RUNNING_START).first()
+                            elapsed_seconds = -1
+                            if running_timer:
+                                current_time = datetime.now(timezone.utc)
+                                running_timestamp = running_timer.timestamp
+                                if running_timestamp:
+                                    time_difference = current_time - running_timestamp
+                                    elapsed_seconds = round(time_difference.total_seconds())
+                                    elapsed_seconds_str = str(elapsed_seconds)
+                            else:
+                                elapsed_seconds = 0
+                                elapsed_seconds_str = str(elapsed_seconds)
+                            context['elapsed_seconds'] = elapsed_seconds_str
+
+
+
     context['experimenter'] = experimenter                    
     return render(request, 'chat/index.html', context)
 

@@ -8,6 +8,7 @@ from django.db.models import Q
 from rest_framework import generics, status
 from rest_framework.response import Response
 from django.utils.safestring import mark_safe
+from django.conf import settings
 from operator import attrgetter
 from exper.models import Role, UserPosition, Structure
 from exper.models import Session, SessionTeam, Market
@@ -313,6 +314,8 @@ def get_cutsom_links(request, st, context):
         if tutorial_links:
             context['tutorial_links'] = tutorial_links
 
+    return context
+
 @login_required
 def ateams_setup(request):
     context = {}
@@ -320,7 +323,7 @@ def ateams_setup(request):
     if request.user.is_authenticated:
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
         if st:
-            get_cutsom_links(request, st, context)
+            context = get_cutsom_links(request, st, context)
 
             if st.session.status == Session.SETUP:
                 is_team = True
@@ -366,7 +369,7 @@ def ateams_presession(request):
     if request.user.is_authenticated:
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
         if st:
-            get_cutsom_links(request, st, context)
+            context = get_cutsom_links(request, st, context)
             context['session'] = st.session.structure.name
             if st.session.status == Session.PRESESSION:
                 is_team = True
@@ -386,26 +389,7 @@ def ateams_presession(request):
                     context['first'] = False
                     context['last'] = False
 
-                context['session_ai'] = st.session.use_ai
-                up = UserPosition.objects.filter(Q(user=request.user)&Q(session=st.session)).first()
-                pos_name = up.position.name
-                #TODO: some of this can still be removed
-                context['pos_name'] = pos_name
-                if "Design Manager" in pos_name:
-                    pos = 1
-                elif "Design Specialist" in pos_name:
-                    pos = 2
-                elif "Operations Manager" in pos_name:
-                    pos = 3
-                elif "Operations Specialist" in pos_name:
-                    pos = 4
-                elif "Business" in pos_name:
-                    pos = 5
-
-                role = up.position.role
-
-                context['role'] = role
-                context['position'] = pos
+                context['session_ai'] = st.session.use_ai                
 
                 response = HttpResponse(render(request, "presession.html", context))
                 response.set_cookie('use_ai', st.session.use_ai)
@@ -520,7 +504,9 @@ def ateams_process(request):
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
         if st:
             if st.session.status == Session.RUNNING:                                
-                context = Interventions.add_intervention_constants(context)                
+                context = Interventions.add_intervention_constants(context)
+                context['INTER_SEG_NUM'] = settings.INTER_SEG_NUM
+                context['INTER_SEG_LEN'] = settings.INTER_SEG_LEN
                 response = HttpResponse(render(request, "intervention.html", context))
             else:
                 if st.session.status == Session.SETUP:
@@ -550,7 +536,7 @@ def ateams_postsession(request):
     if request.user.is_authenticated:
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
         if st:
-            get_cutsom_links(request, st, context)
+            context = get_cutsom_links(request, st, context)
             if st.session.status == Session.POSTSESSION:
                 is_team = True
                 # TODO: Make individual/team a property of Structure
@@ -571,46 +557,6 @@ def ateams_postsession(request):
                     context['last'] = False
 
                 context['session_ai'] = st.session.use_ai
-                up = UserPosition.objects.filter(Q(user=request.user)&Q(session=st.session)).first()
-                #TODO: some of this can still be removed
-                pos_name = up.position.name
-                if "Design Manager" in pos_name:
-                    pos = 1
-                elif "Design Specialist" in pos_name:
-                    pos = 2
-                elif "Operations Manager" in pos_name:
-                    pos = 3
-                elif "Operations Specialist" in pos_name:
-                    pos = 4
-                elif "Business" in pos_name:
-                    pos = 5
-
-                role = up.position.role
-
-                active_team = st.team
-                if active_team:
-                    if "cmu team 1" in active_team.name:
-                        team_type = 1
-                    elif "cmu team 2" in active_team.name:
-                        team_type = 1
-                    elif "cmu team extra" in active_team.name:
-                        team_type = 2
-                    elif "psu team 1" in active_team.name:
-                        team_type = 10
-                    elif "psu team 2" in active_team.name:
-                        team_type = 10
-                    elif "psu team 5" in active_team.name:
-                        team_type = 10
-                    elif "psu team 6" in active_team.name:
-                        team_type = 10
-                    elif "psu extra 1" in active_team.name:
-                        team_type = 11
-                    elif "psu extra 5" in active_team.name:
-                        team_type = 11
-
-                context['role'] = role
-                context['position'] = pos
-                context['team_type'] = team_type
 
                 response = HttpResponse(render(request, "postsession.html", context))
                 response.set_cookie('use_ai', st.session.use_ai)
@@ -650,7 +596,7 @@ def ateams_info(request):
     if request.user.is_authenticated:
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
         if st:
-            get_cutsom_links(request, st, context)
+            context = get_cutsom_links(request, st, context)
             context['state'] = st.session.status
 
             response = HttpResponse(render(request, "info.html", context))

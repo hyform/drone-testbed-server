@@ -9,16 +9,16 @@ document.addEventListener("DOMContentLoaded", function (event) {
     var timer = document.getElementById("timer");
     var mtimer = document.getElementById("mtimer");
 
-    var totalMinutes = 20;
-    var segmentMinutes = 2.5;
+    const seg_num = parseInt(JSON.parse(document.getElementById('seg_num').textContent));
+    const seg_len = parseInt(JSON.parse(document.getElementById('seg_len').textContent));
+
     var interventionSeconds = 15;
 
-    var totalSeconds = Math.round(totalMinutes * 60);
-    var segmentSeconds = Math.round(segmentMinutes * 60);
+    var totalSeconds = seg_num * seg_len;
     
     var timeLeft = totalSeconds;
     var countdown = totalSeconds;
-    var segmentCountdown = segmentSeconds;
+    var segmentCountdown = seg_len;
     var interventionCountdown = -10; //-10 is for inactive
 
     function disable_interventions() {
@@ -113,14 +113,14 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 elapsedSeconds = resultJson.elapsed_seconds;
                 timeLeft = totalSeconds - parseInt(elapsedSeconds);
                 countdown = timeLeft;
-                segmentCountdown = countdown % segmentSeconds;
+                segmentCountdown = countdown % seg_len;
                 if(segmentCountdown == 0) {
-                    segmentCountdown = segmentSeconds;
+                    segmentCountdown = seg_len;
                 }
 
                 //Don't stop after initial 2.5 minutes
-                if(countdown / segmentSeconds > 7) {
-                    segmentCountdown = segmentCountdown + segmentSeconds;
+                if(countdown / seg_len > seg_num - 1) {
+                    segmentCountdown = segmentCountdown + seg_len;
                 }
             }
         });
@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         }
 
         if(segmentCountdown < 0 && countdown > 10) { //Don't trigger on final segment
-            segmentCountdown = countdown % segmentSeconds;
+            segmentCountdown = countdown % seg_len;
             interventionCountdown = interventionSeconds;
             enable_interventions();
         }
@@ -152,8 +152,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
         if(secs < 10) {
             zero = "0";
         }
-        if(countdown < segmentSeconds) {
-            timer.innerText = "Complete";
+        if(countdown < seg_len) {
+            timer.innerText = "Please wait " + mins + ":" + zero + secs;
         } else {
             timer.innerText = "Next intervention in " + mins + ":" + zero + secs;
         }

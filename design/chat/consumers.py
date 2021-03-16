@@ -5,7 +5,7 @@ from channels.generic.websocket import WebsocketConsumer
 from django.contrib.auth.models import User
 from .models import ChannelPosition, Message, Channel
 from exper.models import SessionTeam, UserPosition, Session, UserChecklist
-from repo.models import DataLog, DesignTeam, Profile
+from repo.models import DataLog, DesignTeam, Profile, ExperOrg
 from urllib.parse import parse_qs
 from collections import OrderedDict
 import json
@@ -15,6 +15,42 @@ from .chat_consumer_listener import ChatConsumerListener
 from rest_framework.authtoken.models import Token
 from django.conf import settings
 from api.tasks import run_digital_twin
+from api.models import SessionTimer
+from datetime import datetime, timezone
+
+# Websocket for Experimenters in an organization
+class OrganizationConsumer(WebsocketConsumer):
+    def connect(self):
+        self.user = self.scope['user']
+        if self.user.profile.is_experimenter():
+            self.accept()
+            experOrg = ExperOrg.objects.filter(user=self.user).first() #TODO: finalize decision on experimenter in different orgs
+            if experOrg:
+                help_channel = Channel.objects.filter(name="Help").first()
+                channel_instance = str(help_channel.id) + "_organization_" + str(experOrg.organization.id)
+                async_to_sync(self.channel_layer.group_add)(
+                    channel_instance,
+                    self.channel_name,
+                )
+
+    # message templates
+    def message_template(self, event):
+        message = event['message']
+        sender = event['sender']
+        channel = event['channel']
+        type = event['type']
+        # send message to websocket
+        self.send(text_data=json.dumps({
+            'message': message,
+            'sender': sender,
+            'channel': channel,
+            'type': type
+        }))
+
+    # receive message from room group
+    def system_command(self, event):
+        self.message_template(event)
+
 
 class ChatConsumer(WebsocketConsumer):
     def set_authenticated_user(self, user):
@@ -114,6 +150,23 @@ class ChatConsumer(WebsocketConsumer):
                             session_instance,
                             self.channel_name,
                         )
+
+                        if st.session.status == Session.RUNNING:
+                            running_timer = SessionTimer.objects.filter(session=st.session).filter(timer_type=SessionTimer.RUNNING_START).first()
+                            elapsed_seconds = 0
+                            if running_timer:
+                                current_time = datetime.now(timezone.utc)
+                                running_timestamp = running_timer.timestamp
+                                if running_timestamp:
+                                    time_difference = current_time - running_timestamp
+                                    elapsed_seconds = round(time_difference.total_seconds())
+
+                            self.send(text_data=json.dumps({
+                                'type' : 'session.time',
+                                'message' : str(elapsed_seconds),
+                                'sender' : "System",
+                                'channel' : session_instance
+                            }))
                         self.send(text_data=json.dumps({
                             'type' : 'chat.info',
                             'message' : "Session",
@@ -490,6 +543,10 @@ class ChatConsumer(WebsocketConsumer):
 
     # a system message sent to a specific user
     def user_postcheck(self, event):
+        self.message_template(event)
+
+    # the current time of a session
+    def session_time(self, event):
         self.message_template(event)
 
     def event_info(self, event):

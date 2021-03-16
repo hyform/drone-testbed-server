@@ -158,7 +158,7 @@ html, body {
 
 .chat-header {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     flex-grow: 1;
 }
 
@@ -193,4 +193,10 @@ textarea {
     border: 0;
     padding-left: 0;
     padding-right: 0;
+}
+
+.running-timer { 
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
 }

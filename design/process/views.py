@@ -73,5 +73,25 @@ def session_status_postsession(request):
                         'channel': session_instance
                     }
                 )
+
+                exercise = st.session.exercise
+                if exercise:
+                    experiment = exercise.experiment
+                    if experiment:
+                        study = experiment.study
+                        if study:
+                            organization = study.organization
+                            if organization:
+                                help_channel = Channel.objects.filter(name="Help").first()
+                                channel_instance = str(help_channel.id) + "_organization_" + str(organization.id)
+                                async_to_sync(get_channel_layer().group_send)(
+                                    channel_instance,
+                                    {
+                                        'type': 'system.command',
+                                        'message': "experimenter-reload",
+                                        'sender': "System",
+                                        'channel': channel_instance
+                                    }
+                                )
                 return Response(status=status.HTTP_200_OK)
     return Response(status=status.HTTP_401_UNAUTHORIZED)

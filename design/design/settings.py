@@ -194,6 +194,12 @@ EVALUATION_APP = EVALUTAION_DIR + '/' + 'evaluation.x86_64'
 # Plugins
 DIGITAL_TWIN_ENABLED = True
 
+# Intervention segment values
+# Integer: Number of segments. There are n-1 interventions. Should be at least 3
+INTER_SEG_NUM = 8
+# Integer: Length of segments in seconds
+INTER_SEG_LEN = 150
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
