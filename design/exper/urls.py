@@ -11,7 +11,7 @@ urlpatterns = [
     path('select_organization/', views.select_organization),
     path('select_study/', views.select_study),
     path('continue_to_experiment/', views.continue_to_experiment),
-    path('change_selection/', views.change_selection),
+    path('change_selection/', views.change_selection),    
     path('session_status_play/', views.session_status_play),
     path('session_status_stop/', views.session_status_stop),
     path('session_status_archive/', views.session_status_archive),
@@ -28,4 +28,5 @@ urlpatterns = [
     path('edit_digital_twin/<int:session_id>', views.digital_twin),
     path('digital_twin/', views.DigitalTwinList.as_view()),
     path('digital_twin/<int:ver>/', views.DigitalTwinDetail.as_view()),
+    
 ]

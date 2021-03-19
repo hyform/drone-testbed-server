@@ -9,8 +9,8 @@
     <meta http-equiv="Refresh" content="0; url={{redir}}" />
     {% endif %}
     <link rel="stylesheet" media="screen" href="/static/css/bootstrap.min.css">
-    <link rel="stylesheet" media="screen" href="/static/css/common.css">
-    <link rel="stylesheet" media="screen" href="/static/css/info.css">
+    <link rel="stylesheet" media="screen" href="/static/css/common.css{{BUST}}">
+    <link rel="stylesheet" media="screen" href="/static/css/info.css{{BUST}}">
 </head>
 
 <body>
@@ -22,23 +22,26 @@
                     {% if user.is_authenticated %}
                     
                     {% if survey_links or form_links %}
-            {% if survey_links %}
-              <h2>Surveys</h2>
-              {% for survey_link in survey_links %}
-              <a href="{{survey_link.link}}" target="_blank">{{survey_link.text}}</a><br>
-              {% endfor %}
-              <br>
-              <br>
-            {% endif %}
+            
+                    {% if form_links %}
+                    <h2>Forms</h2>
+                    {% for form_link in form_links %}
+                    <a href="{{form_link.link}}" target="_blank">{{form_link.text}}</a><br>
+                    {% endfor %}
+                    <br>
+                    <br>
+                  {% endif %}
 
-            {% if form_links %}
-              <h2>Forms</h2>
-              {% for form_link in form_links %}
-              <a href="{{form_link.link}}" target="_blank">{{form_link.text}}</a><br>
-              {% endfor %}
-              <br>
-              <br>
-            {% endif %}
+                    {% if survey_links %}
+                    <h2>Surveys</h2>
+                    {% for survey_link in survey_links %}
+                    <a href="{{survey_link.link}}" target="_blank">{{survey_link.text}}</a><br>
+                    {% endfor %}
+                    <br>
+                    <br>
+                    {% endif %}
+
+            
 
             <p>Please check here when any questionnaires and forms are complete: </p><input class="user-check" type="checkbox" id="post-user-complete">
             <label for="post-user-complete">Complete</label>
@@ -63,7 +66,7 @@
         </div>
     </div>
     <script type='application/javascript' src="/static/js/jquery-3.4.1.min.js"></script>
-    <script type='application/javascript' src="/static/js/session.js"></script>
+    <script type='application/javascript' src="/static/js/session.js{{BUST}}"></script>
     {% endif %}
 </body>
 

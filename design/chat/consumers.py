@@ -5,23 +5,84 @@ from channels.generic.websocket import WebsocketConsumer
 from django.contrib.auth.models import User
 from .models import ChannelPosition, Message, Channel
 from exper.models import SessionTeam, UserPosition, Session, UserChecklist
-from repo.models import DataLog, DesignTeam, Profile
+from repo.models import DataLog, DesignTeam, Profile, ExperOrg
 from urllib.parse import parse_qs
 from collections import OrderedDict
 import json
 import bleach
 from ai.seqtosql.dronebotseqtosql import DroneBotSeqToSQL
 from .chat_consumer_listener import ChatConsumerListener
+from rest_framework.authtoken.models import Token
+from django.conf import settings
+from api.tasks import run_digital_twin
+from api.models import SessionTimer
+from datetime import datetime, timezone
+
+# Websocket for Experimenters in an organization
+class OrganizationConsumer(WebsocketConsumer):
+    def connect(self):
+        self.user = self.scope['user']
+        if self.user.profile.is_experimenter():
+            self.accept()
+            experOrg = ExperOrg.objects.filter(user=self.user).first() #TODO: finalize decision on experimenter in different orgs
+            if experOrg:
+                help_channel = Channel.objects.filter(name="Help").first()
+                channel_instance = str(help_channel.id) + "_organization_" + str(experOrg.organization.id)
+                async_to_sync(self.channel_layer.group_add)(
+                    channel_instance,
+                    self.channel_name,
+                )
+
+    # message templates
+    def message_template(self, event):
+        message = event['message']
+        sender = event['sender']
+        channel = event['channel']
+        type = event['type']
+        # send message to websocket
+        self.send(text_data=json.dumps({
+            'message': message,
+            'sender': sender,
+            'channel': channel,
+            'type': type
+        }))
+
+    # receive message from room group
+    def system_command(self, event):
+        self.message_template(event)
+
 
 class ChatConsumer(WebsocketConsumer):
+    def set_authenticated_user(self, user):
+        self.authenticated_user = user
+
     def connect(self):
+        self.authenticated_user = None
         self.user = self.scope['user']
         self.userid = self.scope['user'].id
         self.username = self.scope['user'].username
         self.channels = OrderedDict([])
         st = None
 
-        if self.user.profile.is_experimenter():
+        if self.user.is_anonymous:
+            # Connection with auth token
+            # Should only be Digital Twin right now
+            params = parse_qs(self.scope['query_string'].decode('utf8'))
+            auth_token = params.get('token', (None,))[0]
+            if auth_token:
+                user = Token.objects.get(key=auth_token).user
+                if user:
+                    if user.profile.is_experimenter():
+                        self.set_authenticated_user(user)
+                        self.accept()
+                        # Use simple twin channel for now
+                        # TODO: expand this somehow with session and additional instance or something
+                        # to allow multiple runs
+                        async_to_sync(self.channel_layer.group_add)(
+                            'twin',
+                            self.channel_name,
+                        )
+        elif self.user.profile.is_experimenter():
             params = parse_qs(self.scope['query_string'].decode('utf8'))
             teamId = params.get('teamId', (None,))[0]
             team = DesignTeam.objects.filter(id=teamId).first()
@@ -89,6 +150,23 @@ class ChatConsumer(WebsocketConsumer):
                             session_instance,
                             self.channel_name,
                         )
+
+                        if st.session.status == Session.RUNNING:
+                            running_timer = SessionTimer.objects.filter(session=st.session).filter(timer_type=SessionTimer.RUNNING_START).first()
+                            elapsed_seconds = 0
+                            if running_timer:
+                                current_time = datetime.now(timezone.utc)
+                                running_timestamp = running_timer.timestamp
+                                if running_timestamp:
+                                    time_difference = current_time - running_timestamp
+                                    elapsed_seconds = round(time_difference.total_seconds())
+
+                            self.send(text_data=json.dumps({
+                                'type' : 'session.time',
+                                'message' : str(elapsed_seconds),
+                                'sender' : "System",
+                                'channel' : session_instance
+                            }))
                         self.send(text_data=json.dumps({
                             'type' : 'chat.info',
                             'message' : "Session",
@@ -101,6 +179,46 @@ class ChatConsumer(WebsocketConsumer):
                             'sender' : "System",
                             'channel' : session_instance
                         }))
+        #TODO: this should go away
+        elif self.user.profile.is_mediator():
+            org_team = DesignTeam.objects.filter(organization=self.user.profile.organization).first()
+            if org_team:
+                session_teams = SessionTeam.objects.filter(team=org_team)
+                a_session = None
+                for session_team in session_teams:
+                    if session_team.session.status == Session.RUNNING:
+                        a_session = session_team.session
+                        break
+                if a_session:
+                    self.accept()
+                    channels = Channel.objects.filter(structure=a_session.structure)
+                    for channel in channels:
+                        channel_instance = str(channel.id) + "___" + str(a_session.id)
+                        self.channels[channel_instance] = channel
+                    if self.channels:
+                        for instance in self.channels:
+                            orig_channel = self.channels[instance]
+                            async_to_sync(self.channel_layer.group_add)(
+                                instance,
+                                self.channel_name,
+                            )
+                            self.send(text_data=json.dumps({
+                                'type' : 'chat.info',
+                                'message' : orig_channel.name,
+                                'sender' : "System",
+                                'channel' : instance
+                            }))
+                        session_channel = Channel.objects.filter(name="Session").first()
+                        if session_channel:
+                            session_instance = str(session_channel.id) + "___" + str(a_session.id)
+                            if session_instance:
+                                self.channels[session_instance] = session_channel
+                                self.send(text_data=json.dumps({
+                                    'type' : 'system.command',
+                                    'message' : "init",
+                                    'sender' : "System",
+                                    'channel' : session_instance
+                                }))
         else:
             st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=self.user.profile.team)).first()
             if st:
@@ -131,8 +249,15 @@ class ChatConsumer(WebsocketConsumer):
                 if dronebot_channel and show_dronebot:
                     dronebot_instance = str(dronebot_channel.id) + "_" + str(self.user.id) + "___" + str(st.session.id)
                     self.channels[dronebot_instance] = dronebot_channel
+
                 self.accept()
 
+                if up.position.role.name == "Process":
+                    mediator_channel = 'm_' + str(st.session.id)
+                    async_to_sync(self.channel_layer.group_add)(
+                        mediator_channel,
+                        self.channel_name,
+                    )
                 if self.channels:
                     for instance in self.channels:
                         orig_channel = self.channels[instance]
@@ -183,10 +308,13 @@ class ChatConsumer(WebsocketConsumer):
                     }))
 
     def disconnect(self, close_code):
+        if self.authenticated_user:
+            user = self.authenticated_user
+        else:
+            user = self.scope["user"]
         # TODO: make sure Experimenter's channels are correctly disconnected
 
         # leave all of the groups
-        user = self.scope["user"]
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=user.profile.team)).first()
         if st:
             up = UserPosition.objects.filter(Q(user=self.user)&Q(session=st.session)).first()
@@ -212,15 +340,51 @@ class ChatConsumer(WebsocketConsumer):
 
     # receive message from websocket
     def receive(self, text_data):
-        user = self.scope["user"]
+        if self.authenticated_user:
+            user = self.authenticated_user
+        else:
+            user = self.scope["user"]
 
         text_data_json = json.loads(text_data)
         message_type = str(text_data_json['type'])
         channel_id = str(text_data_json['channel'])
-        message = bleach.clean(text_data_json['message'])
-        sender_string = self.username        
+
+        # TODO: Hack to integrate api messages which don't have these values right now
+        if channel_id != "twin" and message_type != "event.info":
+            message = bleach.clean(text_data_json['message'])
+            sender_string = self.username
 
         if user.profile.is_experimenter():
+            if channel_id == "twin":
+                if settings.DIGITAL_TWIN_ENABLED:
+                    if message_type == "twin.start":
+
+                        # default values
+                        unit_structure = 1
+                        market = 1
+                        ai = 1
+
+                        # optional values for now with try and excepts
+                        try:
+                            unit_structure = int(bleach.clean(str(text_data_json['unit_structure'])))
+                        except Exception as e:
+                            print(e)
+
+                        try:
+                            market = int(bleach.clean(str(text_data_json['market'])))
+                        except Exception as e:
+                            print(e)
+
+                        try:
+                            ai = int(bleach.clean(str(text_data_json['ai'])))
+                        except Exception as e:
+                            print(e)
+
+                        user_id = int(bleach.clean(str(user.id)))
+                        run_digital_twin.delay(user_id, unit_structure, market, ai)
+
+                return
+
             # Experimenter, so all channels are user help channels, plus Setup and Session
             channel_position = str(text_data_json['channel_position'])
             channel_team_id = str(text_data_json['channel_team_id'])
@@ -372,7 +536,7 @@ class ChatConsumer(WebsocketConsumer):
 
     # messages
     # Note Channels transforms types aaa.bbb to aaa_bbb defined below
-        
+
     # receive message from room group
     def chat_message(self, event):
         self.message_template(event)
@@ -401,3 +565,53 @@ class ChatConsumer(WebsocketConsumer):
     # a system message sent to a specific user
     def user_postcheck(self, event):
         self.message_template(event)
+
+    # the current time of a session
+    def session_time(self, event):
+        self.message_template(event)
+
+    def event_info(self, event):
+        channel = event['channel']
+        type = event['type']
+        position = event['position']
+        info = event['info'] # event.info
+        time = event['time']
+        # send message to websocket
+        self.send(text_data=json.dumps({
+            'channel': channel,
+            'type': type,
+            'position': position,
+            'info': info,
+            'time': time,
+        }))
+
+    def twin_start(self, event):
+        channel = event['channel']
+        type = event['type'] # twin.start
+        session_id = event['session_id']
+        # send message to websocket
+        self.send(text_data=json.dumps({
+            'channel': channel,
+            'type': type,
+            'session_id': session_id,
+        }))
+
+    def twin_info(self, event):
+        channel = event['channel']
+        type = event['type']
+        info = event['info'] # twin.info
+        # send message to websocket
+        self.send(text_data=json.dumps({
+            'channel': channel,
+            'type': type,
+            'info': info,
+        }))
+
+    def twin_complete(self, event):
+        channel = event['channel']
+        type = event['type']
+        # send message to websocket
+        self.send(text_data=json.dumps({
+            'channel': channel,
+            'type': type,
+        }))

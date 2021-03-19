@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Mediation.</title>
+    {% if redir %}
+    <meta http-equiv="Refresh" content="0; url={{redir}}" />
+    {% endif %}
+    {% if not redir %}
+    <link rel="stylesheet" media="screen" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" media="screen" href="/static/css/main.css{{BUST}}">
+    <link rel="stylesheet" media="screen" href="/static/css/intervention.css{{BUST}}">
+    {% endif %}
+</head>
+
+<body>
+    {% if not redir %}
+    {{ INTER_SEG_NUM|json_script:"seg_num" }}
+    {{ INTER_SEG_LEN|json_script:"seg_len" }}
+    <div class="mediation-container">
+        <div class="stream1 border-minimal">
+            <div class="stream-label design-color">Designer 1 Actions</div>
+            <div class="scroller">
+                <ul class="message-list" id="message-list-1"></ul>
+            </div>
+        </div>
+        <div class="stream2 border-minimal">
+            <div class="stream-label design-color">Designer 2 Actions</div>
+            <div class="scroller">
+                <ul class="message-list" id="message-list-2"></ul>
+            </div>
+        </div>
+        <div class="stream3 border-minimal">
+            <div class="stream-label ops-color">Ops Planner 1 Actions</div>
+            <div class="scroller">
+                <ul class="message-list" id="message-list-3"></ul>
+            </div>
+        </div>
+        <div class="stream4 border-minimal">
+            <div class="stream-label ops-color">Ops Planner 2 Actions</div>
+            <div class="scroller">
+                <ul class="message-list" id="message-list-4"></ul>
+            </div>
+        </div>
+        <div class="interventions border-minimal-2">
+            <div class="mtimer" id="mtimer"></div>
+            <div class="m1">
+                <button class="intervention-button ops-color" id="inter-1">{{ACTION_1}}</button>
+            </div>
+            <div class="m2">
+                <button class="intervention-button ops-color" id="inter-2">{{ACTION_2}}</button>
+            </div>
+            <div class="m3">
+                <button class="intervention-button ops-color" id="inter-3">{{ACTION_3}}</button>
+            </div>
+            <div class="m4">
+                <button class="intervention-button design-color" id="inter-4">{{ACTION_4}}</button>
+            </div>
+            <div class="m5">
+                <button class="intervention-button design-color" id="inter-5">{{ACTION_5}}</button>
+            </div>
+            <div class="m6">
+                <button class="intervention-button design-color" id="inter-6">{{ACTION_6}}</button>
+            </div>
+            <div class="m7">
+                <button class="intervention-button all-color" id="inter-7">{{COMMUNICATION_1}}</button>
+            </div>
+            <div class="m8">
+                <button class="intervention-button all-color" id="inter-8">{{COMMUNICATION_2}}</button>
+            </div>
+            <div class="m9">
+                <button class="intervention-button all-color" id="inter-9">{{COMMUNICATION_3}}</button>
+            </div>
+            <div class="m10">
+                <button class="intervention-button ops-color" id="inter-10">{{COMMUNICATION_4}}</button>
+            </div>
+            <div class="m11">
+                <button class="intervention-button design-color" id="inter-11">{{COMMUNICATION_5}}</button>
+            </div>
+            <div class="m12">
+                <button class="intervention-button business-color" id="inter-12">{{COMMUNICATION_6}}</button>
+            </div>
+            <div class="m13">
+                <button class="intervention-button" id="inter-13">{{NO_INTERVENTION}}</button>
+            </div>            
+        </div>        
+        <div class="timer" id="timer"></div>
+        <div class="logout">
+            <div class="row">
+                <div class="col-6">
+                    <a href="/info/" target="_blank">Info</a>
+                </div>
+                <div class="col-6">
+                    <a target="_parent" href="{% url 'logout' %}">logout</a>
+                </div>
+            </div>
+        </div>
+        <div class="chat1 border-minimal">
+            <div class="chat-label design-color">Designer Chat</div>
+            <div class="scroller">
+                <ul class="message-list" id="chat-list-1"></ul>
+            </div>
+        </div>
+        <div class="chat2 border-minimal">
+            <div class="chat-label ops-color">Operations Chat</div>
+            <div class="scroller">
+                <ul class="message-list" id="chat-list-2"></ul>
+            </div>
+        </div>
+        <div class="chat3 border-minimal">
+            <div class="chat-label business-color">Designer Management Chat</div>
+            <div class="scroller">
+                <ul class="message-list" id="chat-list-3"></ul>
+            </div>
+        </div>
+        <div class="chat4 border-minimal">            
+            <div class="chat-label business-color">Operations Management Chat</div>
+            <div class="scroller">
+                <ul class="message-list" id="chat-list-4"></ul>
+            </div>
+        </div>
+        <div class="help border-minimal">
+            <div class="scroller">
+                <ul class="message-list" id="chat-list-5"></ul>
+            </div>            
+            <div class="message-controls">
+                <div class="col-11 chat-message">
+                    <input id="message" placeholder="Type Here For Help" type="text" autofocus autocomplete="off" spellcheck="false" autocorrect="off" class="form-control input-xs" />
+                </div>
+                <div class="col-1 chat-send">
+                    <button id="send" type="submit" class="btn primary-btn btn-xs">Send</button>
+                </div>
+            </div>
+        </div>
+      </div>
+    <script type='application/javascript' src="/static/js/jquery-3.4.1.min.js"></script>
+    <script type='application/javascript' src="/static/js/ajax.js{{BUST}}"></script>
+    <script type='application/javascript' src="/static/js/intervention.js{{BUST}}"></script>
+    {% endif %}
+</body>
+
+</html>

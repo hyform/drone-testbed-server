@@ -7,25 +7,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" media="screen" href="/static/css/bootstrap.min.css">
-    <link rel="stylesheet" media="screen" href="/static/css/chat.css">
+    <link rel="stylesheet" media="screen" href="/static/css/chat.css{{BUST}}">
     <title>A-Teams Chat</title>
 
 </head>
 
 <body>
+    {{ elapsed_seconds|json_script:"elapsed_seconds" }}
     <div class="outerer-container">
         {% if not experimenter %}
         <div class="chat-header">
-            <div class="col-7">
-                {% if position_name %}
-                {{position_name}}
-                {% endif %}
+            <div class="row">
+                <div class="col-7">
+                    {% if position_name %}
+                    {{position_name}}
+                    {% endif %}
+                </div>
+                <div class="col-3">
+                    <a href="/info/" target="_blank">Info</a>
+                </div>
+                <div class="col-2">
+                    <a target="_parent" href="{% url 'logout' %}">logout</a>
+                </div>
             </div>
-            <div class="col-3">
-                <a href="/info/" target="_blank">Info</a>
+            <div class="row">
+                <div class="col-12 running-timer" id="running-timer" hidden></div>
             </div>
-            <div class="col-2">
-                <a target="_parent" href="{% url 'logout' %}">logout</a>
+        </div>        
+        {% elif experimenter %}
+        <div class="chat-header" id="timer-header" hidden>
+            <div class="row" id="timer-row" hidden>
+                <div class="col-12 running-timer" id="running-timer-exper" hidden></div>
             </div>
         </div>
         {% endif %}
@@ -44,8 +56,8 @@
     </div>
 
     <script type='application/javascript' src="/static/js/jquery-3.4.1.min.js"></script>
-    <script type='application/javascript' src="/static/js/chat.js"></script>
-    <script type='text/javascript' src="/static/js/helpers.js"></script>
+    <script type='application/javascript' src="/static/js/chat.js{{BUST}}"></script>
+    <script type='application/javascript' src="/static/js/helpers.js{{BUST}}"></script>
 
 </body>
 

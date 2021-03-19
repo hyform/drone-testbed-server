@@ -21,6 +21,9 @@ from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from . import views
 
+admin.autodiscover()
+admin.site.enable_nav_sidebar = False
+
 #router = routers.DefaultRouter()
 #router.register(r'users', repo.views.UserViewSet)
 #router.register(r'groups', repo.views.GroupViewSet)
@@ -28,10 +31,14 @@ from . import views
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLS for the browsable API.
 
+admin.autodiscover()
+admin.site.enable_nav_sidebar = False
+
 urlpatterns = [
     path('repo/', include('repo.urls')),
     path('ai/', include('ai.urls')),
     path('exper/', include('exper.urls')),
+    path('process/', include('process.urls')),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
     path('', views.ateams_homepage, name='home'),
@@ -41,6 +48,7 @@ urlpatterns = [
     path('design/', views.ateams_design, name='design'),
     path('ops/', views.ateams_ops, name='ops'),
     path('business/', views.ateams_business, name='business'),
+    path('process/', views.ateams_process, name='process'),
     path('experiment/', views.ateams_experiment, name='experiment'),
     path('setup/', views.ateams_setup, name='setup'),
     path('presession/', views.ateams_presession, name='presession'),

@@ -8,6 +8,7 @@ from django.db.models import Q
 from rest_framework import generics, status
 from rest_framework.response import Response
 from django.utils.safestring import mark_safe
+from django.conf import settings
 from operator import attrgetter
 from exper.models import Role, UserPosition, Structure
 from exper.models import Session, SessionTeam, Market
@@ -16,10 +17,15 @@ from repo.models import Profile, DesignTeam, Study, Experiment, ExperOrg
 import collections
 import json
 from chat.chat_consumer_listener import ChatConsumerListener
+from process.mediation import Interventions
+from api.models import SessionTimer
+from datetime import datetime
+from design.utilities import cache_bust
 
 
 def ateams_homepage(request):
     context = {}
+    context['BUST'] = cache_bust()
     response = None
     experimenter = False
     if request.user.is_authenticated:
@@ -28,23 +34,31 @@ def ateams_homepage(request):
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES) & Q(
             team=request.user.profile.team)).first()
         if st:
-            if st.session.status == Session.SETUP:
-                context['redir'] = "/setup/"
-            elif st.session.status == Session.PRESESSION:
-                context['redir'] = "/presession/"
-            elif st.session.status == Session.RUNNING:
-                position = UserPosition.objects.filter(
-                    Q(session=st.session) & Q(user=request.user)).first().position
-                if position:
-                    if position.role.name == "Business":
-                        context['redir'] = "/business/"
-                    elif position.role.name == "OpsPlanner":
-                        context['redir'] = "/ops/"
-                    elif position.role.name == "Designer":
-                        context['redir'] = "/design/"
-            elif st.session.status == Session.POSTSESSION:
-                context['redir'] = "/postsession/"
-            response = HttpResponse(render(request, "home.html", context))
+            up = UserPosition.objects.filter(Q(user=request.user)&Q(session=st.session)).first()
+            if up:
+                if st.session.status == Session.SETUP:
+                    context['redir'] = "/setup/"
+                elif st.session.status == Session.PRESESSION:
+                    context['redir'] = "/presession/"
+                elif st.session.status == Session.RUNNING:
+                    position = UserPosition.objects.filter(
+                        Q(session=st.session) & Q(user=request.user)).first().position
+                    if position:
+                        if position.role.name == "Business":
+                            context['redir'] = "/business/"
+                        elif position.role.name == "OpsPlanner":
+                            context['redir'] = "/ops/"
+                        elif position.role.name == "Designer":
+                            context['redir'] = "/design/"
+                        elif position.role.name == "Process":
+                            context['redir'] = "/process/"
+                elif st.session.status == Session.POSTSESSION:
+                    context['redir'] = "/postsession/"
+                response = HttpResponse(render(request, "home.html", context))
+            else:
+                # User in team, but not assigned a role, so boot them
+                logout(request)
+                response = HttpResponse(render(request, "home.html"))
         else:
             if not experimenter:
                 logout(request)
@@ -59,6 +73,7 @@ def ateams_experiment(request):
         # If any of these are null, go to the organization page to select them
         if not request.user.profile.organization or not request.user.profile.study or not request.user.profile.experiment:
             context = {}
+            context['BUST'] = cache_bust()
             orgs = []
             exper_orgs = ExperOrg.objects.filter(user=request.user)
             for exper_org in exper_orgs:
@@ -142,6 +157,7 @@ def ateams_experiment(request):
                 'exercises': exercises,
                 'archived_exercises': archived_exercises
             }
+            context['BUST'] = cache_bust()
             response = HttpResponse(render(request, "experiment.html", context))
             response.set_cookie('username', request.user.username)
     else:
@@ -150,7 +166,7 @@ def ateams_experiment(request):
 
 
 @login_required
-def ateams_experiment_chat(request):
+def ateams_experiment_chat(request):    
     if request.user.is_authenticated and request.user.profile.is_experimenter():
 
         template_sessions = None
@@ -179,6 +195,7 @@ def ateams_experiment_chat(request):
             'session_teams': session_teams,
             'st_dict': st_dict,
         }
+        context['BUST'] = cache_bust()
         response = HttpResponse(render(request, "experimentchat.html", context))
         if request.user.is_authenticated:
             response.set_cookie('username', request.user.username)
@@ -190,6 +207,7 @@ def ateams_experiment_chat(request):
 @login_required
 def ateams_temp_user_info(request):
     context = {}
+    context['BUST'] = cache_bust()
     user_info = {}
     if request.user.is_authenticated:
         if request.user.profile and request.user.profile.is_experimenter():
@@ -217,6 +235,8 @@ def get_cutsom_links(request, st, context):
     link_org = None
     link_role = None
     link_structure = None
+    link_study = None
+    link_experiment = None
     link_position = None
     link_is_team = None
     link_ai = None
@@ -225,6 +245,12 @@ def get_cutsom_links(request, st, context):
     link_last = None
 
     link_org = st.team.organization
+    if st.session.exercise:
+        if st.session.exercise.experiment:
+            link_experiment = st.session.exercise.experiment
+            if link_experiment:
+                if link_experiment.study:
+                    link_study = link_experiment.study
     link_position = position = UserPosition.objects.filter(Q(session=st.session)&Q(user=request.user)).first().position
     link_structure = st.session.structure
     if link_position:
@@ -249,6 +275,10 @@ def get_cutsom_links(request, st, context):
     custom_links = CustomLinks.objects.filter(
         Q(org__isnull=True) | Q(org=link_org)
         ).filter(
+            Q(study__isnull=True) | Q(study=link_study)
+        ).filter(
+            Q(experiment__isnull=True) | Q(experiment=link_experiment)            
+        ).filter(
             Q(role__isnull=True) | Q(role=link_role)
         ).filter(
             Q(structure__isnull=True) | Q(structure=link_structure)
@@ -264,6 +294,8 @@ def get_cutsom_links(request, st, context):
             Q(first__isnull=True) | Q(first=link_first)
         ).filter(
             Q(last__isnull=True) | Q(last=link_last)
+        ).filter(
+            Q(active=True)
         )
 
     if custom_links:
@@ -288,14 +320,17 @@ def get_cutsom_links(request, st, context):
         if tutorial_links:
             context['tutorial_links'] = tutorial_links
 
+    return context
+
 @login_required
 def ateams_setup(request):
     context = {}
+    context['BUST'] = cache_bust()
     response = None
     if request.user.is_authenticated:
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
         if st:
-            get_cutsom_links(request, st, context)
+            context = get_cutsom_links(request, st, context)
 
             if st.session.status == Session.SETUP:
                 is_team = True
@@ -317,6 +352,8 @@ def ateams_setup(request):
                             context['redir'] = "/ops/"
                         elif position.role.name == "Designer":
                             context['redir'] = "/design/"
+                        elif position.role.name == "Process":
+                            context['redir'] = "/process/"
                 elif st.session.status == Session.POSTSESSION:
                     context['redir'] = "/postsession/"
                 response = HttpResponse(render(request, "setup.html", context))
@@ -331,6 +368,7 @@ def ateams_setup(request):
 @login_required
 def ateams_presession(request):
     context = {}
+    context['BUST'] = cache_bust()
     response = None
     role = None
     st = None
@@ -339,7 +377,7 @@ def ateams_presession(request):
     if request.user.is_authenticated:
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
         if st:
-            get_cutsom_links(request, st, context)
+            context = get_cutsom_links(request, st, context)
             context['session'] = st.session.structure.name
             if st.session.status == Session.PRESESSION:
                 is_team = True
@@ -359,26 +397,7 @@ def ateams_presession(request):
                     context['first'] = False
                     context['last'] = False
 
-                context['session_ai'] = st.session.use_ai
-                up = UserPosition.objects.filter(Q(user=request.user)&Q(session=st.session)).first()
-                pos_name = up.position.name
-                #TODO: some of this can still be removed
-                context['pos_name'] = pos_name
-                if "Design Manager" in pos_name:
-                    pos = 1
-                elif "Design Specialist" in pos_name:
-                    pos = 2
-                elif "Operations Manager" in pos_name:
-                    pos = 3
-                elif "Operations Specialist" in pos_name:
-                    pos = 4
-                elif "Business" in pos_name:
-                    pos = 5
-
-                role = up.position.role
-
-                context['role'] = role
-                context['position'] = pos
+                context['session_ai'] = st.session.use_ai                
 
                 response = HttpResponse(render(request, "presession.html", context))
                 response.set_cookie('use_ai', st.session.use_ai)
@@ -395,6 +414,8 @@ def ateams_presession(request):
                             context['redir'] = "/ops/"
                         elif position.role.name == "Designer":
                             context['redir'] = "/design/"
+                        elif position.role.name == "Process":
+                            context['redir'] = "/process/"
                 elif st.session.status == Session.POSTSESSION:
                     context['redir'] = "/postsession/"
                 response = HttpResponse(render(request, "presession.html", context))
@@ -408,6 +429,7 @@ def ateams_presession(request):
 @login_required
 def ateams_design(request):
     context = {}
+    context['BUST'] = cache_bust()
     response = None
     if request.user.is_authenticated:
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
@@ -434,6 +456,7 @@ def ateams_design(request):
 @login_required
 def ateams_ops(request):
     context = {}
+    context['BUST'] = cache_bust()
     response = None
     if request.user.is_authenticated:
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
@@ -460,6 +483,7 @@ def ateams_ops(request):
 @login_required
 def ateams_business(request):
     context = {}
+    context['BUST'] = cache_bust()
     response = None
     if request.user.is_authenticated:
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
@@ -484,8 +508,39 @@ def ateams_business(request):
     return response
 
 @login_required
+def ateams_process(request):
+    context = {}
+    context['BUST'] = cache_bust()
+    response = None
+    if request.user.is_authenticated:
+        st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
+        if st:
+            if st.session.status == Session.RUNNING:                                
+                context = Interventions.add_intervention_constants(context)
+                context['INTER_SEG_NUM'] = settings.INTER_SEG_NUM
+                context['INTER_SEG_LEN'] = settings.INTER_SEG_LEN
+                response = HttpResponse(render(request, "intervention.html", context))
+            else:
+                if st.session.status == Session.SETUP:
+                    context['redir'] = "/setup/"
+                elif st.session.status == Session.PRESESSION:
+                    context['redir'] = "/presession/"
+                elif st.session.status == Session.POSTSESSION:
+                    context['redir'] = "/postsession/"
+                context = Interventions.add_intervention_constants(context)
+                response = HttpResponse(render(request, "intervention.html", context))
+        else:
+            context['redir'] = "/"
+            context = Interventions.add_intervention_constants(context)
+            response = HttpResponse(render(request, "intervention.html", context))
+    else:
+        response = HttpResponse(render(request, "home.html"))
+    return response 
+
+@login_required
 def ateams_postsession(request):
     context = {}
+    context['BUST'] = cache_bust()
     response = None
     role = None
     st = None
@@ -494,7 +549,7 @@ def ateams_postsession(request):
     if request.user.is_authenticated:
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
         if st:
-            get_cutsom_links(request, st, context)
+            context = get_cutsom_links(request, st, context)
             if st.session.status == Session.POSTSESSION:
                 is_team = True
                 # TODO: Make individual/team a property of Structure
@@ -515,46 +570,6 @@ def ateams_postsession(request):
                     context['last'] = False
 
                 context['session_ai'] = st.session.use_ai
-                up = UserPosition.objects.filter(Q(user=request.user)&Q(session=st.session)).first()
-                #TODO: some of this can still be removed
-                pos_name = up.position.name
-                if "Design Manager" in pos_name:
-                    pos = 1
-                elif "Design Specialist" in pos_name:
-                    pos = 2
-                elif "Operations Manager" in pos_name:
-                    pos = 3
-                elif "Operations Specialist" in pos_name:
-                    pos = 4
-                elif "Business" in pos_name:
-                    pos = 5
-
-                role = up.position.role
-
-                active_team = st.team
-                if active_team:
-                    if "cmu team 1" in active_team.name:
-                        team_type = 1
-                    elif "cmu team 2" in active_team.name:
-                        team_type = 1
-                    elif "cmu team extra" in active_team.name:
-                        team_type = 2
-                    elif "psu team 1" in active_team.name:
-                        team_type = 10
-                    elif "psu team 2" in active_team.name:
-                        team_type = 10
-                    elif "psu team 5" in active_team.name:
-                        team_type = 10
-                    elif "psu team 6" in active_team.name:
-                        team_type = 10
-                    elif "psu extra 1" in active_team.name:
-                        team_type = 11
-                    elif "psu extra 5" in active_team.name:
-                        team_type = 11
-
-                context['role'] = role
-                context['position'] = pos
-                context['team_type'] = team_type
 
                 response = HttpResponse(render(request, "postsession.html", context))
                 response.set_cookie('use_ai', st.session.use_ai)
@@ -573,6 +588,8 @@ def ateams_postsession(request):
                             context['redir'] = "/ops/"
                         elif position.role.name == "Designer":
                             context['redir'] = "/design/"
+                        elif position.role.name == "Process":
+                            context['redir'] = "/process/"
                 response = HttpResponse(render(request, "postsession.html", context))
         else:
             context['redir'] = "/"
@@ -584,6 +601,7 @@ def ateams_postsession(request):
 @login_required
 def ateams_info(request):
     context = {}
+    context['BUST'] = cache_bust()
     role = None
     st = None
     pos = 0
@@ -592,7 +610,7 @@ def ateams_info(request):
     if request.user.is_authenticated:
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
         if st:
-            get_cutsom_links(request, st, context)
+            context = get_cutsom_links(request, st, context)
             context['state'] = st.session.status
 
             response = HttpResponse(render(request, "info.html", context))

@@ -29,7 +29,6 @@ $(document).ready(function () {
         buttonId = "#play_button_" + gottenId;
         infoId = "#info_text_" + gottenId;
         simId = "#sim_button_" + gottenId;
-        editsimId = "#edit_sim_button_" + gottenId;
 
         //Check archive attempt first
         if ($(statusId).text() === "After" && $(buttonId).text() === "Archive") {
@@ -205,9 +204,12 @@ $(document).ready(function () {
         stopButtonId = "#stop_button_" + gottenId;
         simButtonId = "#sim_button_" + gottenId;
         infoId = "#info_text_" + gottenId;
-        //$(playId).prop('disabled', true);
-        //$(stopButtonId).prop('disabled', true);
-        //$(simButtonId).prop('disabled', true);
+        archiveButtonId = "#archive_button_" + gottenId;
+        $(playId).prop('disabled', true);
+        $(stopButtonId).prop('disabled', true);
+        $(simButtonId).prop('disabled', true);
+        $(archiveButtonId).prop('disabled', true);
+        $(infoId).html("Running the Digital Twin");
         $.ajax({
             url: runAjaxUrl,
             method: "PUT",
@@ -220,12 +222,6 @@ $(document).ready(function () {
             }
         })
       }
-    })
-
-    $('.edit_sim_button').on('click', function () {
-      gottenId = getId(this);
-      digitaltwinAjaxUrl = ajaxUrl + "edit_digital_twin/" + gottenId;
-      location.href = digitaltwinAjaxUrl;
     })
 
     //---------------------------------
@@ -274,11 +270,23 @@ $(document).ready(function () {
     });
 
     //----------------------------------
+    /*
+    $('#select-structure-new').on('change', function () {
+        if($("#select-structure-new option:selected" ).text() === "Process Manager") {
+            $("#process-check").removeClass('hidden-row');
+        } else {
+            $("#process-check").addClass('hidden-row');
+        }
+    });
+    */
+
 
     $('#add_session_button').on('click', function () {
         sessionNameNew = $("#session-name-new").val();
-        sessionAINew = $("#session-ai-new").prop("checked");
+        //sessionAINew = $("#session-ai-new").prop("checked");
         sessionStructureIdNew = $("#select-structure-new option:selected").val();
+        sessionStructureIdNewText = $("#select-structure-new option:selected").text();
+        //processCheck = $("#process-check").prop("checked");
         sessionMarketIdNew = $("#select-market-new option:selected").val();
 
         if(!sessionNameNew) {
@@ -288,7 +296,6 @@ $(document).ready(function () {
 
         var sessionList = document.getElementById("session-list");
 
-        //TODO:This isn't incrementing
         var numNewSessions = document.querySelectorAll('.new-session').length;
         var newSessionIndex = numNewSessions + 1;
 
@@ -386,6 +393,41 @@ $(document).ready(function () {
         //------
         structureRowSelectCol.appendChild(structureRowSelect);
 
+        //Process Manager AI
+        var aiProcessRow = document.createElement("div");
+        aiProcessRow.classList.add("row");
+        newSessionBorder.appendChild(aiProcessRow);
+
+        var aiProcessRowLabelCol = document.createElement("div");
+        aiProcessRowLabelCol.classList.add("col-6");
+        aiProcessRow.appendChild(aiProcessRowLabelCol);
+
+        var aiProcessFormCheck = document.createElement("div");
+        aiProcessFormCheck.classList.add("form-check");
+        aiProcessRowLabelCol.appendChild(aiProcessFormCheck);
+
+        var aiProcessCheckInput = document.createElement("input");
+        aiProcessCheckInput.classList.add("form-check-input");
+        aiProcessCheckInput.classList.add("new-session-ai-process");
+        aiProcessCheckInput.id = "session-ai-process-" + newSessionIndex;
+        aiProcessCheckInput.type = "checkbox"
+
+        var aiProcessElement = document.getElementById("session-ai-process-new");
+        aiProcessCheckInput.checked = aiProcessElement.checked;
+        aiProcessFormCheck.appendChild(aiProcessCheckInput);
+
+        var aiProcessCheckLabel = document.createElement("label");
+        aiProcessCheckLabel.classList.add("form-check-label");
+        aiProcessCheckLabel.htmlFor = "session-ai-process-" + newSessionIndex;
+        aiProcessCheckLabel.innerHTML = "use Process Manager AI"
+        aiProcessFormCheck.appendChild(aiProcessCheckLabel);
+
+        if(sessionStructureIdNewText === "Process Manager") {
+            aiProcessRow.classList.remove('hidden-row');
+        } else {
+            aiProcessRow.classList.add('hidden-row');
+        }
+
         //new Market
         var marketRow = document.createElement("div");
         marketRow.classList.add("row");
@@ -431,6 +473,9 @@ $(document).ready(function () {
 
         var selectStructureElement = document.getElementById("select-structure-new");
         selectStructureElement.selectedIndex = 0;
+
+        aiProcessElement.checked = false;
+        $("#process-check").addClass('hidden-row');
 
         var selectMarketElement = document.getElementById("select-market-new");
         selectMarketElement.selectedIndex = 0;
@@ -479,6 +524,11 @@ $(document).ready(function () {
         var newSessionStructures = document.querySelectorAll('.new-session-structure');
         for (i = 0; i < newSessionStructures.length; ++i) {
             newSessionList[i].structure = newSessionStructures[i].value;
+        }
+
+        var newSessionAIProcess = document.querySelectorAll('.new-session-ai-process');
+        for (i = 0; i < newSessionAIProcess.length; ++i) {
+            newSessionList[i].process = newSessionAIProcess[i].checked;
         }
 
         var newSessionMarkets = document.querySelectorAll('.new-session-market');

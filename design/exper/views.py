@@ -20,6 +20,10 @@ import csv
 import json
 from ai.agents.adaptive_team_ai_updated_planner import AdaptiveTeamAIUpdatedPlanner
 from exper.serializers import DigitalTwinSerializer
+from api.models import SessionTimer
+from datetime import datetime, timezone
+from ai.tasks import mediation_loop
+from design.utilities import cache_bust
 
 # Create your views here.
 
@@ -248,6 +252,35 @@ def session_status_play(request):
                     new_status = Session.PRESESSION
                 elif session.status == Session.PRESESSION:
                     new_status = Session.RUNNING
+
+                    if session.structure.name == "Process Manager":
+                        # Update the session's RUNNING start timer
+                        running_timer = SessionTimer.objects.filter(session=session).filter(timer_type=SessionTimer.RUNNING_START).first()
+                        if running_timer:
+                            running_timer.timestamp = datetime.now(timezone.utc)
+                            running_timer.save()
+                        else:
+                            SessionTimer.objects.create(timer_type=SessionTimer.RUNNING_START, timestamp=datetime.now(timezone.utc), session=session)
+
+                        print("Human Process Manager")
+
+                    elif session.structure.name == "Process Manager (AI)":
+                        # Update the session's RUNNING start timer
+                        running_timer = SessionTimer.objects.filter(session=session).filter(timer_type=SessionTimer.RUNNING_START).first()
+                        if running_timer:
+                            running_timer.timestamp = datetime.now(timezone.utc)
+                            running_timer.save()
+                        else:
+                            SessionTimer.objects.create(timer_type=SessionTimer.RUNNING_START, timestamp=datetime.now(timezone.utc), session=session)
+
+                        print("AI Process Manager")
+                        session_channel = Channel.objects.filter(name="Session").first()
+                        if session_channel:
+                            session_instance = str(session_channel.id) + "___" + str(session.id)
+                            data = {}
+                            data['session_id'] = session.id
+                            mediation_loop.delay(session_instance, data)
+
                 elif session.status == Session.RUNNING:
                     new_status = Session.POSTSESSION
                 elif session.status == Session.POSTSESSION:
@@ -404,9 +437,12 @@ def create_session_group(request):
             sessionUseAI = item['ai']
             sessionStructureId = item['structure']
             sessionStructure = Structure.objects.filter(id=sessionStructureId).first()
+            sessionUseAIProcess = item['process']
+            if sessionStructure.name != 'Process Manager':
+                sessionUseAIProcess = False
             sessionMarketId = item['market']
             sessionMarket = Market.objects.filter(id=sessionMarketId).first()
-            newSession = Session.objects.create(name=sessionName, experiment=experiment, exercise=newExercise, index=sessionIndex, prior_session=None, structure=sessionStructure, market=sessionMarket, use_ai=sessionUseAI, status=4)
+            newSession = Session.objects.create(name=sessionName, experiment=experiment, exercise=newExercise, index=sessionIndex, prior_session=None, structure=sessionStructure, market=sessionMarket, use_ai=sessionUseAI, use_process_ai=sessionUseAIProcess, status=4)
             sessionTeam = SessionTeam.objects.create(team=team, session=newSession)
             structurePositions = list(Position.objects.filter(structure=sessionStructure).order_by('name'))
 
@@ -523,11 +559,10 @@ def start_digital_twin(request):
     if request.user.is_authenticated:
         if request.user.profile.is_experimenter():
             session = Session.objects.filter(id=request.data.get('id')).first()
-            # archive it
-#            session.status = 5
-#            session.save()
             digital_twin_setups = get_digital_twin_for_session(int(request.data.get('id')))
-            t = AdaptiveTeamAIUpdatedPlanner(session, digital_twin_setups)
+            t = AdaptiveTeamAIUpdatedPlanner()
+            t.setup(session)
+
             return Response(status=status.HTTP_200_OK)
     return Response(status=status.HTTP_401_UNAUTHORIZED)
 
@@ -541,6 +576,7 @@ def digital_twin(request, session_id):
             'session_id' : session_id,
             'digital_twin_setups' : digital_twin_setups
         }
+        context['BUST'] = cache_bust()
         response = HttpResponse(render(request, "digitaltwinedit.html", context))
     else:
         response = HttpResponse(render(request, "digitaltwinedit.html", context))

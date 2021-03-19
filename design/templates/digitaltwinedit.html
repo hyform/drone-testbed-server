@@ -27,8 +27,8 @@
   {% block head_rss %}{% endblock head_rss %}
   {% block head_css %}
   {% block head_css_site %}
-  <link rel="stylesheet" media="screen" href="/static/css/common.css">
-  <link rel="stylesheet" type="text/css" href="/static/css/ateams.css" />
+  <link rel="stylesheet" media="screen" href="/static/css/common.css{{BUST}}">
+  <link rel="stylesheet" type="text/css" href="/static/css/ateams.css{{BUST}}" />
   {% endblock head_css_site %}
   {% block head_css_section %}{% endblock head_css_section %}
   {% block head_css_page %}{% endblock head_css_page %}
@@ -165,8 +165,8 @@
 {% block footer %}
 {% block footer_javascript %}
 {% block footer_javascript_site %}
-<script language="JavaScript" type="text/javascript" src="/static/rest_framework/js/jquery-3.4.1.min.js"></script>
-<script language="JavaScript" type="text/javascript" src="/static/rest_framework/js/jquery-ui.min.js"></script>
+<script language="JavaScript" type="application/javascript" src="/static/rest_framework/js/jquery-3.4.1.min.js"></script>
+<script language="JavaScript" type="application/javascript" src="/static/rest_framework/js/jquery-ui.min.js"></script>
 <link href="/static/css/jquery-ui.min.css" rel="stylesheet">
 <script type='application/javascript' src="/static/js/bootstrap.bundle.min.js"></script>
 {% endblock footer_javascript_site %}
@@ -204,7 +204,7 @@
 } );
   </script>
 
-  <script type='text/javascript' src="/static/js/ajax.js"></script>
-  <script type='text/javascript' src="/static/js/digitaltwinedit.js"></script>
+  <script type='application/javascript' src="/static/js/ajax.js{{BUST}}"></script>
+  <script type='application/javascript' src="/static/js/digitaltwinedit.js{{BUST}}"></script>
 
 </html>
