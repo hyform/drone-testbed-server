@@ -59,6 +59,42 @@ ALTER SEQUENCE public.ai_designer1_id_seq OWNED BY public.ai_designer1.id;
 
 
 --
+-- Name: api_sessiontimer; Type: TABLE; Schema: public; Owner: atuser
+--
+
+CREATE TABLE public.api_sessiontimer (
+    id integer NOT NULL,
+    timer_type integer NOT NULL,
+    "timestamp" timestamp with time zone,
+    session_id integer NOT NULL
+);
+
+
+ALTER TABLE public.api_sessiontimer OWNER TO atuser;
+
+--
+-- Name: api_sessiontimer_id_seq; Type: SEQUENCE; Schema: public; Owner: atuser
+--
+
+CREATE SEQUENCE public.api_sessiontimer_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.api_sessiontimer_id_seq OWNER TO atuser;
+
+--
+-- Name: api_sessiontimer_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: atuser
+--
+
+ALTER SEQUENCE public.api_sessiontimer_id_seq OWNED BY public.api_sessiontimer.id;
+
+
+--
 -- Name: auth_group; Type: TABLE; Schema: public; Owner: atuser
 --
 
@@ -539,7 +575,10 @@ CREATE TABLE public.exper_customlinks (
     org_id integer,
     position_id integer,
     role_id integer,
-    structure_id integer
+    structure_id integer,
+    experiment_id integer,
+    study_id integer,
+    active boolean NOT NULL
 );
 
 
@@ -975,7 +1014,8 @@ CREATE TABLE public.exper_session (
     prior_session_id integer,
     structure_id integer NOT NULL,
     index integer NOT NULL,
-    exercise_id integer
+    exercise_id integer,
+    use_process_ai boolean NOT NULL
 );
 
 
@@ -1071,6 +1111,41 @@ ALTER TABLE public.exper_structure_id_seq OWNER TO atuser;
 --
 
 ALTER SEQUENCE public.exper_structure_id_seq OWNED BY public.exper_structure.id;
+
+
+--
+-- Name: exper_structureorganization; Type: TABLE; Schema: public; Owner: atuser
+--
+
+CREATE TABLE public.exper_structureorganization (
+    id integer NOT NULL,
+    organization_id integer NOT NULL,
+    structure_id integer NOT NULL
+);
+
+
+ALTER TABLE public.exper_structureorganization OWNER TO atuser;
+
+--
+-- Name: exper_structureorganization_id_seq; Type: SEQUENCE; Schema: public; Owner: atuser
+--
+
+CREATE SEQUENCE public.exper_structureorganization_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.exper_structureorganization_id_seq OWNER TO atuser;
+
+--
+-- Name: exper_structureorganization_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: atuser
+--
+
+ALTER SEQUENCE public.exper_structureorganization_id_seq OWNED BY public.exper_structureorganization.id;
 
 
 --
@@ -1859,6 +1934,13 @@ ALTER TABLE ONLY public.ai_designer1 ALTER COLUMN id SET DEFAULT nextval('public
 
 
 --
+-- Name: api_sessiontimer id; Type: DEFAULT; Schema: public; Owner: atuser
+--
+
+ALTER TABLE ONLY public.api_sessiontimer ALTER COLUMN id SET DEFAULT nextval('public.api_sessiontimer_id_seq'::regclass);
+
+
+--
 -- Name: auth_group id; Type: DEFAULT; Schema: public; Owner: atuser
 --
 
@@ -2045,6 +2127,13 @@ ALTER TABLE ONLY public.exper_sessionteam ALTER COLUMN id SET DEFAULT nextval('p
 --
 
 ALTER TABLE ONLY public.exper_structure ALTER COLUMN id SET DEFAULT nextval('public.exper_structure_id_seq'::regclass);
+
+
+--
+-- Name: exper_structureorganization id; Type: DEFAULT; Schema: public; Owner: atuser
+--
+
+ALTER TABLE ONLY public.exper_structureorganization ALTER COLUMN id SET DEFAULT nextval('public.exper_structureorganization_id_seq'::regclass);
 
 
 --
@@ -2249,6 +2338,14 @@ COPY public.ai_designer1 (id, config, range, cost, payload, velocity) FROM stdin
 147	*aMM0++++++++++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fOM4*gNN4*hNL4*iMO4*jLN4*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^cg^eh^el,19,3	16.36555	7481.7295	19	0.1
 148	*aMM0++++++++++++++++*bNM2+++*cMN1+++*dLM2+++*eML1+++*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4^ab^ac^ad^ae^bf^bg^bh^ci^dj^dk^dl^em^cg^eh,20,3	16.217701	7641.9307	20	0.1
 149	*aMM0+*bNM2+*cMN1+*dLM2+*eML1+*fOM4*gNN4*hNL3*iMO4*jLN3*kKM4*lLL4*mMK4*nPM4*oMP4*pJM4*qMJ4^ab^ac^ad^ae^bf^bg^bh^ci^cj^dk^dl^em^fn^io^kp^mq^cg^dj^el,7,3	14.915645	2361.3445	7	0.1
+\.
+
+
+--
+-- Data for Name: api_sessiontimer; Type: TABLE DATA; Schema: public; Owner: atuser
+--
+
+COPY public.api_sessiontimer (id, timer_type, "timestamp", session_id) FROM stdin;
 \.
 
 
@@ -2465,6 +2562,14 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 190	Can change digital twin preference	48	change_digitaltwinpreference
 191	Can delete digital twin preference	48	delete_digitaltwinpreference
 192	Can view digital twin preference	48	view_digitaltwinpreference
+193	Can add structure organization	49	add_structureorganization
+194	Can change structure organization	49	change_structureorganization
+195	Can delete structure organization	49	delete_structureorganization
+196	Can view structure organization	49	view_structureorganization
+197	Can add session timer	50	add_sessiontimer
+198	Can change session timer	50	change_sessiontimer
+199	Can delete session timer	50	delete_sessiontimer
+200	Can view session timer	50	view_sessiontimer
 \.
 
 
@@ -2637,6 +2742,8 @@ COPY public.django_content_type (id, app_label, model) FROM stdin;
 46	exper	digitaltwin
 47	exper	digitaltwinrequirement
 48	exper	digitaltwinpreference
+49	exper	structureorganization
+50	api	sessiontimer
 \.
 
 
@@ -2732,6 +2839,10 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 85	ai	0002_designer1_velocity	2021-02-17 17:34:22.918406+00
 86	exper	0021_digitaltwin_digitaltwinpreference_digitaltwinrequirement	2021-02-17 17:34:23.034252+00
 87	repo	0032_auto_20201130_1443	2021-02-17 17:34:23.082962+00
+88	exper	0022_auto_20210221_2210	2021-03-19 11:08:49.815149+00
+89	api	0001_initial	2021-03-19 11:08:49.862826+00
+90	exper	0023_session_use_process_ai	2021-03-19 11:08:50.001405+00
+91	exper	0024_customlinks_active	2021-03-19 11:08:50.021066+00
 \.
 
 
@@ -2748,7 +2859,7 @@ to9pyu446tkmonc8wrqx9kiaczjynsln	YTg0NTM2N2U1NjE2NGQ5NmZmMzdiODQzZjVlYWFjZjZmMWQ
 -- Data for Name: exper_customlinks; Type: TABLE DATA; Schema: public; Owner: atuser
 --
 
-COPY public.exper_customlinks (id, text, link, link_type, is_team, ai, status, first, last, org_id, position_id, role_id, structure_id) FROM stdin;
+COPY public.exper_customlinks (id, text, link, link_type, is_team, ai, status, first, last, org_id, position_id, role_id, structure_id, experiment_id, study_id, active) FROM stdin;
 \.
 
 
@@ -2912,7 +3023,7 @@ COPY public.exper_role (id, name) FROM stdin;
 -- Data for Name: exper_session; Type: TABLE DATA; Schema: public; Owner: atuser
 --
 
-COPY public.exper_session (id, name, use_ai, status, experiment_id, market_id, prior_session_id, structure_id, index, exercise_id) FROM stdin;
+COPY public.exper_session (id, name, use_ai, status, experiment_id, market_id, prior_session_id, structure_id, index, exercise_id, use_process_ai) FROM stdin;
 \.
 
 
@@ -2932,6 +3043,14 @@ COPY public.exper_structure (id, name, organization_id) FROM stdin;
 1	A	\N
 2	B	\N
 3	Extra	\N
+\.
+
+
+--
+-- Data for Name: exper_structureorganization; Type: TABLE DATA; Schema: public; Owner: atuser
+--
+
+COPY public.exper_structureorganization (id, organization_id, structure_id) FROM stdin;
 \.
 
 
@@ -3298,6 +3417,13 @@ SELECT pg_catalog.setval('public.ai_designer1_id_seq', 13214, true);
 
 
 --
+-- Name: api_sessiontimer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atuser
+--
+
+SELECT pg_catalog.setval('public.api_sessiontimer_id_seq', 1, false);
+
+
+--
 -- Name: auth_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atuser
 --
 
@@ -3315,7 +3441,7 @@ SELECT pg_catalog.setval('public.auth_group_permissions_id_seq', 1, false);
 -- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atuser
 --
 
-SELECT pg_catalog.setval('public.auth_permission_id_seq', 192, true);
+SELECT pg_catalog.setval('public.auth_permission_id_seq', 200, true);
 
 
 --
@@ -3371,14 +3497,14 @@ SELECT pg_catalog.setval('public.django_admin_log_id_seq', 1, true);
 -- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atuser
 --
 
-SELECT pg_catalog.setval('public.django_content_type_id_seq', 48, true);
+SELECT pg_catalog.setval('public.django_content_type_id_seq', 50, true);
 
 
 --
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atuser
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 87, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 91, true);
 
 
 --
@@ -3484,6 +3610,13 @@ SELECT pg_catalog.setval('public.exper_sessionteam_id_seq', 1, false);
 --
 
 SELECT pg_catalog.setval('public.exper_structure_id_seq', 3, true);
+
+
+--
+-- Name: exper_structureorganization_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atuser
+--
+
+SELECT pg_catalog.setval('public.exper_structureorganization_id_seq', 1, false);
 
 
 --
@@ -3639,6 +3772,14 @@ SELECT pg_catalog.setval('public.repo_waypoint_id_seq', 1, false);
 
 ALTER TABLE ONLY public.ai_designer1
     ADD CONSTRAINT ai_designer1_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: api_sessiontimer api_sessiontimer_pkey; Type: CONSTRAINT; Schema: public; Owner: atuser
+--
+
+ALTER TABLE ONLY public.api_sessiontimer
+    ADD CONSTRAINT api_sessiontimer_pkey PRIMARY KEY (id);
 
 
 --
@@ -3938,6 +4079,14 @@ ALTER TABLE ONLY public.exper_structure
 
 
 --
+-- Name: exper_structureorganization exper_structureorganization_pkey; Type: CONSTRAINT; Schema: public; Owner: atuser
+--
+
+ALTER TABLE ONLY public.exper_structureorganization
+    ADD CONSTRAINT exper_structureorganization_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: exper_study exper_study_pkey; Type: CONSTRAINT; Schema: public; Owner: atuser
 --
 
@@ -4114,6 +4263,13 @@ ALTER TABLE ONLY public.repo_waypoint
 
 
 --
+-- Name: api_sessiontimer_session_id_51c76e58; Type: INDEX; Schema: public; Owner: atuser
+--
+
+CREATE INDEX api_sessiontimer_session_id_51c76e58 ON public.api_sessiontimer USING btree (session_id);
+
+
+--
 -- Name: auth_group_name_a6ea08ec_like; Type: INDEX; Schema: public; Owner: atuser
 --
 
@@ -4254,6 +4410,13 @@ CREATE INDEX django_session_session_key_c0390e0f_like ON public.django_session U
 
 
 --
+-- Name: exper_customlinks_experiment_id_bfea6454; Type: INDEX; Schema: public; Owner: atuser
+--
+
+CREATE INDEX exper_customlinks_experiment_id_bfea6454 ON public.exper_customlinks USING btree (experiment_id);
+
+
+--
 -- Name: exper_customlinks_org_id_58d58a88; Type: INDEX; Schema: public; Owner: atuser
 --
 
@@ -4279,6 +4442,13 @@ CREATE INDEX exper_customlinks_role_id_30317a0f ON public.exper_customlinks USIN
 --
 
 CREATE INDEX exper_customlinks_structure_id_127430c8 ON public.exper_customlinks USING btree (structure_id);
+
+
+--
+-- Name: exper_customlinks_study_id_64525540; Type: INDEX; Schema: public; Owner: atuser
+--
+
+CREATE INDEX exper_customlinks_study_id_64525540 ON public.exper_customlinks USING btree (study_id);
 
 
 --
@@ -4412,6 +4582,20 @@ CREATE INDEX exper_sessionteam_team_id_b2f4d6fc ON public.exper_sessionteam USIN
 --
 
 CREATE INDEX exper_structure_organization_id_8e76cbfc ON public.exper_structure USING btree (organization_id);
+
+
+--
+-- Name: exper_structureorganization_organization_id_e61d3cf1; Type: INDEX; Schema: public; Owner: atuser
+--
+
+CREATE INDEX exper_structureorganization_organization_id_e61d3cf1 ON public.exper_structureorganization USING btree (organization_id);
+
+
+--
+-- Name: exper_structureorganization_structure_id_f15630fd; Type: INDEX; Schema: public; Owner: atuser
+--
+
+CREATE INDEX exper_structureorganization_structure_id_f15630fd ON public.exper_structureorganization USING btree (structure_id);
 
 
 --
@@ -4681,6 +4865,14 @@ CREATE INDEX repo_waypoint_customer_id_ab01026c ON public.repo_waypoint USING bt
 
 
 --
+-- Name: api_sessiontimer api_sessiontimer_session_id_51c76e58_fk_exper_session_id; Type: FK CONSTRAINT; Schema: public; Owner: atuser
+--
+
+ALTER TABLE ONLY public.api_sessiontimer
+    ADD CONSTRAINT api_sessiontimer_session_id_51c76e58_fk_exper_session_id FOREIGN KEY (session_id) REFERENCES public.exper_session(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
 -- Name: auth_group_permissions auth_group_permissio_permission_id_84c5c92e_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: atuser
 --
 
@@ -4809,6 +5001,14 @@ ALTER TABLE ONLY public.django_admin_log
 
 
 --
+-- Name: exper_customlinks exper_customlinks_experiment_id_bfea6454_fk_exper_experiment_id; Type: FK CONSTRAINT; Schema: public; Owner: atuser
+--
+
+ALTER TABLE ONLY public.exper_customlinks
+    ADD CONSTRAINT exper_customlinks_experiment_id_bfea6454_fk_exper_experiment_id FOREIGN KEY (experiment_id) REFERENCES public.exper_experiment(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
 -- Name: exper_customlinks exper_customlinks_org_id_58d58a88_fk_exper_organization_id; Type: FK CONSTRAINT; Schema: public; Owner: atuser
 --
 
@@ -4838,6 +5038,14 @@ ALTER TABLE ONLY public.exper_customlinks
 
 ALTER TABLE ONLY public.exper_customlinks
     ADD CONSTRAINT exper_customlinks_structure_id_127430c8_fk_exper_structure_id FOREIGN KEY (structure_id) REFERENCES public.exper_structure(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: exper_customlinks exper_customlinks_study_id_64525540_fk_exper_study_id; Type: FK CONSTRAINT; Schema: public; Owner: atuser
+--
+
+ALTER TABLE ONLY public.exper_customlinks
+    ADD CONSTRAINT exper_customlinks_study_id_64525540_fk_exper_study_id FOREIGN KEY (study_id) REFERENCES public.exper_study(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
@@ -4990,6 +5198,22 @@ ALTER TABLE ONLY public.exper_sessionteam
 
 ALTER TABLE ONLY public.exper_structure
     ADD CONSTRAINT exper_structure_organization_id_8e76cbfc_fk_exper_org FOREIGN KEY (organization_id) REFERENCES public.exper_organization(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: exper_structureorganization exper_structureorgan_organization_id_e61d3cf1_fk_exper_org; Type: FK CONSTRAINT; Schema: public; Owner: atuser
+--
+
+ALTER TABLE ONLY public.exper_structureorganization
+    ADD CONSTRAINT exper_structureorgan_organization_id_e61d3cf1_fk_exper_org FOREIGN KEY (organization_id) REFERENCES public.exper_organization(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: exper_structureorganization exper_structureorgan_structure_id_f15630fd_fk_exper_str; Type: FK CONSTRAINT; Schema: public; Owner: atuser
+--
+
+ALTER TABLE ONLY public.exper_structureorganization
+    ADD CONSTRAINT exper_structureorgan_structure_id_f15630fd_fk_exper_str FOREIGN KEY (structure_id) REFERENCES public.exper_structure(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
