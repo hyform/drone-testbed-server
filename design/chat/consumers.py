@@ -289,14 +289,17 @@ class ChatConsumer(WebsocketConsumer):
                         })
         if st:
             # Send out the old messages to this user
-            chat_logs = DataLog.objects.filter(session=st.session).filter(type__startswith="chat: ").order_by('time')
+            chat_logs = DataLog.objects.filter(session=st.session).filter(Q(type__startswith="chat: ") | Q(type__startswith="intervention: ")).order_by('time')
             for chat_log in chat_logs:
                 sender_name = ""
                 senderPosition = UserPosition.objects.filter(session=st.session).filter(user=chat_log.user).first()
                 if senderPosition:
                     sender_name = senderPosition.position.name
                 else:
-                    sender_name = "Experimenter"
+                    if(chat_log.type.startswith("intervention: ")):
+                        sender_name = "Process Manager"
+                    else :
+                        sender_name = "Experimenter"
                 channel_parse = chat_log.type.split('@')
                 if len(channel_parse) > 1:
                     channel_instance = channel_parse[len(channel_parse) - 1]

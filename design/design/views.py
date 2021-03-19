@@ -20,10 +20,12 @@ from chat.chat_consumer_listener import ChatConsumerListener
 from process.mediation import Interventions
 from api.models import SessionTimer
 from datetime import datetime
+from design.utilities import cache_bust
 
 
 def ateams_homepage(request):
     context = {}
+    context['BUST'] = cache_bust()
     response = None
     experimenter = False
     if request.user.is_authenticated:
@@ -71,6 +73,7 @@ def ateams_experiment(request):
         # If any of these are null, go to the organization page to select them
         if not request.user.profile.organization or not request.user.profile.study or not request.user.profile.experiment:
             context = {}
+            context['BUST'] = cache_bust()
             orgs = []
             exper_orgs = ExperOrg.objects.filter(user=request.user)
             for exper_org in exper_orgs:
@@ -154,6 +157,7 @@ def ateams_experiment(request):
                 'exercises': exercises,
                 'archived_exercises': archived_exercises
             }
+            context['BUST'] = cache_bust()
             response = HttpResponse(render(request, "experiment.html", context))
             response.set_cookie('username', request.user.username)
     else:
@@ -162,7 +166,7 @@ def ateams_experiment(request):
 
 
 @login_required
-def ateams_experiment_chat(request):
+def ateams_experiment_chat(request):    
     if request.user.is_authenticated and request.user.profile.is_experimenter():
 
         template_sessions = None
@@ -191,6 +195,7 @@ def ateams_experiment_chat(request):
             'session_teams': session_teams,
             'st_dict': st_dict,
         }
+        context['BUST'] = cache_bust()
         response = HttpResponse(render(request, "experimentchat.html", context))
         if request.user.is_authenticated:
             response.set_cookie('username', request.user.username)
@@ -202,6 +207,7 @@ def ateams_experiment_chat(request):
 @login_required
 def ateams_temp_user_info(request):
     context = {}
+    context['BUST'] = cache_bust()
     user_info = {}
     if request.user.is_authenticated:
         if request.user.profile and request.user.profile.is_experimenter():
@@ -319,6 +325,7 @@ def get_cutsom_links(request, st, context):
 @login_required
 def ateams_setup(request):
     context = {}
+    context['BUST'] = cache_bust()
     response = None
     if request.user.is_authenticated:
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
@@ -361,6 +368,7 @@ def ateams_setup(request):
 @login_required
 def ateams_presession(request):
     context = {}
+    context['BUST'] = cache_bust()
     response = None
     role = None
     st = None
@@ -421,6 +429,7 @@ def ateams_presession(request):
 @login_required
 def ateams_design(request):
     context = {}
+    context['BUST'] = cache_bust()
     response = None
     if request.user.is_authenticated:
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
@@ -447,6 +456,7 @@ def ateams_design(request):
 @login_required
 def ateams_ops(request):
     context = {}
+    context['BUST'] = cache_bust()
     response = None
     if request.user.is_authenticated:
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
@@ -473,6 +483,7 @@ def ateams_ops(request):
 @login_required
 def ateams_business(request):
     context = {}
+    context['BUST'] = cache_bust()
     response = None
     if request.user.is_authenticated:
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
@@ -499,6 +510,7 @@ def ateams_business(request):
 @login_required
 def ateams_process(request):
     context = {}
+    context['BUST'] = cache_bust()
     response = None
     if request.user.is_authenticated:
         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
@@ -528,6 +540,7 @@ def ateams_process(request):
 @login_required
 def ateams_postsession(request):
     context = {}
+    context['BUST'] = cache_bust()
     response = None
     role = None
     st = None
@@ -588,6 +601,7 @@ def ateams_postsession(request):
 @login_required
 def ateams_info(request):
     context = {}
+    context['BUST'] = cache_bust()
     role = None
     st = None
     pos = 0

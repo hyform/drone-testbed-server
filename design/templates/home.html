@@ -9,9 +9,6 @@
   <meta http-equiv="Refresh" content="0; url={{redir}}" />
   {% endif %}
   <title>{% block title %}{{ page.title }}{% endblock title %}</title>
-  {% block head_favicon %}
-  <link rel="icon" href="/static/css/images/favicon.ico" type="x-icon" />
-  <link rel="shortcut icon" href="/static/css/images/favicon.ico" type="x-icon" />{% endblock head_favicon %}
   {% block head_meta %}
   {% block head_meta_author %}{% endblock head_meta_author %}
   {% block head_meta_charset %}
@@ -27,8 +24,8 @@
   {% block head_rss %}{% endblock head_rss %}
   {% block head_css %}
   {% block head_css_site %}
-  <link rel="stylesheet" media="screen" href="/static/css/common.css">
-  <link rel="stylesheet" type="text/css" href="/static/css/ateams.css" />
+  <link rel="stylesheet" media="screen" href="/static/css/common.css{{BUST}}">
+  <link rel="stylesheet" type="text/css" href="/static/css/ateams.css{{BUST}}" />
   {% endblock head_css_site %}
   {% block head_css_section %}{% endblock head_css_section %}
   {% block head_css_page %}{% endblock head_css_page %}

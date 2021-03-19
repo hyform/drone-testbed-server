@@ -23,6 +23,7 @@ from exper.serializers import DigitalTwinSerializer
 from api.models import SessionTimer
 from datetime import datetime, timezone
 from ai.tasks import mediation_loop
+from design.utilities import cache_bust
 
 # Create your views here.
 
@@ -576,6 +577,7 @@ def digital_twin(request, session_id):
             'session_id' : session_id,
             'digital_twin_setups' : digital_twin_setups
         }
+        context['BUST'] = cache_bust()
         response = HttpResponse(render(request, "digitaltwinedit.html", context))
     else:
         response = HttpResponse(render(request, "digitaltwinedit.html", context))

@@ -9,10 +9,10 @@
   <meta http-equiv="Refresh" content="0; url={{redir}}" />
   {% endif %}
   <link rel="stylesheet" media="screen" href="/static/css/bootstrap.min.css">
-  <link rel="stylesheet" media="screen" href="/static/css/common.css">
-  <link rel="stylesheet" media="screen" href="/static/css/info.css">
-  <script src="/static/js/TemplateData/UnityProgress.js"></script>
-  <script src="/static/js/Build/UnityLoader.js"></script>
+  <link rel="stylesheet" media="screen" href="/static/css/common.css{{BUST}}">
+  <link rel="stylesheet" media="screen" href="/static/css/info.css{{BUST}}">
+  <script src="/static/js/TemplateData/UnityProgress.js{{BUST}}"></script>
+  <script src="/static/js/Build/UnityLoader.js{{BUST}}"></script>
   <script>
     var gameInstance = UnityLoader.instantiate("gameContainer", "/static/js/Build/webgl.json", {onProgress: UnityProgress});
   </script>
@@ -93,7 +93,7 @@
     <div id="gameContainer" hidden></div>
   </div>
   <script type='application/javascript' src="/static/js/jquery-3.4.1.min.js"></script>
-  <script type='application/javascript' src="/static/js/session.js"></script>
+  <script type='application/javascript' src="/static/js/session.js{{BUST}}"></script>
   {% endif %}
 </body>
 

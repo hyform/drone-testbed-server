@@ -25,7 +25,7 @@ def intervention(request):
             position = UserPosition.objects.filter(Q(session=st.session)&Q(user=request.user)).first().position
             if position and position.role.name == "Process":
                 intervention = request.data.get('intervention')
-                send_intervention(intervention, st.session.id)
+                send_intervention(request.user, intervention, st.session.id)
                 return Response(status=status.HTTP_200_OK)
     return Response(status=status.HTTP_401_UNAUTHORIZED)
 

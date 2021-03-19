@@ -10,8 +10,8 @@
     {% endif %}
     {% if not redir %}
     <link rel="stylesheet" media="screen" href="/static/css/bootstrap.min.css">
-    <link rel="stylesheet" media="screen" href="/static/css/main.css">
-    <link rel="stylesheet" media="screen" href="/static/css/intervention.css">
+    <link rel="stylesheet" media="screen" href="/static/css/main.css{{BUST}}">
+    <link rel="stylesheet" media="screen" href="/static/css/intervention.css{{BUST}}">
     {% endif %}
 </head>
 
@@ -136,8 +136,8 @@
         </div>
       </div>
     <script type='application/javascript' src="/static/js/jquery-3.4.1.min.js"></script>
-    <script type='application/javascript' src="/static/js/ajax.js"></script>
-    <script type='application/javascript' src="/static/js/intervention.js"></script>
+    <script type='application/javascript' src="/static/js/ajax.js{{BUST}}"></script>
+    <script type='application/javascript' src="/static/js/intervention.js{{BUST}}"></script>
     {% endif %}
 </body>
 

@@ -102,7 +102,6 @@ class ScenarioDetail(APIView):
         up = UserPosition.objects.filter(Q(user=user)&Q(session=st.session)).first()
         groups = GroupPosition.objects.filter(Q(position=up.position)&Q(position__structure=st.session.structure))
         scenarios = Scenario.objects.filter(Q(group__in=groups.values('group'))&Q(session=st.session))
-        print("correct session id ----------------- " + str(st.session.id) + " " + str(len(scenarios)))
         if scenarios.exists():
             # there is at least one scenario already
             if ver==-1:

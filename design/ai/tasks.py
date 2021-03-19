@@ -306,7 +306,7 @@ def mediation(seg_num, seg_len, i, session_id):
             # this is a test message to the designer
 
             print("final intervention send: ", intervention_id)
-            send_intervention(intervention_id, session_id)
+            send_intervention(None, intervention_id, session_id)
 
     else:
         print('done looping')

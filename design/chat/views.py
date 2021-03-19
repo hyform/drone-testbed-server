@@ -9,6 +9,7 @@ from rest_framework import generics
 from exper.models import UserPosition, SessionTeam, Session, UserChecklist
 from api.models import SessionTimer
 from datetime import datetime, timezone
+from design.utilities import cache_bust
 
 
 # Create your views here.
@@ -16,6 +17,7 @@ from datetime import datetime, timezone
 @login_required
 def index(request):
     context = {}
+    context['BUST'] = cache_bust()
     experimenter = False
     if request.user.is_authenticated:        
         if request.user.profile.is_experimenter():
