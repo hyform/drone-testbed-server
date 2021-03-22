@@ -23,7 +23,7 @@ class UserPositionAdmin(admin.ModelAdmin):
     list_display = ('user', 'position')
 
 class CustomLinksAdmin(admin.ModelAdmin):
-    list_display = ('text', 'link', 'link_type', 'org', 'role', 'position', 'is_team', 'ai', 'status', 'first', 'last')
+    list_display = ('active', 'text', 'link', 'link_type', 'org', 'study', 'experiment', 'role', 'structure', 'position', 'is_team', 'ai', 'status', 'first', 'last')
 
 admin.site.register(Structure)
 admin.site.register(Role)

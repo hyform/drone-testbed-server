@@ -22,7 +22,7 @@ from ai.agents.adaptive_team_ai_updated_planner import AdaptiveTeamAIUpdatedPlan
 from exper.serializers import DigitalTwinSerializer
 from api.models import SessionTimer
 from datetime import datetime, timezone
-from ai.tasks import mediation_loop
+from ai.tasks import mediation_loop, human_mediation_loop
 from design.utilities import cache_bust
 
 # Create your views here.
@@ -253,33 +253,25 @@ def session_status_play(request):
                 elif session.status == Session.PRESESSION:
                     new_status = Session.RUNNING
                     
-                    if session.structure.name == "Process Manager":
-                        # Update the session's RUNNING start timer
-                        running_timer = SessionTimer.objects.filter(session=session).filter(timer_type=SessionTimer.RUNNING_START).first()
-                        if running_timer:
-                            running_timer.timestamp = datetime.now(timezone.utc)
-                            running_timer.save()
-                        else:
-                            SessionTimer.objects.create(timer_type=SessionTimer.RUNNING_START, timestamp=datetime.now(timezone.utc), session=session)
+                    # Update the session's RUNNING start timer
+                    running_timer = SessionTimer.objects.filter(session=session).filter(timer_type=SessionTimer.RUNNING_START).first()
+                    if running_timer:
+                        running_timer.timestamp = datetime.now(timezone.utc)
+                        running_timer.save()
+                    else:
+                        SessionTimer.objects.create(timer_type=SessionTimer.RUNNING_START, timestamp=datetime.now(timezone.utc), session=session)
 
+                    if session.structure.name == "Process Manager":
                         print("Human Process Manager")
+                        data = {}
+                        data['session_id'] = session.id
+                        human_mediation_loop.delay(data)
                         
                     elif session.structure.name == "Process Manager (AI)":
-                        # Update the session's RUNNING start timer
-                        running_timer = SessionTimer.objects.filter(session=session).filter(timer_type=SessionTimer.RUNNING_START).first()
-                        if running_timer:
-                            running_timer.timestamp = datetime.now(timezone.utc)
-                            running_timer.save()
-                        else:
-                            SessionTimer.objects.create(timer_type=SessionTimer.RUNNING_START, timestamp=datetime.now(timezone.utc), session=session)
-
                         print("AI Process Manager")
-                        session_channel = Channel.objects.filter(name="Session").first()
-                        if session_channel:
-                            session_instance = str(session_channel.id) + "___" + str(session.id)
-                            data = {}
-                            data['session_id'] = session.id
-                            mediation_loop.delay(session_instance, data)                  
+                        data = {}
+                        data['session_id'] = session.id
+                        mediation_loop.delay(data)                  
 
                 elif session.status == Session.RUNNING:
                     new_status = Session.POSTSESSION

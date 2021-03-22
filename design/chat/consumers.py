@@ -150,23 +150,6 @@ class ChatConsumer(WebsocketConsumer):
                             session_instance,
                             self.channel_name,
                         )
-
-                        if st.session.status == Session.RUNNING:
-                            running_timer = SessionTimer.objects.filter(session=st.session).filter(timer_type=SessionTimer.RUNNING_START).first()
-                            elapsed_seconds = 0
-                            if running_timer:
-                                current_time = datetime.now(timezone.utc)
-                                running_timestamp = running_timer.timestamp
-                                if running_timestamp:
-                                    time_difference = current_time - running_timestamp
-                                    elapsed_seconds = round(time_difference.total_seconds())
-
-                            self.send(text_data=json.dumps({
-                                'type' : 'session.time',
-                                'message' : str(elapsed_seconds),
-                                'sender' : "System",
-                                'channel' : session_instance
-                            }))
                         self.send(text_data=json.dumps({
                             'type' : 'chat.info',
                             'message' : "Session",
