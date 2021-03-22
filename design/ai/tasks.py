@@ -234,8 +234,9 @@ def mediation(seg_num, seg_len, i, session_id, timestamp):
     # This routine will call itself many times to determine the correct mediation to send out
     # get the current session
     session = Session.objects.get(id=session_id)
-    if session.status != Session.RUNNING:
-        print("Session no longer running, so exit mediation loop")
+    running_timer = SessionTimer.objects.filter(session=session).filter(timer_type=SessionTimer.RUNNING_START).first()
+    if session.status != Session.RUNNING or timestamp != str(running_timer.timestamp):
+        print("Session restarted or no longer running, so exit mediation loop")
         return
 
     print(i, session.name, session.index)

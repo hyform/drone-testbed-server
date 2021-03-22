@@ -342,7 +342,7 @@ class DataLogList(generics.CreateAPIView):
                                     time_difference = current_time - running_timestamp
                                     elapsed_seconds = round(time_difference.total_seconds())
                             else:
-                                elapsed_seconds = 0          
+                                elapsed_seconds = 0
 
                             event_info_message(channel, up.position.name, action, elapsed_seconds)
 
@@ -363,9 +363,11 @@ class MediationCountView(APIView):
     def get_data(self, session_id, section_id ):
         data ={"session_id" : session_id}
         session = Session.objects.get(id=data["session_id"])
-        log = DataLog.objects.filter(Q(session=session)&Q(action__contains='StartSession')).order_by('time').first()
+        start_time = SessionTimer.objects.filter(session=session).filter(timer_type=SessionTimer.RUNNING_START).first()
+        
         # Calculate the start and end times for the desired interval
-        starttime = log.time + (section_id-1)*timedelta(minutes=2, seconds=30)
+        starttime = start_time.timestamp + (section_id-1)*timedelta(minutes=2, seconds=30)
+
         endtime = starttime + timedelta(minutes=5)
         logs = DataLog.objects.filter(Q(session=session)&Q(time__gt=starttime)&Q(time__lt=endtime))
         data['starttime'] = starttime
@@ -415,9 +417,11 @@ class MediationChatView(APIView):
     def get_data(self, session_id, section_id ):
         data ={"session_id" : session_id}
         session = Session.objects.get(id=data["session_id"])
-        log = DataLog.objects.filter(Q(session=session)&Q(action__contains='StartSession')).order_by('time').first()
+        start_time = SessionTimer.objects.filter(session=session).filter(timer_type=SessionTimer.RUNNING_START).first()
+        
         # Calculate the start and end times for the desired interval
-        starttime = log.time + (section_id-1)*timedelta(minutes=2, seconds=30)
+        starttime = start_time.timestamp + (section_id-1)*timedelta(minutes=2, seconds=30)
+
         endtime = starttime + timedelta(minutes=5)
         logs = DataLog.objects.filter(Q(session=session)&Q(time__gt=starttime)&Q(time__lt=endtime))
         data['starttime'] = starttime
