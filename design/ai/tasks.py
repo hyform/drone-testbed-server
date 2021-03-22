@@ -314,29 +314,12 @@ def mediation(seg_num, seg_len, i, session_id, timestamp):
         end_running.s(session_id, timestamp).apply_async(countdown=seg_len)
     return i
 
-def compare_awful_python_time_objects(timestamp1, timestamp2):
-    # now.year, now.month, now.day, now.hour, now.minute, now.second
-    if (
-        timestamp1.year == timestamp2.year and 
-        timestamp1.month == timestamp2.month and 
-        timestamp1.day == timestamp2.day and 
-        timestamp1.hour == timestamp2.hour and 
-        timestamp1.minute == timestamp2.minute and
-        timestamp1.second == timestamp2.second
-        ):
-        return True
-    return False
-
 @shared_task
 def end_running(session_id, timestamp):
     session = Session.objects.filter(id=session_id).first()
     running_timer = SessionTimer.objects.filter(session=session).filter(timer_type=SessionTimer.RUNNING_START).first()
-    print("----")
-    print(str(timestamp))
-    print(str(running_timer.timestamp))
-    print("----")
     if session:
-        if session.status == Session.RUNNING:# and compare_awful_python_time_objects(timestamp, (running_timer.timestamp)):
+        if session.status == Session.RUNNING and timestamp == str(running_timer.timestamp):
             session.status = Session.POSTSESSION
             session.save()
             session_channel = Channel.objects.filter(name="Session").first()
@@ -379,7 +362,7 @@ def mediation_loop(data):
 
     # this routine will start up the mediation cycle
     running_timer = SessionTimer.objects.filter(session__id=data['session_id']).filter(timer_type=SessionTimer.RUNNING_START).first()
-    mediation.s(seg_num, seg_len, 0, data['session_id'], running_timer.timestamp).apply_async()
+    mediation.s(seg_num, seg_len, 0, data['session_id'], str(running_timer.timestamp)).apply_async()
 
 @shared_task
 def human_mediation_loop(data):
@@ -389,4 +372,4 @@ def human_mediation_loop(data):
 
     # Only need to schedule the end for human process manager
     running_timer = SessionTimer.objects.filter(session__id=data['session_id']).filter(timer_type=SessionTimer.RUNNING_START).first()
-    end_running.s(data['session_id'], running_timer.timestamp).apply_async(countdown=total_len)
+    end_running.s(data['session_id'], str(running_timer.timestamp)).apply_async(countdown=total_len)
