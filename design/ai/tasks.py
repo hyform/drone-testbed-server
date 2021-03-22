@@ -319,7 +319,7 @@ def end_running(session_id, timestamp):
     session = Session.objects.filter(id=session_id).first()
     running_timer = SessionTimer.objects.filter(session=session).filter(timer_type=SessionTimer.RUNNING_START).first()
     if session:
-        if session.status == Session.RUNNING and timestamp == running_timer:
+        if session.status == Session.RUNNING and timestamp == running_timer.timestamp:
             session.status = Session.POSTSESSION
             session.save()
             session_channel = Channel.objects.filter(name="Session").first()
