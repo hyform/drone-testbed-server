@@ -312,7 +312,7 @@ def mediation(seg_num, seg_len, i, session_id, timestamp):
 
     else:
         print('done looping')
-        end_running.s(session_id, timestamp).apply_async(countdown=seg_len)
+        end_running.delay(session_id, timestamp)
     return i
 
 @shared_task
