@@ -21,14 +21,14 @@ class Study(models.Model):
     lead = models.CharField(max_length=50, default='no one')
     organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.SET_NULL)
     def __str__(self):
-        return self.name + "_" + self.organization.name
+        return self.name
 
 class Experiment(models.Model):
     name = models.CharField(max_length=100)
     study = models.ForeignKey(Study, on_delete=models.CASCADE)
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL) # TODO: Deprecate and delete
     def __str__(self):
-        return self.name + "_" + self.study.name
+        return self.name
 
 class Structure(models.Model):
     name = models.CharField(max_length=25)
