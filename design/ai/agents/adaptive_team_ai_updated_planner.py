@@ -9,6 +9,7 @@ import traceback
 import time
 
 from django.db.models import Subquery
+from django.db.models import Q
 
 from ai.models import OpsService
 from exper.models import UserPosition, GroupPosition, Session, SessionTeam, Group, Market, User
@@ -25,7 +26,8 @@ from .database_helper import DatabaseHelper
 from repo.serializers import PlanSerializer
 #from .generate_role_sequences import GenerateRoleSequences
 
-from api.messaging import twin_info_message, twin_complete_message
+from exper.models import DigitalTwin, DigitalTwinPreference
+from api.messaging import twin_info_message, twin_pref_message, twin_complete_message
 
 
 # initializes a team of agents based on an experimental session and then starts a team simulation in a new thread
@@ -33,24 +35,23 @@ class AdaptiveTeamAIUpdatedPlanner():
 
     def __init__(self):
         self.success_run = []
-        print("initialize digital twin")
-        twin_info_message("initialize digital twin")
+        self.MINVALUE = 0
+        self.MAXVALUE = 1000000
+        self.pause_segment = 0
+        self.pause_interval = self.MAXVALUE
+        self.NOPREFERENCE = 0
+        print("initialize digital twin analysis")
 
-    # method to run doe, keep number of runs small for now as it will clog up the experimenter page
-    # need to add a flag to the experimental sessions to identify if it is a doe run
-    #def doe(self, usr):
-    #    start_time = time.time()
-        # sometime a feasible plan is not generated for a session now, so skip those sesson and run until the desired number if reached
-    #    while len(self.success_run) < 34:
-    #        session = self.setup_session(usr)
-    #        self.setup(session)
-    #        print("time : ", len(self.success_run), time.time() - start_time)
+    def setup_with_pause_interval(self, session, pause_interval):
+        self.pause_interval = pause_interval
+        self.setup(session)
 
     def setup(self, session):
 
         self.session = session
         self.db_helper = DatabaseHelper(session)
 
+        # once the approach becomes fixed, convert this to our database
         self.designer_sequences = pd.read_csv(r'static/ai/ai_designer_sequences_updated.txt', sep='\t')
         self.planner_sequences = pd.read_csv(r'static/ai/ai_planner_sequences_updated.txt', sep='\t')
         self.business_sequences = pd.read_csv(r'static/ai/ai_business_sequences.txt', sep='\t')
@@ -66,7 +67,6 @@ class AdaptiveTeamAIUpdatedPlanner():
 
 
         self.business_scenario_submitted = False    # flag to identify if a scenario has been submitted
-        self.business_select_event = None           # variable to identify a business selected event
         self.business_selected = False              # flag to identify if the business selected a final plan
 
         # cisat settings, trained RNNs should have this information, but some is going to be a challenge to get (like satisficing_factor)
@@ -126,68 +126,65 @@ class AdaptiveTeamAIUpdatedPlanner():
         self.current_time = -1
         current_action_index = 0
 
+        # initialize preference to empty in not already done using API
+        #self.set_preference(session, self.preference_example())
+
         # sample initial events
         self.generate_initial_events()
 
+        # start session
+        self.session.status = Session.ARCHIVED
+        self.session.save()
+
+
         # run simulation
         while current_action_index < len(self.actions_queue):
-            self.run_action(self.actions_queue[current_action_index])
-            current_action_index += 1
 
-        # clean up operations
-        # if business did not select a final plan
-        if not self.business_selected:
+            # get the time
+            t = self.actions_queue[current_action_index][0]
+            if math.floor(t / self.pause_interval) > self.pause_segment and current_action_index < len(self.actions_queue) - 1:    # add a special condition for the last event (ex 20 minute session)
+                self.pause_segment += 1
+                self.session.status = Session.PAUSED
+                self.session.save()
 
-            # set database user
-            business_usr = None
-            for usr in self.team_role:
-                if self.team_role[usr] == 'business':
-                    self.db_helper.set_user_name(usr)
-                    business_usr = usr
+            # keep this here for paused sessions to resume
+            status_check = Session.RUNNING
+            try:
+                status_check =  Session.objects.filter(Q(id=self.session.id)).first().status
+            except Exception as e:
+                print(e)
 
-            # in the rare case with no submitted plan, submit any plans from planners
-            plans = self.db_helper.query_plans()
-            if len(plans) == 0:
-                for usr in user_roles:
-                    if self.team_role[usr] == "planner" and self.team_data[usr] is not None:
-                        self.run_action([20, usr, [0, "Submit", 0]])
+            if status_check != Session.PAUSED:
+                self.run_action(self.actions_queue[current_action_index])
+                current_action_index += 1
+            else:
+                time.sleep(1)
+                twin_info_message(self.session.id, "session_paused : segment " + str(self.pause_segment + 1) + " : go ahead and do something")
 
-            # select a final plan
-            counter = 0 # to prevent infinite loop
-            while not self.business_selected and counter < 100:
-                # use previous selected event
-                if self.business_select_event is not None:
-                    self.business_select_event[0] = 20
-                    self.run_action(self.business_select_event)
-                    self.business_select_event = None
-                else: # randomly select a business sequence with a Select event
-                    idx = random.randrange(0, 605)
-                    events = self.business_sequences.query("seq == " + str(idx)).values.tolist()
-                    for event in events:
-                        if 'Selected' in event[1]:
-                            self.run_action([20, business_usr, event])
-                counter += 1
+        # export to data log for debugging
+        #self.export_log_data_for_visualization()
 
-        # archive and save the status
-        session.status = Session.ARCHIVED
-        session.save()
+        # archive session
+        self.session.status = Session.ARCHIVED
+        self.session.save()
 
-        twin_complete_message("Final Business Plan Selected : " + str(self.business_selected))
+        print("completed")
+        twin_complete_message(self.session.id, "digital twin : completed")
 
-        # return if a valid session
-        return self.business_selected
 
     # runs a design, planner, or business action in the simulation
     def run_action(self, action):
 
         try:
 
-            print("action",action)
-            twin_info_message(action)
-
             # probably need to develop a event object, instead of using lists
             t = action[0]
             usr = action[1]
+
+            # send message to a channel
+            twin_info_message(self.session.id, "running : time=" + str(action[0])[:6] + " : " + usr + " : " + str(action[2][1]))
+            print("running : time=" + str(action[0])[:6] + " : " + usr + " : " + str(action[2][1]))
+
             self.current_time = t
             self.db_helper.set_user_name(usr)
 
@@ -204,7 +201,7 @@ class AdaptiveTeamAIUpdatedPlanner():
                     # my fault, need to change this
                     locations = action_info[1].replace("|",";").replace(":", "|").split(";")
 
-                    # the historical data had lower bound of 15, so RNN generate something less that that, assume a full set of customers
+                    # the historical data had lower bound of 15, so if RNN generates something less that that, assume a full set of customers
                     if len(locations) >= 15:
 
                         # gets the current scenario
@@ -230,7 +227,7 @@ class AdaptiveTeamAIUpdatedPlanner():
                         # if no match, find the closest customer (maybe to support new markets or shocks)
                         for remaining_loc in locations:
                             closestKey = None
-                            closestDistance = 10000000000000
+                            closestDistance = self.MAXVALUE
                             if len(remaining_loc.split("|")) > 1:
                                 x = float(remaining_loc.split("|")[0])
                                 z = float(remaining_loc.split("|")[1])
@@ -255,7 +252,7 @@ class AdaptiveTeamAIUpdatedPlanner():
                     else:
                         self.cache_business_metrics(t, usr, "Scenario", 56, 0, 0, "")
                         print("default scenario submit")
-                        twin_info_message("default scenario submit")
+                        twin_info_message(self.session.id, "default scenario submit")
                     self.business_scenario_submitted = True
 
                 # open plan , gets all current available team plans and selects a plan with the close metrics
@@ -275,12 +272,10 @@ class AdaptiveTeamAIUpdatedPlanner():
                         self.db_helper.submit_data_log(usr, "Opened;" + json_plan['tag'] + ";" + plan_str + ";" + metricstr, self.real_time, t)
                         self.cache_business_metrics(t, usr, "Open", result.profit, result.startupCost, result.number_deliveries, "")
 
-                if action_info[0] == "Selected" and t >= 18:
+                if action_info[0] == "Selected" and t >= 19.9:  # there should be a business selected event at time 20
                     # select business plan
-                    # float(action_info[1]), float(action_info[2]), float(action_info[3]) are business suggested, but not currently
-                    # corillated with the current team plan, need to adjust for this as we do for the planners
-                    # in historical trend, business role almost regularly selects plan with highest profit and most number of customers
-                    closest_plan = self.get_close_plan(usr, 10000, float(action_info[2]), 40, True)
+                    closest_plan = self.get_close_plan(usr, float(action_info[1]), float(action_info[2]), float(action_info[3]), True)
+                    print("closest_plan", closest_plan)
                     if closest_plan is not None and not self.business_selected:
 
                         # json plan object
@@ -295,12 +290,8 @@ class AdaptiveTeamAIUpdatedPlanner():
                         self.db_helper.submit_data_log(usr, "BusinessPlanSelected;" + closest_plan_json['tag'] + ";" + str(closest_plan_json['id']) + ";" + plan_str + ";" + metricstr, self.real_time, t)
                         self.cache_business_metrics(t, usr, "Selected", result.profit, result.startupCost, result.number_deliveries, "")
                         print("---- Business Selected ----", metricstr)
-                        twin_info_message("---- Business Selected ----")
-                        twin_info_message(metricstr)
-
-                # save selected event for at the end of the session
-                if action_info[0] == "Selected" and t < 18 and self.business_select_event is None:
-                    self.business_select_event = action
+                        twin_info_message(self.session.id, "---- Final Business Plan Selected ----")
+                        twin_info_message(self.session.id, metricstr)
 
             # if a designer event
             if self.team_role[usr] == "designer":
@@ -310,16 +301,32 @@ class AdaptiveTeamAIUpdatedPlanner():
                     veh = self.db_helper.submit_vehicle_db(tag, action[2][1], action[2][3], action[2][4], action[2][5], action[2][6])
                     # add datalog event
                     self.db_helper.submit_data_log(usr, "SubmitToDB;" + tag + ";range=" + str(action[2][3]) + ",capacity=" + str(action[2][4]) + ",cost=" + str(action[2][5]) + ",velocity=" + str(action[2][6]), self.real_time, t)
-                    self.resample_planners_based_on_scenario_and_vehicles()
+                    #self.resample_planners_based_on_scenario_and_vehicles()
                     self.cache_designer_metrics(t, usr, "Submit", action[2][3], action[2][4], action[2][5], action[2][1])
                     # add user plan
                     self.self_bias_designs[usr].append(str(veh.id))
                 # open a design
                 elif action[2][2] == "Open":
-                    selected_vehicle_data = self.resample_designer_based_on_metrics(usr, action[2][3], action[2][4], action[2][5], False)
+                    # get the closest database design to the suggested
+                    closest_vehicles, closest_dist = self.get_closest_vehicles(usr, [[action[2][3], action[2][4], action[2][5]]], True)
+                    closest_vehicle = closest_vehicles[0]
+
+                    # how close is it
+                    closest_dist = ((((action[2][3] - closest_vehicle.range)/100)**2 + \
+                        ((action[2][4] - closest_vehicle.payload)/100)**2 + \
+                        ((action[2][5] - closest_vehicle.cost)/15000)**2)**0.5)/1.73
+
+                    # is there an event seqeunce close enough, if not, "Open the base design"
+                    selected_vehicle_data = []
+                    if closest_dist < 0.05:
+                        selected_vehicle_data = self.sample_designer(usr, 1, closest_vehicle.range, closest_vehicle.payload, closest_vehicle.cost)
+                    else:
+                        selected_vehicle_data = self.sample_designer(usr, -1, 10, 5, 3470) # -1 , all sequences near the base design (Open or reset design)
+
                     # add datalog event
                     self.db_helper.submit_data_log(usr, "Open;tag=" + selected_vehicle_data[0] + ";config=" + selected_vehicle_data[1] + ";range=" + str(selected_vehicle_data[2]) + ",capacity=" + str(selected_vehicle_data[3]) + ",cost=" + str(selected_vehicle_data[4]) + ",velocity=" + str(selected_vehicle_data[5]), self.real_time, t)
                     self.cache_designer_metrics(t, usr, "Open", selected_vehicle_data[2], selected_vehicle_data[3], selected_vehicle_data[4], selected_vehicle_data[1])
+
                 else:   # evaluate
                     # add datalog event
                     self.db_helper.submit_data_log(usr, "Evalauted;" + action[2][2] + ";range=" + str(action[2][3]) + ",capacity=" + str(action[2][4]) + ",cost=" + str(action[2][5]) + ",velocity=" + str(action[2][6]), self.real_time, t)
@@ -364,11 +371,11 @@ class AdaptiveTeamAIUpdatedPlanner():
                             self.self_bias_plans[usr].append(str(p.id))
 
                             print("---- Submit Plan ---- ", metrics, p.id)
-                            twin_info_message("---- Submit Plan ----")
-                            twin_info_message(metrics)
+                            twin_info_message(self.session.id, "---- Submit Plan ----")
+                            twin_info_message(self.session.id, metrics)
                         else:
                             print("plan had zero profit : not submitting")
-                            twin_info_message("plan had zero profit : not submitting")
+                            twin_info_message(self.session.id, "plan had zero profit : not submitting")
 
                 # opens the closest plan
                 if "Open" in tokens[0]:
@@ -424,7 +431,8 @@ class AdaptiveTeamAIUpdatedPlanner():
                                 if fixed_cost + vehiclecost > 15000:
                                     vehiclecost = max(0, 15000 - fixed_cost)
 
-                                used_vehicle = self.get_closest_vehicles(usr, [[vehiclerange, vehiclecapacity, vehiclecost]], False)[0]
+                                used_vehicles, closest_dist = self.get_closest_vehicles(usr, [[vehiclerange, vehiclecapacity, vehiclecost]], False)
+                                used_vehicle = used_vehicles[0]
 
                                 path_obj = {}
                                 vehicle_obj = {}
@@ -444,7 +452,7 @@ class AdaptiveTeamAIUpdatedPlanner():
 
                             except Exception as e:
                                 print(e)
-                                twin_info_message(str(e))
+                                twin_info_message(self.session.id, str(e))
 
                     # add an empty path to the plan
                     plan['paths'] = paths
@@ -508,7 +516,8 @@ class AdaptiveTeamAIUpdatedPlanner():
                                 results[2] = max(0, 15000 - results[2])
 
                             # get closest vehicle in the session
-                            used_vehicle = self.get_closest_vehicles(usr, [[results[0], results[1], results[2]]], False)[0]
+                            used_vehicles, closest_dist = self.get_closest_vehicles(usr, [[results[0], results[1], results[2]]], False)
+                            used_vehicle = used_vehicles[0]
 
                             # create and add an empty vehicle path and set as the current path
                             path_obj = {}
@@ -536,9 +545,9 @@ class AdaptiveTeamAIUpdatedPlanner():
 
                             # get closest unselected feasible customer
                             closest_customer = None
-                            clostest_distance = 100000000
+                            clostest_distance = self.MAXVALUE
 
-                            # copy path
+                            # copy path, might not need this, wanted to make sure references from original are removed
                             cp_path = []
                             for customer in current_path['customers']:
                                 cp_path.append(customer)
@@ -609,8 +618,8 @@ class AdaptiveTeamAIUpdatedPlanner():
 
         except Exception as e:
             print("---- RNN parser error ----")
-            twin_info_message("---- RNN parser error ----")
-            twin_info_message(str(e))
+            twin_info_message(self.session.id, "---- RNN parser error ----")
+            twin_info_message(self.session.id, str(e))
             traceback.print_exc()
             pass
 
@@ -635,128 +644,181 @@ class AdaptiveTeamAIUpdatedPlanner():
     def generate_initial_events(self):
         for usr in self.team_role:
             if self.team_role[usr] == "designer":
-                self.resample_designer_based_on_metrics(usr, 10, 5, 3470, True)
+                self.sample_designer(usr, 0, 10, 5, 3470)
             elif self.team_role[usr] == "planner":
-                self.resample_planner_based_on_scenario_and_vehicles(usr)
+                self.sample_planner(usr)
             elif self.team_role[usr] == "business":
-                self.sample_business_events(usr)
+                self.sample_business(usr)
 
-    # resample the designer user to try and find a sequence to the closest team design as generated by the RNN sequence
-    def resample_designer_based_on_metrics(self, usr, range, capacity, cost, start_sequence):
+    # sample business
+    def sample_business(self, usr):
 
-        # clear array to capture all events
-        all_events = []
-        first_event_data = None
+        # get preference and requirement information
+        # default to no preference and requirements
+        pref_type = -1
+        profit_preference = self.NOPREFERENCE
+        fixed_cost_preference = self.NOPREFERENCE
+        no_customers_preference = self.NOPREFERENCE
+        min_profit = self.MINVALUE
+        max_profit = self.MAXVALUE
+        min_fixed_cost = self.MINVALUE
+        max_fixed_cost = self.MAXVALUE
+        min_no_customers = self.MINVALUE
+        max_no_customers = self.MAXVALUE
 
-        # set user name to view appropriate available vehicles
-        self.db_helper.set_user_name(usr)
+        # check for preference and requirements
+        user_position = self.db_helper.get_user_positions()[usr]
+        digital_twin = DigitalTwin.objects.filter(user_position=user_position).first()
+        if digital_twin is not None:
 
-        # starting seqeunce and new session (just base vehicle)
-        vehicles = self.db_helper.query_vehicles()
-        if start_sequence and len(vehicles) == 1:
+            twin_preference = DigitalTwinPreference.objects.filter(Q(digital_twin=digital_twin)&Q(name="profit")).first()
+            if twin_preference is not None:
+                profit_preference = twin_preference.pref_value
+                pref_type = twin_preference.pref_type # need to check if others are the same
 
-            starting_events = self.designer_sequences.query("type == 'Submit' and start_submit == 1").values.tolist()
+            twin_preference = DigitalTwinPreference.objects.filter(Q(digital_twin=digital_twin)&Q(name="fixed_cost")).first()
+            if twin_preference is not None:
+                fixed_cost_preference = twin_preference.pref_value
+                pref_type = twin_preference.pref_type
 
-            # get all event sequences with a Start event
-            start_seq_ids = []
-            for starting_event in starting_events:
-                id_num = int(starting_event[0])
-                if id_num not in start_seq_ids:
-                    start_seq_ids.append(id_num)
+            twin_preference = DigitalTwinPreference.objects.filter(Q(digital_twin=digital_twin)&Q(name="no_customers")).first()
+            if twin_preference is not None:
+                no_customers_preference = twin_preference.pref_value
+                pref_type = twin_preference.pref_type
 
-            # select a random sequence
-            idx = random.randrange(0, len(start_seq_ids))
+        # there is probably some pandas query for this, but this will work
+        # for now, use only sequences that use selected events for the last event in the sequence, assuming that some of the
+        # trianing data had incorrect select event where maybe the user did not want to select it
+        all_events = self.business_sequences.drop_duplicates(subset=['seq'], keep='last').values.tolist()
+        all_selected = []
+        for event in all_events:
+            if "Selected" in event[1]:
+                all_selected.append(event)
 
-            seq_events = []
-            # get sequences of some length with evaluates
-            while len(seq_events) < 3:
-                seq_events = self.designer_sequences.query("seq == " + str(start_seq_ids[idx])).values.tolist()
-                idx = random.randrange(0, len(starting_events))
+        # get the maximum data bounds to use to score
+        max_profit_data = profit_preference
+        max_fixed_cost_data = fixed_cost_preference
+        max_no_deliveries_data = no_customers_preference
+        for event in all_selected:
+            metrics = event[1].split(";")
+            profit = float(metrics[1])
+            fixed_cost = float(metrics[2])
+            no_customers = float(metrics[3])
+            if profit > max_profit_data:
+                max_profit_data = profit
+            if fixed_cost > max_fixed_cost_data:
+                max_fixed_cost_data = fixed_cost
+            if no_customers > max_no_deliveries_data:
+                max_no_deliveries_data = no_customers
 
-            # at starting events to all events
-            for event in seq_events:
-                all_events.append(event)
-                range = event[3]
-                capacity = event[4]
-                cost = event[5]
+        all_distances = []
+        for event in all_selected:
+            metrics = event[1].split(";")
+            profit = float(metrics[1])
+            fixed_cost = float(metrics[2])
+            no_customers = float(metrics[3])
+            score = 0
+            if pref_type == 0:
+                score = -(profit_preference*profit/max_profit_data + fixed_cost_preference*fixed_cost/max_fixed_cost_data + no_customers_preference*no_customers/max_no_deliveries_data)
+            elif pref_type == 1:
+                score = ((((profit - profit_preference)/max_profit_data)**2 + ((fixed_cost - fixed_cost_preference)/max_fixed_cost_data)**2 + ((no_customers - no_customers_preference)/max_no_deliveries_data)**2)**0.5)/1.73
 
-        # sample events with Start or Open
-        if not start_sequence:
-            #first_event_data = self.sample_design_sequence_starting_open_design(usr, range, capacity, cost, True)
-            first_event_data = self.sample_design_sequence_starting_open_design(usr, range, capacity, cost)
-            first_events = first_event_data[0]
-            for event in first_events:
-                all_events.append(event)
+            all_distances.append(score)
+            #self.cache_business_metrics(score, "foo", "foo", profit, fixed_cost, no_customers)
 
-        # sample remaining events
-        while len(all_events) < len(self.team_time_events[usr]):
-            # selecting random sequence now, could use previous last vehicle from the previous events
-            #event_data = self.sample_design_sequence_starting_open_design(usr, last_range, last_capacity, last_cost, False)
-            event_data = self.sample_random_designer_sequence(usr)
-            for event in event_data:
-                all_events.append(event)
 
-        # assign events to the user
-        self.assign_events_to_user(usr, all_events)
+        sort_index = numpy.argsort(all_distances)
 
-        if first_event_data is not None:
-            # seqs, tag, config, range, capacity, cost, velocity]
-            return [first_event_data[1], first_event_data[2], first_event_data[3],first_event_data[4],first_event_data[5],first_event_data[6]  ]
+        # if preference or requirement is specified, if not, just randomly select a sequence
+        if (profit_preference == self.NOPREFERENCE and
+                fixed_cost_preference == self.NOPREFERENCE and
+                no_customers_preference == self.NOPREFERENCE):
+            selected_ind = random.randrange(0, len(sort_index))
+        else:
+            selected_ind = max(0,int(self.linear_trend(1.0, 0.0, 0, min(20, len(sort_index)), 1)[0]))
 
-    # resamples planner event for all users
-    def resample_planners_based_on_scenario_and_vehicles(self):
-        for usr in self.team_role:
-            if self.team_role[usr] == "planner":
-                self.resample_planner_based_on_scenario_and_vehicles(usr)
+        seq_id = all_selected[sort_index[selected_ind]]
+        seq_events = self.business_sequences.query("seq == " + str(seq_id)).values.tolist()
 
-    # attempts to adjust planners event sequences to match the designer submintted designs and business scenarios
-    def resample_planner_based_on_scenario_and_vehicles(self, usr):
+        # assign timestamps to each event
+        business_time_events = self.linear_trend(0.32, 0.68, 0, 20, len(seq_events))
+        business_time_events.sort()
+
+        # make the last selected event at 20 min
+        business_time_events[len(business_time_events) - 1] = 20
+
+        # move last scenario submit to top, assume fixed scenario for the digital twin
+        submit_event = None
+        for seq_event in seq_events:
+            if "Scenario" in seq_event[1]:
+                submit_event = seq_event
+        if submit_event is not None:
+            seq_events[0] = [submit_event[0], submit_event[1], submit_event[2]]
+
+
+        # set the last submit scenario to the first event
+
+        self.team_role[usr] = "business"
+        self.team_data[usr] = None
+        self.team_time_events[usr] = business_time_events
+
+        # assign event to the user
+        self.assign_events_to_user(usr, seq_events)
+
+
+    # sample planner
+    def sample_planner(self, usr):
+
+        # get preference and requirement information
+        # default to no preference and requirements
+        pref_type = -1
+        profit_preference = self.NOPREFERENCE
+        fixed_cost_preference = self.NOPREFERENCE
+        no_customers_preference = self.NOPREFERENCE
+
+        # check for preference and requirements
+        user_position = self.db_helper.get_user_positions()[usr]
+        digital_twin = DigitalTwin.objects.filter(user_position=user_position).first()
+        if digital_twin is not None:
+
+            twin_preference = DigitalTwinPreference.objects.filter(Q(digital_twin=digital_twin)&Q(name="profit")).first()
+            if twin_preference is not None:
+                profit_preference = twin_preference.pref_value
+                pref_type = twin_preference.pref_type # need to check if others are the same
+
+            twin_preference = DigitalTwinPreference.objects.filter(Q(digital_twin=digital_twin)&Q(name="fixed_cost")).first()
+            if twin_preference is not None:
+                fixed_cost_preference = twin_preference.pref_value
+                pref_type = twin_preference.pref_type
+
+            twin_preference = DigitalTwinPreference.objects.filter(Q(digital_twin=digital_twin)&Q(name="no_customers")).first()
+            if twin_preference is not None:
+                no_customers_preference = twin_preference.pref_value
+                pref_type = twin_preference.pref_type
 
         self.db_helper.set_user_name(usr)
         vehicles = self.db_helper.query_vehicles()
         scenario = self.db_helper.get_scenario()
-
         # get all locations in the scenario and store as string for comparison, with a profit for each customer
         locations = {}
         # add a scaling factor for profit
         for customer in scenario['customers']:
-            if "food" in customer['payload']:
-                locations[str(customer['address']['x']) + "," + str(customer['address']['z'])] = 200*customer['weight']
-            else:
-                locations[str(customer['address']['x']) + "," + str(customer['address']['z'])] = 100*customer['weight']
+            if customer['selected']:
+                if "food" in customer['payload']:
+                    locations[str(customer['address']['x']) + "," + str(customer['address']['z'])] = 200*customer['weight']
+                else:
+                    locations[str(customer['address']['x']) + "," + str(customer['address']['z'])] = 100*customer['weight']
 
-        # try and bias away from base vehicle to use generated designs
-        current_vehicles = []
-        for vehicle in vehicles:
-            if len(vehicles) == 1:
-                current_vehicles.append([vehicle.range, vehicle.payload, vehicle.cost])
-            elif vehicle.tag != "base":
-                current_vehicles.append([vehicle.range, vehicle.payload, vehicle.cost])
 
-        # set upper limits for analysis
-        max_range = 100
-        max_capacity = 99
-        max_cost = 15000
-
-        # keeps track of how many locations match the locations in the submitted scenario for all events in a planner sequence
-        loc_seqs = {}
-
-        # keeps track of how many vehicles match the locations in the submitted scenario for all events in a planner sequence
-        veh_seqs = {}
-
-        # keeps track of how many plans have valid cost for all events in a planner sequence
-        plan_feasbilities = {}
-
-        # keeps track of how many customers are in the plans (this was added because the planner sequences bias to choose small
-        # paths since they were feasible, this is th only non human tinkering part that needs to be addressed
+        plan_profit = {}
+        plan_fixed_cost = {}
         plan_no_customers = {}
-        max_plan_no_customers = 0
+        plan_actions = {}
+        plan_vehicle_proximity = {}
 
-        # for future preference bias
-        plan_profit_values = {}
-        max_profit = 0
-        plan_cost_values = {}
+        max_plan_profit = 0
         max_plan_cost = 0
+        max_plan_no_customers = 0
 
         # the RNN is not perfect, so it generated events that do not conform to the grammar, so on show one error
         # to prevent overflow in the terminal
@@ -767,29 +829,27 @@ class AdaptiveTeamAIUpdatedPlanner():
             try:
 
                 # quick estimate of plan metrics without full analysis for feasbility
-                plan_customers = 0
-                plan_cost = 0
-                plan_profit = 0
+                no_customers = 0
+                cost = 0
+                profit = 0
 
                 # gets the sequence id, if this is the first one with this id, we need to initialize
                 # its values in the above maps
                 location_tokens = planner_event[1].split(";")
                 seq_id = planner_event[0]
-                if seq_id not in loc_seqs:
-                    loc_seqs[seq_id] = [0, 0]
-                if seq_id not in veh_seqs:
-                    veh_seqs[seq_id] = [0, 0]
                 if seq_id not in plan_no_customers:
                     plan_no_customers[seq_id] = []
-                if seq_id not in plan_feasbilities:
-                    plan_feasbilities[seq_id] = []
+                    plan_profit[seq_id] = []
+                    plan_fixed_cost[seq_id] = []
+                    plan_actions[seq_id] = []
+                    plan_vehicle_proximity[seq_id] = []
 
                 # if it has path information (Open, Manual, Agent)
                 if len(location_tokens) > 1:
                     for i in range(len(location_tokens)):
                         # look for location tokens , with three tokens split using , x , z, weight and no $ in token that identifies a vehicle
                         location_tokens_test = location_tokens[i].split(",")
-                        if (len(location_tokens_test) == 2 or len(location_tokens_test) == 3) and "$" not in location_tokens_test:
+                        if (len(location_tokens_test) == 2 or len(location_tokens_test) == 3) and "$" not in location_tokens[i]:
 
                             try:
                                 # get position
@@ -797,24 +857,20 @@ class AdaptiveTeamAIUpdatedPlanner():
                                 z = location_tokens_test[1]
                                 loc_token = x + "," + z
 
-                                # test if it is in the submitted scenario by the business role, if so, increment that it is valid
                                 if loc_token in locations:
-                                    plan_profit += locations[loc_token]
-                                    loc_seqs[planner_event[0]] = [loc_seqs[seq_id][0] + 1, loc_seqs[seq_id][1]]
-                                # increment the total number of locations (valid or not)
-                                loc_seqs[planner_event[0]] = [loc_seqs[seq_id][0], loc_seqs[seq_id][1] + 1]
+                                    profit += locations[loc_token]
 
-                                # increment plan customers , maybe should move this to only include for valid locations,
-                                # but this plan are used as suggestions, so invalid locations should turn into closest valid locations
-                                plan_customers += 1
-                                if plan_customers > max_plan_no_customers:
-                                    max_plan_no_customers = plan_customers
+                                    # increment plan customers ,include for valid locations,
+                                    no_customers += 1
+                                    if no_customers > max_plan_no_customers:
+                                        max_plan_no_customers = no_customers
 
                             except Exception as f:
                                 print(f)
-                                twin_info_message(str(f))
+                                twin_info_message(self.session.id, str(f))
                         # if the token has a $, this represents a vehicle
                         if "$" in location_tokens[i]:
+
                             # remove the Manual and Path tags in some of the event sequences (my fault or bug, because I did not add a delimmaor in the training data)
                             token_test = location_tokens[i].replace("Manual","")
                             if "Path" in token_test:
@@ -825,201 +881,304 @@ class AdaptiveTeamAIUpdatedPlanner():
                             metrics = self.get_vehicle_metrics(token_test)
 
                             # increment the plan fixed cost by the cost of the vehicle
-                            plan_cost += metrics[2]
+                            cost += metrics[2]
 
-                            # get closest distance metric of a vehicle in the current team
-                            min_d = 10000000
-                            for veh in current_vehicles:
-                                veh_d = (((veh[0] - metrics[0])/max_range)**2 + ((veh[1] - metrics[1])/max_capacity)**2 + ((veh[2] - metrics[2])/max_cost)**2)**0.5
-                                if veh_d < min_d:
-                                    min_d = veh_d
-                                if min_d < 0:
-                                    min_d = 0
-                                if min_d > 1:
-                                    min_d = 1
-                            # add a bonus of near one for a close vehicle
-                            if min_d != 10000000:
-                                veh_seqs[planner_event[0]] = [veh_seqs[seq_id][0] + (1 - min_d), veh_seqs[seq_id][1]]
+                            # vehicle proximity, need to build this knowledge into the action
+                            min_veh_d = self.MAXVALUE
+                            for veh_test in vehicles:
+                                vehicle_proximity = ((((metrics[0] - veh_test.range)/100)**2 +
+                                        ((metrics[1] - veh_test.payload)/100)**2 +
+                                        ((metrics[2] - veh_test.cost)/15000)**2)**0.5)/1.73
+                                if vehicle_proximity > 1.0:
+                                    vehicle_proximity = 1.0
+                                if vehicle_proximity < min_veh_d:
+                                    min_veh_d = vehicle_proximity
+                            plan_vehicle_proximity[seq_id].append(min_veh_d)
 
-                            # increment the total vehicles by 1
-                            veh_seqs[planner_event[0]] = [veh_seqs[seq_id][0], veh_seqs[seq_id][1] + 1]
 
-                # add number of customer for this event
-                if plan_customers > 0:
-                    plan_no_customers[seq_id].append(plan_customers)
+                if profit > 0:
+                    # save plan values for all sequences
+                    plan_no_customers[seq_id].append(no_customers)
+                    plan_profit[seq_id].append(profit)
+                    if profit > max_plan_profit:
+                        max_plan_profit = profit
+                    plan_fixed_cost[seq_id].append(cost)
+                    if cost > max_plan_cost:
+                        max_plan_cost = cost
 
-                # add a 1 if this event is feasible
-                if plan_cost <= 15000:
-                    plan_feasbilities[seq_id].append(1)
-                else:
-                    plan_feasbilities[seq_id].append(0)
+                    if "Open" in planner_event[1]:
+                        plan_actions[seq_id].append("Open")
+                    elif "Agent" in planner_event[1]:
+                        plan_actions[seq_id].append("Agent")
+                    elif "Manual" in planner_event[1]:
+                        plan_actions[seq_id].append("Manual")
+                    else:
+                        plan_actions[seq_id].append("Other")
 
-                # the below will be used for upcoming preference
-                plan_profit_values[seq_id] = plan_profit
-                if plan_profit > max_profit:
-                    max_profit = plan_profit
-
-                plan_cost_values[seq_id] = plan_cost
-                if plan_cost > max_plan_cost:
-                    max_plan_cost = plan_cost
 
             except Exception as e:
-                # fix this to check and make sure that important errors are not overlooked , which has been done, but
+                # make sure that important errors are not overlooked using traceback, but once the code runs well, do not show
+                # RNN sample errors
                 # this needs updated
                 #traceback.print_exc()
                 if show_error:
                     print("RNN generated sequence parse errors in planner database " , str(e))
-                    twin_info_message("RNN generated sequence parse errors in planner database")
-                    twin_info_message(str(e))
+                    twin_info_message(self.session.id, "RNN generated sequence parse errors in planner database")
+                    twin_info_message(self.session.id, str(e))
                 show_error = False
 
 
-        # score all plan sequences based on proximity of vehicles to team vehicles and deleivery path locations
-        seq_list = list(loc_seqs.keys())
+        # score all plan sequences
+        seq_list = list(plan_profit.keys())
         scores = []
         for seq in seq_list:
-            proximity_scenario = loc_seqs[seq][0]
-            total_scenario = loc_seqs[seq][1]
-            proximity_vehicles = veh_seqs[seq][0]
-            total_vehicles = veh_seqs[seq][1]
 
-            # score event sequnce based on similarity
-            event_score = 0
-            if total_scenario > 2 and total_vehicles > 2: # > 10, looking for sequences with at leasat some length, tunable
-                avg_plan_no_customers = sum(plan_no_customers[seq])/len(plan_no_customers[seq])
-                avg_path_feasiblity = sum(plan_feasbilities[seq])/len(plan_feasbilities[seq])
-                #event_score = 0.25*proximity_scenario/total_scenario + 0.25*proximity_vehicles/total_vehicles + 0.32*avg_plan_no_customers/max_plan_no_customers + 0.18*avg_path_feasiblity
-                # had to add metric for feasbility and noumber of customers, which I would like to improve
-                event_score = 0.25*proximity_scenario/total_scenario + 0.25*proximity_vehicles/total_vehicles + 0.35*avg_plan_no_customers/max_plan_no_customers + 0.15*avg_path_feasiblity
+            avg_plan_score_by_seq = 0
+            seq_no_plans = len(plan_profit[seq])
+            seq_plan_action = 0
 
-            # add score
-            scores.append(event_score)
+            # vehicle proximity score, to get plans sequences with similar vehicles
+            veh_proximities = plan_vehicle_proximity[seq]
+            if len(veh_proximities) > 0:
+                veh_proximity_proportion = sum(veh_proximities)/len(veh_proximities)
+            else:
+                veh_proximity_proportion = 0
+
+
+            for i in range(seq_no_plans):
+
+                plan_profit_seq = plan_profit[seq][i]
+                plan_fixed_cost_seq = plan_fixed_cost[seq][i]
+                plan_no_customers_seq = plan_no_customers[seq][i]
+                plan_action_seq = plan_actions[seq][i]
+
+                # score plan based on preference
+                score = 0
+
+                if pref_type == 0:
+                    score = -(profit_preference*plan_profit_seq/max_plan_profit + fixed_cost_preference*plan_fixed_cost_seq/max_plan_cost + no_customers_preference*plan_no_customers_seq/max_plan_no_customers)
+                elif pref_type == 1:
+                    score = ((((plan_profit_seq - profit_preference)/max_plan_profit)**2 + ((plan_fixed_cost_seq - fixed_cost_preference)/max_plan_cost)**2 + ((plan_no_customers_seq - no_customers_preference)/max_plan_no_customers)**2)**0.5)/1.73
+
+                # get average score
+                avg_plan_score_by_seq += score/seq_no_plans
+
+                # increment this
+                if "Manual" in plan_action_seq or "Agent" in plan_action_seq:
+                    seq_plan_action += 1
+
+
+            # check for some kind of path actions
+            if seq_plan_action > 0:
+                scores.append(0.5*veh_proximity_proportion + avg_plan_score_by_seq)
+            else:
+                scores.append(self.MAXVALUE)
 
         # sort sequnces based on proximity
-        sorted_indices = numpy.argsort(scores)[::-1].tolist()
+        sorted_indices = numpy.argsort(scores).tolist()
 
         # sample new events
         all_events = []
-        total_path_seqs = []
-        total_open_seqs = []
 
         # fill up user events with sequences bias by score
         while len(all_events) < len(self.team_time_events[usr]):
-            selected_ind = max(0,int(self.linear_trend(1.0, 0.0, 0, min(20, len(sorted_indices)), 1)[0]))
+            selected_ind = max(0,int(self.linear_trend(1.0, 0.0, 0, min(500, len(sorted_indices)), 1)[0]))
             seq_id = str(seq_list[sorted_indices[selected_ind]])
             events = self.planner_sequences.query("seq == " + seq_id).values.tolist()
             sorted_indices.pop(selected_ind)
-
-            # check for interaction timining
-            if 'Open' not in events[0][1]:
-                total_path_seqs.append(seq_id)
-                for event in events:
-                    all_events.append(event)
-            else:
-                if len(total_path_seqs) > 0:
-                    if 1.0*len(total_open_seqs)/len(total_path_seqs) <= self.interaction_timing[usr]:
-                        total_open_seqs.append(seq_id)
-                        for event in events:
-                            all_events.append(event)
+            for event in events:
+                all_events.append(event)
 
         # assign to user
         self.assign_events_to_user(usr, all_events)
 
-    # selects all business role events by selecting a random event sequence
-    def sample_business_events(self, usr):
 
-        # gets event sequences that start with a scenario submit
-        #starting_events = self.business_sequences.query("start_submit == 1").values.tolist()
-        starting_events = self.business_sequences.values.tolist()
+    # combine into one method
+    def sample_designer(self, usr, type_sequence, starting_range, starting_capacity, starting_cost):
 
-        # randomly choose one of them
-        selected_ind = random.randrange(0, len(starting_events))
-        seq_events = self.business_sequences.query("seq == " + str(starting_events[selected_ind][0])).values.tolist()
+        # capture all events
+        all_events = []
 
-        # assign timestamps to each event
-        business_time_events = self.linear_trend(0.32, 0.68, 0, 20, len(seq_events))
-        business_time_events.sort()
-        self.team_role[usr] = "business"
-        self.team_data[usr] = None
-        self.team_time_events[usr] = business_time_events
+        # set user name to view appropriate available vehicles
+        self.db_helper.set_user_name(usr)
 
-        # assign event to the user
-        self.assign_events_to_user(usr, seq_events)
+        # starting seqeunce and new session (just base vehicle), so it is the first session, find event sequnces that start from the base design
+        vehicles = self.db_helper.query_vehicles()
+        sample_type = "All"
+        if type_sequence == 0 and len(vehicles) == 1:
+            sample_type = "Start"
+        elif type_sequence == 1:
+            sample_type = "Open"
 
-    # sample a random designer event sequence
-    def sample_random_designer_sequence(self, usr):
+        # get preference and requirement information
+        # default to no preference and requirements
+        pref_type = -1
+        range_preference = self.NOPREFERENCE
+        capacity_preference = self.NOPREFERENCE
+        cost_preference = self.NOPREFERENCE
 
-        # get all starting designer sequences
-        start_designs = self.designer_sequences.query("start == 1")
-        all_seq = []
-        for i in start_designs.index:
-            all_seq.append(start_designs.at[i,'seq'])
+        # check for preference and requirements
+        user_position = self.db_helper.get_user_positions()[usr]
+        digital_twin = DigitalTwin.objects.filter(user_position=user_position).first()
+        if digital_twin is not None:
 
-        seqs = []
-        while len(seqs) < 1:
-            # randomly select one and add all events
-            selected_ind = random.randrange(0, len(all_seq))
-            seqs = self.designer_sequences.query("seq == " + str(all_seq[selected_ind])).values.tolist()
-            for seq in seqs:
-                last_range = seq[3]
-                last_capacity = seq[4]
-                last_cost = seq[5]
-                last_velocity = seq[6]
+            twin_preference = DigitalTwinPreference.objects.filter(Q(digital_twin=digital_twin)&Q(name="range")).first()
+            if twin_preference is not None:
+                range_preference = twin_preference.pref_value
+                pref_type = twin_preference.pref_type # need to check if others are the same
 
-        return seqs
+            twin_preference = DigitalTwinPreference.objects.filter(Q(digital_twin=digital_twin)&Q(name="capacity")).first()
+            if twin_preference is not None:
+                capacity_preference = twin_preference.pref_value
+                pref_type = twin_preference.pref_type
+
+            twin_preference = DigitalTwinPreference.objects.filter(Q(digital_twin=digital_twin)&Q(name="cost")).first()
+            if twin_preference is not None:
+                cost_preference = twin_preference.pref_value
+                pref_type = twin_preference.pref_type
 
 
-    def sample_design_sequence_starting_open_design(self, usr, range_vehicle, capacity_vehicle, cost_vehicle):
+        seq_open_distance, seq_first_event_distance, seq_start_and_submit, seq_scores_preferences = self.get_designer_event_scores(sample_type, pref_type, range_preference, capacity_preference, cost_preference,  starting_range, starting_capacity, starting_cost)
+        seqs_ids = []
+        open_scores = []
+        start_scores = []
+        all_scores = []
+        scores = []
+        for seq_id in seq_open_distance:
+            seqs_ids.append(seq_id)
+            avg_requiement_score = 0
+            avg_pref_score = 0
+            all_seq_pref_events_scores = seq_scores_preferences[seq_id]
+            for seq_pref_event_score in all_seq_pref_events_scores:
+                avg_pref_score += seq_pref_event_score/len(all_seq_pref_events_scores)
+            open_scores.append(seq_open_distance[seq_id] + avg_pref_score)
+            start_scores.append(seq_start_and_submit[seq_id] + avg_pref_score)
+            all_scores.append(seq_first_event_distance[seq_id] + avg_pref_score)
+            scores.append(avg_pref_score)
 
-        # get closest visible vehicle
-        target_vehicle = [[range_vehicle, capacity_vehicle, cost_vehicle]]
-        closest_vehicle = self.get_closest_vehicles(usr, target_vehicle, True)[0]
+        # if there is no preference, the above could be skipped, will modify code later to do this
+        is_pref = True
+        if (range_preference == self.NOPREFERENCE and
+                capacity_preference == self.NOPREFERENCE and
+                cost_preference == self.NOPREFERENCE):
+            is_pref = False
 
-        # old code just to keep in case
-        #if random.random() < self.interaction_timing[usr] or fixed_open_event:
-            # get all starting events
-        #else:
-            # get are start session events
-        #    start_designs = self.designer_sequences.query("start == 1 and type != 'Open'")
+        all_events = []
+        first_event_data = []
+        if sample_type == "Open":
+            sort_index = numpy.argsort(open_scores)
+            if is_pref:
+                selected_ind = sort_index[max(0,int(self.linear_trend(1.0, 0.0, 0, min(50, len(sort_index)), 1)[0]))]
+            else:
+                selected_ind = self.get_random_score_below_max_value(open_scores)
+            first_event_data = self.designer_sequences.query("seq == " + str(seqs_ids[selected_ind])).values.tolist()
+            for event in first_event_data:
+                all_events.append(event)
+        if sample_type == "Start":      # currently there are 72 starting and submit designs
+            sort_index = numpy.argsort(start_scores)
+            if is_pref:
+                selected_ind = sort_index[max(0,int(self.linear_trend(1.0, 0.0, 0, min(20, len(sort_index)), 1)[0]))]
+            else:
+                selected_ind = self.get_random_score_below_max_value(start_scores)
+            event_data = self.designer_sequences.query("seq == " + str(seqs_ids[selected_ind])).values.tolist()
+            for event in event_data:
+                all_events.append(event)
+        if sample_type == "All":
+            sort_index = numpy.argsort(all_scores)
+            if is_pref:
+                selected_ind = sort_index[max(0,int(self.linear_trend(1.0, 0.0, 0, min(50, len(sort_index)), 1)[0]))]
+            else:
+                selected_ind = self.get_random_score_below_max_value(all_scores)
+            first_event_data = self.designer_sequences.query("seq == " + str(seqs_ids[selected_ind])).values.tolist()
+            for event in first_event_data:
+                all_events.append(event)
 
-        # get all sequences that have a start or open event , if start essentially it opens the base design
-        start_designs = self.designer_sequences.query("start == 1")
+        while len(all_events) < len(self.team_time_events[usr]):
+            sort_index = numpy.argsort(scores)
+            if is_pref:
+                selected_ind = sort_index[max(0,int(self.linear_trend(1.0, 0.0, 0, min(200, len(sort_index)), 1)[0]))]
+            else:
+                selected_ind = self.get_random_score_below_max_value(scores)
+            event_data = self.designer_sequences.query("seq == " + str(seqs_ids[selected_ind])).values.tolist()
+            for event in event_data:
+                all_events.append(event)
 
-        # score each sequence based on proximity to the suggested closest design
-        min_values = start_designs.min()
-        max_values = start_designs.max()
-        all_distances = []
-        all_seq = []
-        for i in start_designs.index:
-            norm_distance = (((closest_vehicle.range - float(start_designs.at[i,'range']))/(max_values["range"] - min_values["range"]))**2 + \
-                ((closest_vehicle.payload - float(start_designs.at[i,'capacity']))/(max_values["capacity"] - min_values["capacity"]))**2 + \
-                ((closest_vehicle.cost - float(start_designs.at[i,'cost']))/(max_values["cost"] - min_values["cost"]))**2)**0.5
-            all_distances.append(norm_distance)
-            all_seq.append(start_designs.at[i,'seq'])
-        sort_index = numpy.argsort(all_distances)
+        # assign events to the user
+        self.assign_events_to_user(usr, all_events)
 
-        # list for events
-        seqs = []
-        counter = 0
-        last_tag = "tag"
-        last_range = -1
-        last_capacity = -1
-        last_cost = -1
-        last_velocity = -1
-        while len(seqs) < 1:
-            # origianlly was 20, but increased to length of the sorted index to bias
-            #selected_ind = max(0,int(self.linear_trend(1.0, 0.0, 0, len(sort_index), 1)[0]))
-            # take away bias and choose random for now to try and match historical designer designer_trends
-            selected_ind = random.randrange(0, len(sort_index))
-            seqs = self.designer_sequences.query("seq == " + str(all_seq[sort_index[selected_ind]])).values.tolist()
-            for seq in seqs:
-                last_range = seq[3]
-                last_capacity = seq[4]
-                last_cost = seq[5]
-                last_velocity = seq[6]
-            counter += 1
+        # open event, return first event to record into the logs
+        if len(first_event_data) > 0:
+            # seqs, tag, config, range, capacity, cost, velocity]
+            return [first_event_data[0][1], first_event_data[0][2], first_event_data[0][3],first_event_data[0][4],first_event_data[0][5],first_event_data[0][6]  ]
 
-        return [seqs, closest_vehicle.tag, closest_vehicle.config, closest_vehicle.range, closest_vehicle.payload, closest_vehicle.cost, closest_vehicle.velocity, last_range, last_capacity, last_cost]
+    # initial preference mediation methods
+    # def sample_design_sequence_preference_design(self, sample_type, pref_type, range_preference, capacity_preference, cost_preference, min_range, max_range, min_capacity, max_capacity, min_cost, max_cost, starting_range, starting_capacity, starting_cost):
+    def get_designer_event_scores(self, sample_type, pref_type, range_preference, capacity_preference, cost_preference, starting_range, starting_capacity, starting_cost):
+
+        seq_open_distance = {}
+        seq_start_and_submit = {}
+        seq_first_event_distance = {}
+        seq_scores_preferences = {}
+        all_events = self.designer_sequences
+        min_values = all_events.min()
+        max_values = all_events.max()
+        team_events = all_events.values.tolist()
+        for team_event in team_events:
+            seq_id = str(team_event[0])
+            first_event = False
+            if seq_id not in seq_open_distance:
+                seq_open_distance[seq_id] = 100000000000
+                seq_start_and_submit[seq_id] = 100000000000
+                seq_first_event_distance[seq_id] = 100000000000
+                seq_scores_preferences[seq_id] = []
+                first_event = True
+            event_type = team_event[2]
+            veh_range = team_event[3]
+            veh_capacity = team_event[4]
+            veh_cost = team_event[5]
+            if first_event:
+                d = ((((veh_range - starting_range)/(max_values["range"] - min_values["range"]))**2 + \
+                    ((veh_capacity - starting_capacity)/(max_values["capacity"] - min_values["capacity"]))**2 + \
+                    ((veh_cost - starting_cost)/(max_values["cost"] - min_values["cost"]))**2)**0.5)/1.73
+                if event_type == "Open":
+                    seq_open_distance[seq_id] = d
+                else:
+                    seq_open_distance[seq_id] = self.MAXVALUE
+                seq_first_event_distance[seq_id] = d
+
+            if event_type == "Submit" and seq_open_distance[seq_id] == self.MAXVALUE:
+                seq_start_and_submit[seq_id] = 0
+
+            preference_distance = 0
+
+            if pref_type == 0:
+                preference_distance = -(range_preference*veh_range/(max_values["range"] - min_values["range"]) + \
+                    capacity_preference*veh_capacity/(max_values["capacity"] - min_values["capacity"]) + \
+                    cost_preference*veh_cost/(max_values["cost"] - min_values["cost"]))                                     # smaller norm_distance is better and larger weight sums is better, so negative
+            elif pref_type == 1:
+                preference_distance = ((((veh_range - range_preference)/(max_values["range"] - min_values["range"]))**2 + \
+                    ((veh_capacity - capacity_preference)/(max_values["capacity"] - min_values["capacity"]))**2 + \
+                    ((veh_cost - cost_preference)/(max_values["cost"] - min_values["cost"]))**2)**0.5)/1.73
+
+            seq_scores_preferences[seq_id].append(preference_distance)
+
+        return seq_open_distance, seq_first_event_distance, seq_start_and_submit, seq_scores_preferences
+
+    def get_random_score_below_max_value(self, scores):
+        ind_to_include = []
+        for i, s in enumerate(scores):
+            if s < self.MAXVALUE:
+                ind_to_include.append(i)
+        rnd_index = random.randrange(0, len(ind_to_include))
+        return ind_to_include[rnd_index]
+
+
+# resamples planner event for all users
+
+    def resample_planners_based_on_scenario_and_vehicles(self):
+        for usr in self.team_role:
+            if self.team_role[usr] == "planner":
+                self.sample_planner(usr)
 
     # get the closest session plan to the target plan metrics
     def get_close_plan(self, usr, profit, startupCost, no_deliveries, business_role):
@@ -1030,8 +1189,8 @@ class AdaptiveTeamAIUpdatedPlanner():
         # initial variables to store and test closest plan
         close_plan = None
         closest_plan_index = -1
-        closest_plan_dist = 100000000
-        min_startup_cost = 100000000
+        closest_plan_dist = self.MAXVALUE
+        min_startup_cost = self.MAXVALUE
         max_profit = profit
         max_startup_cost = startupCost
         max_number_deliveries = no_deliveries
@@ -1057,11 +1216,12 @@ class AdaptiveTeamAIUpdatedPlanner():
             # calculate the proximity for each plan
             dist_scores = []
             for p in plans:
-                d = (((self.plan_cache[p.id][0] - profit)/max_profit)**2 + ((self.plan_cache[p.id][1] - startupCost)/max_startup_cost)**2 + ((self.plan_cache[p.id][2] - no_deliveries)/max_number_deliveries)**2)**0.5
-                # add penaly for the fixed cost constraint
+                d = ((((self.plan_cache[p.id][0] - profit)/max_profit)**2 + ((self.plan_cache[p.id][1] - startupCost)/max_startup_cost)**2 + ((self.plan_cache[p.id][2] - no_deliveries)/max_number_deliveries)**2)**0.5)/1.73
+                # add penalty for the fixed cost constraint
                 if business_role:
                     if self.plan_cache[p.id][1] > 15000:
-                        d = 100000000
+                        #d += (self.plan_cache[p.id][1] - 15000)/20000
+                        d = self.MAXVALUE
                 else:
                     # substract for self bias
                     if str(p.id) in self.self_bias_plans[usr]:
@@ -1072,8 +1232,8 @@ class AdaptiveTeamAIUpdatedPlanner():
             sorted_indices = numpy.argsort(dist_scores)
             if business_role:
                 close_plan = plans[int(sorted_indices[0])]
-                # make sure it is feasible
-                if self.plan_cache[close_plan.id][1] > 15000 or self.plan_cache[close_plan.id][1] <= 0:
+                # make sure it has some profit
+                if self.plan_cache[close_plan.id][1] <= 0:
                     close_plan = None
             else:
                 # biad selection based on proximity
@@ -1104,9 +1264,9 @@ class AdaptiveTeamAIUpdatedPlanner():
         if len(vehicles) > 0:
 
             # get maximum bounds to use for normalized distance calculations
-            max_range = -100000000000
-            max_payload = -100000000000
-            max_cost = -100000000000
+            max_range = -self.MAXVALUE
+            max_payload = -self.MAXVALUE
+            max_cost = -self.MAXVALUE
             for v in vehicles:
                 if v.range > max_range:
                     max_range = v.range
@@ -1124,17 +1284,17 @@ class AdaptiveTeamAIUpdatedPlanner():
 
             # for each target vehicle, find the closest existing vehicle
             for target in target_vehicles:
-                closest_dist = 100000000
+                closest_dist = self.MAXVALUE
                 closest_veh = None
                 for v in vehicles:
-                    d =  (((target[0] - v.range)/max_range)**2 + ((target[1] - v.payload)/max_payload)**2 + ((target[2] - v.cost)/max_cost)**2)**0.5
+                    d =  ((((target[0] - v.range)/max_range)**2 + ((target[1] - v.payload)/max_payload)**2 + ((target[2] - v.cost)/max_cost)**2)**0.5)/1.73
 
                     # subtract self-bias
                     if str(v.id) in self.self_bias_designs[usr]:
                         d -= self.self_bias[usr]
 
                     # bias off base design
-                    if v.range == 10 and v.payload == 5 and bias_from_base_design:
+                    if v.config == '*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3' and bias_from_base_design:
                         d += 2
 
                     # if closest
@@ -1144,7 +1304,7 @@ class AdaptiveTeamAIUpdatedPlanner():
 
                 used_vehicles.append(closest_veh)
 
-        return used_vehicles
+        return used_vehicles, closest_dist
 
     # resamples events for a user after the current time
     def assign_events_to_user(self, usr, all_events):
@@ -1193,7 +1353,7 @@ class AdaptiveTeamAIUpdatedPlanner():
                 valid = False
                 print("error : ++++++++++++++++++++++ invalid action queue ++++++++++++++++++++++ ")
                 print(self.actions_queue)
-                twin_info_message("error : ++++++++++++++++++++++ invalid action queue ++++++++++++++++++++++ ")
+                twin_info_message(self.session.id, "error : ++++++++++++++++++++++ invalid action queue ++++++++++++++++++++++ ")
             time_check = self.actions_queue[i][0]
 
     # create integer sample from a distribution
@@ -1223,11 +1383,6 @@ class AdaptiveTeamAIUpdatedPlanner():
     # create a new session for doe runs
     def setup_session(self, usr, unit_structure = 1, market = 1, ai = 1):
 
-        twin_info_message("setup")
-        twin_info_message("unit structure : " + str(unit_structure))
-        twin_info_message("market : " + str(market))
-        twin_info_message("ai : " + str(ai))
-
         experiment = usr.profile.experiment
         newExercise = Exercise.objects.create(experiment=experiment)
 
@@ -1253,8 +1408,9 @@ class AdaptiveTeamAIUpdatedPlanner():
         positer = numUsers
         if numPos < positer:
             positer = numPos
+
         for x in range(positer):
-            UserPosition.objects.create(position=structurePositions[x], user=teamUsers[x], session=newSession)
+            user_pos = UserPosition.objects.create(position=structurePositions[x], user=teamUsers[x], session=newSession)
 
         warehouseAddress = Address.objects.filter(region="warehouse").first()
         warehouseGroup = Group.objects.filter(name="All", structure=sessionStructure).first()
@@ -1262,10 +1418,146 @@ class AdaptiveTeamAIUpdatedPlanner():
 
         baseConfig = "*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3"
         Vehicle.objects.create(tag="base", config=baseConfig, result="Success", range=10.0, velocity=20.0, cost=3470.20043945312, payload=5, group=warehouseGroup, session=newSession)
-        print("session vehicle add")
-        twin_info_message("session vehicle add")
+
+        # initialize preference objects
+        self.init_session_preference(newSession)
+
+        twin_info_message(newSession.id, 'session_created_id')
 
         return newSession
+
+    def init_session_preference(self, session):
+
+        # get database helper and user roles
+        db_helper = DatabaseHelper(session)
+        user_positions = db_helper.get_user_positions()
+
+        digital_twin_setups = []
+
+        # for each user, and database objects
+        for user_pos in user_positions:
+
+            # if no object already
+            digital_twin_user_position_query = DigitalTwin.objects.filter(user_position=user_positions[user_pos])
+
+            if len(digital_twin_user_position_query) == 0:
+                # objects to store preferences
+                digital_twin_user_setup = DigitalTwin.objects.create(user_position=user_positions[user_pos])
+                digital_twin_setups.append(digital_twin_user_setup)
+                pref_vars = []
+                if user_positions[user_pos].position.role.name == "Business" or "Planner" in user_positions[user_pos].position.role.name :
+                    pref_vars = ["profit", "fixed_cost", "no_customers"]
+                else:
+                    pref_vars = ["range", "capacity", "cost"]
+                for var_name in pref_vars:
+                    new_preference_setup = DigitalTwinPreference.objects.create(digital_twin=digital_twin_user_setup)
+                    new_preference_setup.name = var_name
+                    new_preference_setup.pref_value = 0
+                    new_preference_setup.save()
+
+            else:
+                digital_twin_setups.append(digital_twin_user_position_query.first())
+
+        return digital_twin_setups
+
+    def preference_example(self):
+
+        prefs = {'channel' : 'twin',
+            'type' : 'twin.pref',
+            'session_id' : self.session.id,
+            'prefs' : [
+                {
+
+                    'user_id' : 'arl_1',
+                    'pref_type' : 1,        # 0 weight sums, 1 target or goal based, for now use 0
+                    'profit' : 9000,
+                    'fixed_cost' : 15000,
+                    'no_customers' : 36
+                },
+                {
+                    'user_id' : 'arl_2',
+                    'pref_type' : 1,        # 0 weight sums, 1 target or goal based, for now use 0
+                    'range' : self.NOPREFERENCE,
+                    'capacity' : self.NOPREFERENCE,
+                    'cost' : self.NOPREFERENCE
+                },
+                {
+                    'user_id' : 'arl_3',
+                    'pref_type' : 1,        # 0 weight sums, 1 target or goal based, for now use 0
+                    'range' : self.NOPREFERENCE,
+                    'capacity' : self.NOPREFERENCE,
+                    'cost' : self.NOPREFERENCE
+                },
+                {
+                    'user_id' : 'arl_4',
+                    'pref_type' : 1,        # 0 weight sums, 1 target or goal based, for now use 0
+                    'profit' : 9000,
+                    'fixed_cost' : 15000,
+                    'no_customers' : 36
+                },
+                {
+                    'user_id' : 'arl_5',
+                    'pref_type' : 1,        # 0 weight sums, 1 target or goal based, for now use 0
+                    'profit' : 9000,
+                    'fixed_cost' : 15000,
+                    'no_customers' : 36
+                },
+                {
+                    'user_id' : 'arl_6',
+                    'pref_type' : 1,        # 0 weight sums, 1 target or goal based, for now use 0
+                    'profit' : 9000,
+                    'fixed_cost' : 15000,
+                    'no_customers' : 36
+                }
+            ],
+        }
+
+        return json.dumps(prefs)
+
+
+    def set_preference(self, session, pref_info):
+
+        self.init_session_preference(session)
+        msg = ""
+        user_id = ""
+        try:
+
+            # get database helper and user roles
+            self.db_helper = DatabaseHelper(session)
+            user_roles = self.db_helper.get_user_roles()
+            user_positions = self.db_helper.get_user_positions()
+
+            preference_dict = json.loads(pref_info)
+            session_id = preference_dict['session_id']
+            prefs = preference_dict['prefs']
+            print("received len ", len(prefs))
+            for pref in prefs:
+                user_id = pref['user_id']
+                if user_id in user_roles and user_id in user_positions:
+                    digital_twin = DigitalTwin.objects.filter(user_position=user_positions[user_id]).first()
+                    role_metrics = []
+                    if 'Business' in user_roles[user_id] or 'Plan' in user_roles[user_id]:
+                        role_metrics = ['profit', 'fixed_cost', 'no_customers']
+                    elif 'Design' in user_roles[user_id]:
+                        role_metrics = ['range', 'capacity', 'cost']
+                    for var_name in role_metrics:
+                        twin_preference = DigitalTwinPreference.objects.filter(Q(digital_twin=digital_twin)&Q(name=var_name)).first()
+                        twin_preference.pref_value = pref[var_name]
+                        twin_preference.pref_type = pref['pref_type']
+                        twin_preference.save()
+                        print("set_pref", user_id, var_name, pref[var_name])
+                    twin_info_message(session.id, "added preference for " + user_id)
+                else:
+                    raise Exception("user id invalid")
+
+            twin_pref_message(session.id, 'preference_set')
+
+        except Exception as e:
+            traceback.print_exc()
+            twin_pref_message(session.id, json.dumps({
+                'preference_error' : str(e),
+                'user_id' : user_id
+            }))
 
     # converts a plan object to a json object
     def convert_plan_json(self, p):
@@ -1289,3 +1581,18 @@ class AdaptiveTeamAIUpdatedPlanner():
 
     def cache_business_metrics(self, t, usr, event_type, profit, startupCost, no_deliveries, scenario_str = ""):
         self.business_vis_log.append(str(self.session.id) + "\t" + usr + "\t" + str(t) + "\t" + event_type + "\t" + str(profit) + "\t" + str(startupCost) + "\t" + str(no_deliveries) + "\t" + str(scenario_str) + "\n")
+
+    # export to export session data to data logs
+    def export_log_data_for_visualization(self):
+        with open("designer.txt", "a") as myfile:
+            for lgdata in self.designer_vis_log:
+                myfile.write(lgdata)
+            myfile.close()
+        with open("planner.txt", "a") as myfile:
+            for lgdata in self.plan_vis_log:
+                myfile.write(lgdata)
+            myfile.close()
+        with open("business.txt", "a") as myfile:
+            for lgdata in self.business_vis_log:
+                myfile.write(lgdata)
+            myfile.close()

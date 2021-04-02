@@ -13,7 +13,6 @@
 </head>
 
 <body>
-    {{ elapsed_seconds|json_script:"elapsed_seconds" }}
     <div class="outerer-container">
         {% if not experimenter %}
         <div class="chat-header">
@@ -34,10 +33,10 @@
                 <div class="col-12 running-timer" id="running-timer" hidden></div>
             </div>
         </div>        
-        {% elif experimenter %}
+        {% else %}
         <div class="chat-header" id="timer-header" hidden>
-            <div class="row" id="timer-row" hidden>
-                <div class="col-12 running-timer" id="running-timer-exper" hidden></div>
+            <div class="row">
+                <div class="col-12 running-timer" id="running-timer" hidden></div>
             </div>
         </div>
         {% endif %}
@@ -56,6 +55,7 @@
     </div>
 
     <script type='application/javascript' src="/static/js/jquery-3.4.1.min.js"></script>
+    <script type='application/javascript' src="/static/js/ajax.js{{BUST}}"></script>
     <script type='application/javascript' src="/static/js/chat.js{{BUST}}"></script>
     <script type='application/javascript' src="/static/js/helpers.js{{BUST}}"></script>
 

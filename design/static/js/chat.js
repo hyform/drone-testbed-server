@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function (event) {
+    var ajaxUrlProcess = getAjaxUrl("process");
     var activeChannel = null;
     var connection = null;
     var sessionChannelId = null;
@@ -7,33 +8,62 @@ document.addEventListener("DOMContentLoaded", function (event) {
     var check = "&check;";
     var responseChannel = null;
     var elapsedTime = 0;
-
-    //Set timer on user chat
-    const elapsedSeconds = JSON.parse(document.getElementById('elapsed_seconds').textContent);    
-    if(elapsedSeconds && elapsedSeconds !== "") {
-        elapsedTime = parseInt(elapsedSeconds);
-        var runningTimer = document.getElementById('running-timer');
-        runningTimer.removeAttribute('hidden'); 
-        
-        setInterval(function(){
-            mins = Math.floor(elapsedTime / 60);
-            secs = elapsedTime % 60;
-            zero = "";
-            if(secs < 10) {
-                zero = "0";
-            }
-            runningTimer.innerText = mins + ":" + zero + secs;
-            elapsedTime = elapsedTime + 1;
-        }, 1000);
-    }
     
-
     //Get a teamId for the Experimenter chat views
     var urlParams = new URLSearchParams(window.location.search);
     var teamId = null
     if (urlParams.has('teamId')) {
         teamId = urlParams.get('teamId');
     }
+
+    // Set countdown to the number of seconds left
+    function seconds_left() {
+        selectAjaxUrl = ajaxUrlProcess + "elapsed_time/"
+        aData = {};
+        if(teamId) {
+            aData = {
+                csrfmiddlewaretoken: csrftoken,
+                team: teamId
+            }
+        } else {
+            aData = {
+                csrfmiddlewaretoken: csrftoken
+            }
+        }
+        //TODO: Do we want to take time here and adjust he answer below if the
+        //call takes some time?
+        $.ajax({
+            url: selectAjaxUrl,
+            method: "POST",
+            data: aData,
+            success: function (result) {
+                var resultJson = JSON.parse(result);     
+                elapsedTime = resultJson.elapsed_seconds;
+                if(elapsedTime >= 0) {
+                    if(teamId) {
+                        var runningTimerHeader = document.getElementById('timer-header'); 
+                        runningTimerHeader.removeAttribute('hidden');                        
+                    }
+                    var runningTimer = document.getElementById('running-timer');
+                    runningTimer.removeAttribute('hidden'); 
+                }
+            }
+        });
+    }
+    seconds_left();
+    setInterval(function(){
+        if(elapsedTime >= 0) {
+            mins = Math.floor(elapsedTime / 60);
+            secs = elapsedTime % 60;
+            zero = "";
+            if(secs < 10) {
+                zero = "0";
+            }
+            var runningTimer = document.getElementById('running-timer');
+            runningTimer.innerText = mins + ":" + zero + secs;
+            elapsedTime = elapsedTime + 1;
+        }
+    }, 1000);
 
     var sendButton = $("#send");
     var messageText = $("#message");
@@ -389,29 +419,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
                     }
                 }
             } else if (messageType === "session.response" && !teamId) {
-                // Do nothin in this case
-            } else if (messageType === "session.time" && teamId) {
-                //Set timer on user chat                
-                elapsedTime = parseInt(message);
-                var timerHeader = document.getElementById('timer-header');
-                timerHeader.removeAttribute('hidden');
-                var timerRow = document.getElementById('timer-row');
-                timerRow.removeAttribute('hidden');
-                var runningTimer = document.getElementById('running-timer-exper');
-                runningTimer.removeAttribute('hidden'); 
-                
-                setInterval(function(){
-                    mins = Math.floor(elapsedTime / 60);
-                    secs = elapsedTime % 60;
-                    zero = "";
-                    if(secs < 10) {
-                        zero = "0";
-                    }
-                    runningTimer.innerText = mins + ":" + zero + secs;
-                    elapsedTime = elapsedTime + 1;
-                }, 1000);
-
-            } else if (messageType === "session.time" && !teamId) {
                 // Do nothin in this case
             } else if (messageType === "system.usermessage" && !teamId) {
                 // System message for a non-exper user, so stick in all channels

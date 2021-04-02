@@ -5,8 +5,6 @@
         <meta http-equiv="Refresh" content="0; url={{redir}}" />
         {% endif %}
         <title>{% block title %}{{ page.title }}{% endblock title %}</title>
-        {% block head_favicon %}<link rel="icon" href="/static/css/images/favicon.ico" type="x-icon" />
-        <link rel="shortcut icon" href="/static/css/images/favicon.ico" type="x-icon" />{% endblock head_favicon %}
         {% block head_meta %}
             {% block head_meta_author %}{% endblock head_meta_author %}
             {% block head_meta_charset %}<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />{% endblock head_meta_charset %}

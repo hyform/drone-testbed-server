@@ -8,20 +8,34 @@ from exper.models import UserPosition, GroupPosition, Position, Session, Structu
 from repo.models import DataLog
 from .mediation import Interventions
 
-def send_helper(channed_id, session_id, intervention): 
-    instance = str(channed_id) + "___" + str(session_id)
-    async_to_sync(get_channel_layer().group_send)(
-        instance,
-        {
-            'type': 'chat.message',
-            'message': intervention,
-            'sender': "Process Manager",
-            'channel': instance
-        }
-    )
+#need user, if available
+#need channel_name
+
+
+def send_helper(user, channel, session, intervention):
+    channel_name = ""
+    instance = ""
+    if channel:
+        channel_name = channel.name
+        instance = str(channel.id) + "___" + str(session.id)           
+
+    if channel:
+        Message.objects.create(sender=user, channel=channel, message=intervention, session=session)
+    DataLog.objects.create(user=user, session=session, action=intervention, type='intervention: ' + channel_name + ' @' + instance)
+
+    if channel:
+        async_to_sync(get_channel_layer().group_send)(
+            instance,
+            {
+                'type': 'chat.message',
+                'message': intervention,
+                'sender': "Process Manager",
+                'channel': instance
+            }
+        )
 
 # num is 1 to 13
-def send_intervention(num, session_id):
+def send_intervention(user, num, session_id):
     session = Session.objects.filter(id=session_id).first()
     structure = session.structure
     if structure.name == "Process Manager" or structure.name == "Process Manager (AI)":
@@ -34,39 +48,37 @@ def send_intervention(num, session_id):
         problemManagerChannel = channels.filter(name="Problem Manager").first()
 
         if str(num) == str(1):
-            send_helper(operationsChannel.id, session_id, Interventions.ACTION_1)
+            send_helper(user, operationsChannel, session, Interventions.ACTION_1)
         elif str(num) == str(2):
-            send_helper(operationsChannel.id, session_id, Interventions.ACTION_2)
+            send_helper(user, operationsChannel, session, Interventions.ACTION_2)
         elif str(num) == str(3):
-            send_helper(operationsChannel.id, session_id, Interventions.ACTION_3) 
+            send_helper(user, operationsChannel, session, Interventions.ACTION_3) 
         elif str(num) == str(4):
-            send_helper(designerChannel.id, session_id, Interventions.ACTION_4)
+            send_helper(user, designerChannel, session, Interventions.ACTION_4)
         elif str(num) == str(5):
-            send_helper(designerChannel.id, session_id, Interventions.ACTION_5)            
+            send_helper(user, designerChannel, session, Interventions.ACTION_5)            
         elif str(num) == str(6):
-            send_helper(designerChannel.id, session_id, Interventions.ACTION_6)
+            send_helper(user, designerChannel, session, Interventions.ACTION_6)
         elif str(num) == str(7):
-            send_helper(designerChannel.id, session_id, Interventions.COMMUNICATION_1)
-            send_helper(operationsChannel.id, session_id, Interventions.COMMUNICATION_1)
-            send_helper(problemManagerChannel.id, session_id, Interventions.COMMUNICATION_1)
+            send_helper(user, designerChannel, session, Interventions.COMMUNICATION_1)
+            send_helper(user, operationsChannel, session, Interventions.COMMUNICATION_1)
+            send_helper(user, problemManagerChannel, session, Interventions.COMMUNICATION_1)
         elif str(num) == str(8):
-            send_helper(designerChannel.id, session_id, Interventions.COMMUNICATION_2)
-            send_helper(operationsChannel.id, session_id, Interventions.COMMUNICATION_2)
-            send_helper(problemManagerChannel.id, session_id, Interventions.COMMUNICATION_2)
+            send_helper(user, designerChannel, session, Interventions.COMMUNICATION_2)
+            send_helper(user, operationsChannel, session, Interventions.COMMUNICATION_2)
+            send_helper(user, problemManagerChannel, session, Interventions.COMMUNICATION_2)
         elif str(num) == str(9):
-            send_helper(designerChannel.id, session_id, Interventions.COMMUNICATION_3)
-            send_helper(operationsChannel.id, session_id, Interventions.COMMUNICATION_3)
-            send_helper(problemManagerChannel.id, session_id, Interventions.COMMUNICATION_3)
+            send_helper(user, designerChannel, session, Interventions.COMMUNICATION_3)
+            send_helper(user, operationsChannel, session, Interventions.COMMUNICATION_3)
+            send_helper(user, problemManagerChannel, session, Interventions.COMMUNICATION_3)
         elif str(num) == str(10):
-            send_helper(operationsChannel.id, session_id, Interventions.COMMUNICATION_4)
+            send_helper(user, operationsChannel, session, Interventions.COMMUNICATION_4)
         elif str(num) == str(11):
-            send_helper(designerChannel.id, session_id, Interventions.COMMUNICATION_5)
+            send_helper(user, designerChannel, session, Interventions.COMMUNICATION_5)
         elif str(num) == str(12):
-            send_helper(problemManagerChannel.id, session_id, Interventions.COMMUNICATION_6)
+            send_helper(user, problemManagerChannel, session, Interventions.COMMUNICATION_6)
         elif str(num) == str(13):
-            # No intervention sent
-            # TODO: log no intervention was sent
-            pass
+            send_helper(user, None, session, Interventions.NO_INTERVENTION)
         else:
             # Unexpected value
             pass

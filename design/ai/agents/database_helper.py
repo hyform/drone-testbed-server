@@ -7,6 +7,7 @@ from repo.serializers import ScenarioSerializer
 from django.db.models import Q
 
 from chat.messaging import new_vehicle_message, new_plan_message, new_scenario_message
+from api.messaging import twin_log_message
 
 # helper for agents to load and save database objects
 class DatabaseHelper:
@@ -33,6 +34,10 @@ class DatabaseHelper:
     # gets the user roles (ex. designer, ops planner, ...)
     def get_user_roles(self):
         return self.user_roles
+
+    # gets the user roles (ex. designer, ops planner, ...)
+    def get_user_positions(self):
+        return self.user_positions
 
     # sets the user name
     def set_user_name(self, user_name):
@@ -184,3 +189,5 @@ class DatabaseHelper:
                 dl.time=self.first_simulation_time_date + timedelta(minutes=time_min)
             dl.type = "digital_twin"                                                    # save the type of the Datalog as digital twin for now
             dl.save()
+
+            twin_log_message(self.session.id, user_name, time_min, action)

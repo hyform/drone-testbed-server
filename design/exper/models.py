@@ -158,4 +158,4 @@ class DigitalTwinPreference(models.Model):
     digital_twin = models.ForeignKey(DigitalTwin, null=True, blank=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     pref_value = models.FloatField(default=0.0)
-    pref_type = models.IntegerField(default=0)          # maybe 0 : weighted sums, 1 : Pareto direction, 2 : goal based, 3 : other
+    pref_type = models.IntegerField(default=0)          # maybe 0 : weighted sums, 1 :goal based

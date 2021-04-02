@@ -29,6 +29,7 @@ $(document).ready(function () {
         buttonId = "#play_button_" + gottenId;
         infoId = "#info_text_" + gottenId;
         simId = "#sim_button_" + gottenId;
+        editsimId = "#edit_sim_button_" + gottenId
 
         //Check archive attempt first
         if ($(statusId).text() === "After" && $(buttonId).text() === "Archive") {
@@ -136,6 +137,12 @@ $(document).ready(function () {
             });
         }
     });
+
+    $('.edit_sim_button').on('click', function () {
+      gottenId = getId(this);
+      digitaltwinAjaxUrl = ajaxUrl + "edit_digital_twin/" + gottenId;
+      location.href = digitaltwinAjaxUrl;
+    })    
 
     $('.stop_button').on('click', function () {
         stopAjaxUrl = ajaxUrl + "session_status_stop/"

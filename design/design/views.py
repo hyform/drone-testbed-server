@@ -397,6 +397,11 @@ def ateams_presession(request):
                     context['first'] = False
                     context['last'] = False
 
+                up = UserPosition.objects.filter(Q(user=request.user)&Q(session=st.session)).first()
+                if up:
+                    pos_name = up.position.name
+                    context['pos_name'] = pos_name
+
                 context['session_ai'] = st.session.use_ai                
 
                 response = HttpResponse(render(request, "presession.html", context))

@@ -14,7 +14,7 @@ from ai.seqtosql.dronebotseqtosql import DroneBotSeqToSQL
 from .chat_consumer_listener import ChatConsumerListener
 from rest_framework.authtoken.models import Token
 from django.conf import settings
-from api.tasks import run_digital_twin
+from api.tasks import run_digital_twin, pause_digital_twin, setup_digital_twin, set_digital_twin_preference
 from api.models import SessionTimer
 from datetime import datetime, timezone
 
@@ -150,23 +150,6 @@ class ChatConsumer(WebsocketConsumer):
                             session_instance,
                             self.channel_name,
                         )
-
-                        if st.session.status == Session.RUNNING:
-                            running_timer = SessionTimer.objects.filter(session=st.session).filter(timer_type=SessionTimer.RUNNING_START).first()
-                            elapsed_seconds = 0
-                            if running_timer:
-                                current_time = datetime.now(timezone.utc)
-                                running_timestamp = running_timer.timestamp
-                                if running_timestamp:
-                                    time_difference = current_time - running_timestamp
-                                    elapsed_seconds = round(time_difference.total_seconds())
-
-                            self.send(text_data=json.dumps({
-                                'type' : 'session.time',
-                                'message' : str(elapsed_seconds),
-                                'sender' : "System",
-                                'channel' : session_instance
-                            }))
                         self.send(text_data=json.dumps({
                             'type' : 'chat.info',
                             'message' : "Session",
@@ -289,14 +272,17 @@ class ChatConsumer(WebsocketConsumer):
                         })
         if st:
             # Send out the old messages to this user
-            chat_logs = DataLog.objects.filter(session=st.session).filter(type__startswith="chat: ").order_by('time')
+            chat_logs = DataLog.objects.filter(session=st.session).filter(Q(type__startswith="chat: ") | Q(type__startswith="intervention: ")).order_by('time')
             for chat_log in chat_logs:
                 sender_name = ""
                 senderPosition = UserPosition.objects.filter(session=st.session).filter(user=chat_log.user).first()
                 if senderPosition:
                     sender_name = senderPosition.position.name
                 else:
-                    sender_name = "Experimenter"
+                    if(chat_log.type.startswith("intervention: ")):
+                        sender_name = "Process Manager"
+                    else :
+                        sender_name = "Experimenter"
                 channel_parse = chat_log.type.split('@')
                 if len(channel_parse) > 1:
                     channel_instance = channel_parse[len(channel_parse) - 1]
@@ -381,9 +367,19 @@ class ChatConsumer(WebsocketConsumer):
                             print(e)
 
                         user_id = int(bleach.clean(str(user.id)))
-                        run_digital_twin.delay(user_id, unit_structure, market, ai)
+                        setup_digital_twin.delay(user_id, unit_structure, market, ai)
 
-                return
+
+                    if message_type == "twin.run":
+                        session_id = int(bleach.clean(str(text_data_json['session_id'])))
+                        pause_interval = int(bleach.clean(str(text_data_json['pause_interval'])))
+                        run_digital_twin.delay(session_id, pause_interval)
+
+                    if message_type == "twin.pref":
+                        session_id = int(bleach.clean(str(text_data_json['session_id'])))
+                        set_digital_twin_preference.delay(session_id, text_data)
+
+                    return
 
             # Experimenter, so all channels are user help channels, plus Setup and Session
             channel_position = str(text_data_json['channel_position'])
@@ -600,18 +596,52 @@ class ChatConsumer(WebsocketConsumer):
         channel = event['channel']
         type = event['type']
         info = event['info'] # twin.info
+        session_id = event['session_id']
         # send message to websocket
         self.send(text_data=json.dumps({
             'channel': channel,
             'type': type,
             'info': info,
+            'session_id': session_id,
+        }))
+
+    def twin_pref(self, event):
+        channel = event['channel']
+        type = event['type']
+        info = event['info'] # twin.info
+        session_id = event['session_id']
+        # send message to websocket
+        self.send(text_data=json.dumps({
+            'channel': channel,
+            'type': type,
+            'info': info,
+            'session_id': session_id,
+        }))
+
+    def twin_log(self, event):
+        channel = event['channel']
+        type = event['type']
+        session_id = event['session_id']
+        usr = event['usr']
+        time = event['time']
+        action = event['action']
+        # send message to websocket
+        self.send(text_data=json.dumps({
+            'channel': channel,
+            'type': type,
+            'session_id': session_id,
+            'usr': usr,
+            'time': time,
+            'action': action,
         }))
 
     def twin_complete(self, event):
         channel = event['channel']
         type = event['type']
+        session_id = event['session_id']
         # send message to websocket
         self.send(text_data=json.dumps({
             'channel': channel,
             'type': type,
+            'session_id': session_id,
         }))

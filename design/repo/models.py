@@ -134,7 +134,7 @@ class PathCustomer(models.Model):
     stop = models.IntegerField(default=1)
 
 class DataLog(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     session = models.ForeignKey(Session, null=True, on_delete=models.CASCADE)
     time = models.DateTimeField(default=datetime.now)
     action = models.TextField()

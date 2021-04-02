@@ -17,6 +17,7 @@ from repo.views import MediationCountView, MediationChatView
 from process.messaging import send_intervention
 from exper.models import Session
 from chat.models import Channel
+from api.models import SessionTimer
 
 import time
 
@@ -229,18 +230,19 @@ def evaluation(config, trajectory):
     return out_data
 
 @shared_task
-def mediation(seg_num, seg_len, i, session_id):
+def mediation(seg_num, seg_len, i, session_id, timestamp):
     # This routine will call itself many times to determine the correct mediation to send out
     # get the current session
     session = Session.objects.get(id=session_id)
-    if session.status != Session.RUNNING:
-        print("Session no longer running, so exit mediation loop")
+    running_timer = SessionTimer.objects.filter(session=session).filter(timer_type=SessionTimer.RUNNING_START).first()
+    if session.status != Session.RUNNING or timestamp != str(running_timer.timestamp):
+        print("Session restarted or no longer running, so exit mediation loop")
         return
 
     print(i, session.name, session.index)
-    if i < seg_num -1:
+    if i < seg_num:
         # first step is to schedule the next time to call
-        mediation.s(seg_num, seg_len, i+1, session_id).apply_async(countdown=seg_len)
+        mediation.s(seg_num, seg_len, i+1, session_id, timestamp).apply_async(countdown=seg_len)
         # we don't care about the first 2 times (time 0 and time 2.5 minutes)
         if i<2:
             print('waiting for next interval')
@@ -306,18 +308,19 @@ def mediation(seg_num, seg_len, i, session_id):
             # this is a test message to the designer
 
             print("final intervention send: ", intervention_id)
-            send_intervention(intervention_id, session_id)
+            send_intervention(None, intervention_id, session_id)
 
     else:
         print('done looping')
-        end_running.s(session_id).apply_async(countdown=seg_len)
+        end_running.delay(session_id, timestamp)
     return i
 
 @shared_task
-def end_running(session_id):
+def end_running(session_id, timestamp):
     session = Session.objects.filter(id=session_id).first()
+    running_timer = SessionTimer.objects.filter(session=session).filter(timer_type=SessionTimer.RUNNING_START).first()
     if session:
-        if session.status == Session.RUNNING:
+        if session.status == Session.RUNNING and timestamp == str(running_timer.timestamp):
             session.status = Session.POSTSESSION
             session.save()
             session_channel = Channel.objects.filter(name="Session").first()
@@ -354,11 +357,20 @@ def end_running(session_id):
                             )
 
 @shared_task
-def mediation_loop(channel_name, data):
+def mediation_loop(data):
     seg_num = settings.INTER_SEG_NUM
     seg_len = settings.INTER_SEG_LEN
 
     # this routine will start up the mediation cycle
-    print('session_id: ', data['session_id'])
-    mediation.s(seg_num, seg_len, 0, data['session_id']).apply_async()
-    async_to_sync(channel_layer.send)(channel_name, {"type": "task.return","results": 0})
+    running_timer = SessionTimer.objects.filter(session__id=data['session_id']).filter(timer_type=SessionTimer.RUNNING_START).first()
+    mediation.s(seg_num, seg_len, 0, data['session_id'], str(running_timer.timestamp)).apply_async()
+
+@shared_task
+def human_mediation_loop(data):
+    seg_num = settings.INTER_SEG_NUM
+    seg_len = settings.INTER_SEG_LEN
+    total_len = seg_num * seg_len
+
+    # Only need to schedule the end for human process manager
+    running_timer = SessionTimer.objects.filter(session__id=data['session_id']).filter(timer_type=SessionTimer.RUNNING_START).first()
+    end_running.s(data['session_id'], str(running_timer.timestamp)).apply_async(countdown=total_len)

@@ -14,6 +14,7 @@ from exper.models import UserPosition, SessionTeam, Session
 from chat.models import Channel
 from .messaging import send_intervention
 from api.models import SessionTimer
+from repo.models import DesignTeam
 from datetime import datetime, timezone
 
 # Send an intervention
@@ -25,7 +26,7 @@ def intervention(request):
             position = UserPosition.objects.filter(Q(session=st.session)&Q(user=request.user)).first().position
             if position and position.role.name == "Process":
                 intervention = request.data.get('intervention')
-                send_intervention(intervention, st.session.id)
+                send_intervention(request.user, intervention, st.session.id)
                 return Response(status=status.HTTP_200_OK)
     return Response(status=status.HTTP_401_UNAUTHORIZED)
 
@@ -33,26 +34,30 @@ def intervention(request):
 @api_view(['POST'])
 def elapsed_time(request):
     if request.user.is_authenticated:
-        st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
+        st = None
+        data = request.data
+        team_id = data.get('team')
+        if team_id:
+            st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team__id=team_id)).first()
+        else:
+            st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=request.user.profile.team)).first()
         if st:
-            position = UserPosition.objects.filter(Q(session=st.session)&Q(user=request.user)).first().position
-            if position and position.role.name == "Process":
-                running_timer = SessionTimer.objects.filter(session=st.session).filter(timer_type=SessionTimer.RUNNING_START).first()
-                elapsed_seconds = -1
-                if running_timer:
-                    current_time = datetime.now(timezone.utc)
-                    running_timestamp = running_timer.timestamp
-                    if running_timestamp:
-                        time_difference = current_time - running_timestamp
-                        elapsed_seconds = round(time_difference.total_seconds())
-                else:
-                    elapsed_seconds = 0
-                results = {}
-                results["elapsed_seconds"] = elapsed_seconds
-                return JsonResponse(json.dumps(results), safe=False)
+            running_timer = SessionTimer.objects.filter(session=st.session).filter(timer_type=SessionTimer.RUNNING_START).first()
+            elapsed_seconds = -1
+            if running_timer and st.session.status == Session.RUNNING:
+                current_time = datetime.now(timezone.utc)
+                running_timestamp = running_timer.timestamp
+                if running_timestamp:
+                    time_difference = current_time - running_timestamp
+                    elapsed_seconds = round(time_difference.total_seconds())
+            results = {}
+            results['elapsed_seconds'] = elapsed_seconds
+            return JsonResponse(json.dumps(results), safe=False)
     return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 # Method to allow a Process Manager to exit the Running status of a session
+# Automating this for now, but keep around since it might be useful for something
+'''
 @api_view(['PUT'])
 def session_status_postsession(request):
     if request.user.is_authenticated:        
@@ -95,3 +100,4 @@ def session_status_postsession(request):
                                 )
                 return Response(status=status.HTTP_200_OK)
     return Response(status=status.HTTP_401_UNAUTHORIZED)
+'''

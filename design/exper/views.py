@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from .serializers import SessionSerializer
-from .models import Session, SessionTeam, Position, UserPosition, Group, UserChecklist, Market, Structure, Experiment, Organization, Study, Exercise, DigitalTwin
+from .models import Session, SessionTeam, Position, UserPosition, Group, UserChecklist, Market, Structure, Experiment, Organization, Study, Exercise, DigitalTwin, DigitalTwinPreference
 from django.db.models import Q, Subquery
 from django.contrib.auth.models import User
 from rest_framework import generics, status
@@ -22,7 +22,7 @@ from ai.agents.adaptive_team_ai_updated_planner import AdaptiveTeamAIUpdatedPlan
 from exper.serializers import DigitalTwinSerializer
 from api.models import SessionTimer
 from datetime import datetime, timezone
-from ai.tasks import mediation_loop
+from ai.tasks import mediation_loop, human_mediation_loop
 from design.utilities import cache_bust
 
 # Create your views here.
@@ -252,34 +252,26 @@ def session_status_play(request):
                     new_status = Session.PRESESSION
                 elif session.status == Session.PRESESSION:
                     new_status = Session.RUNNING
+                    
+                    # Update the session's RUNNING start timer
+                    running_timer = SessionTimer.objects.filter(session=session).filter(timer_type=SessionTimer.RUNNING_START).first()
+                    if running_timer:
+                        running_timer.timestamp = datetime.now(timezone.utc)
+                        running_timer.save()
+                    else:
+                        SessionTimer.objects.create(timer_type=SessionTimer.RUNNING_START, timestamp=datetime.now(timezone.utc), session=session)
 
                     if session.structure.name == "Process Manager":
-                        # Update the session's RUNNING start timer
-                        running_timer = SessionTimer.objects.filter(session=session).filter(timer_type=SessionTimer.RUNNING_START).first()
-                        if running_timer:
-                            running_timer.timestamp = datetime.now(timezone.utc)
-                            running_timer.save()
-                        else:
-                            SessionTimer.objects.create(timer_type=SessionTimer.RUNNING_START, timestamp=datetime.now(timezone.utc), session=session)
-
                         print("Human Process Manager")
-
+                        data = {}
+                        data['session_id'] = session.id
+                        human_mediation_loop.delay(data)
+                        
                     elif session.structure.name == "Process Manager (AI)":
-                        # Update the session's RUNNING start timer
-                        running_timer = SessionTimer.objects.filter(session=session).filter(timer_type=SessionTimer.RUNNING_START).first()
-                        if running_timer:
-                            running_timer.timestamp = datetime.now(timezone.utc)
-                            running_timer.save()
-                        else:
-                            SessionTimer.objects.create(timer_type=SessionTimer.RUNNING_START, timestamp=datetime.now(timezone.utc), session=session)
-
                         print("AI Process Manager")
-                        session_channel = Channel.objects.filter(name="Session").first()
-                        if session_channel:
-                            session_instance = str(session_channel.id) + "___" + str(session.id)
-                            data = {}
-                            data['session_id'] = session.id
-                            mediation_loop.delay(session_instance, data)
+                        data = {}
+                        data['session_id'] = session.id
+                        mediation_loop.delay(data)                  
 
                 elif session.status == Session.RUNNING:
                     new_status = Session.POSTSESSION
@@ -559,9 +551,13 @@ def start_digital_twin(request):
     if request.user.is_authenticated:
         if request.user.profile.is_experimenter():
             session = Session.objects.filter(id=request.data.get('id')).first()
-            digital_twin_setups = get_digital_twin_for_session(int(request.data.get('id')))
-            t = AdaptiveTeamAIUpdatedPlanner()
-            t.setup(session)
+            for i in range(1):
+                t = AdaptiveTeamAIUpdatedPlanner()
+                session_new = t.setup_session(request.user)
+                print("------------------------ fire a ----------------------")
+                t.setup(session_new)
+            #t = AdaptiveTeamAIUpdatedPlanner()
+            #t.setup(session)
 
             return Response(status=status.HTTP_200_OK)
     return Response(status=status.HTTP_401_UNAUTHORIZED)
@@ -598,6 +594,21 @@ def get_digital_twin_for_session(session_id):
             new_setup = DigitalTwin.objects.create(user_position=user)
             new_setup.save()
             digital_twin_setups.append(new_setup)
+
+            if user.position.role.name == "Business" or "Planner":
+                for var_name in ["profit", "fixed_cost", "no_deliveries"]:
+                    new_preference_setup = DigitalTwinPreference.objects.create(digital_twin=new_setup)
+                    new_preference_setup.name = var_name
+                    new_preference_setup.save()
+
+            if user.position.role.name == "Designer":
+                for var_name in ["range", "capacity", "cost"]:
+                    new_preference_setup = DigitalTwinPreference.objects.create(digital_twin=new_setup)
+                    new_preference_setup.name = var_name
+                    new_preference_setup.save()
+
+            print("works")
+
         else:
             digital_twin_setups.append(digital_twin_setup[0])
 

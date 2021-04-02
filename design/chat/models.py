@@ -27,7 +27,7 @@ class ChannelPosition(models.Model):
             return self.channel.name + '_None'
 
 class Message(models.Model):
-    sender = models.ForeignKey(User, on_delete=models.CASCADE)
+    sender = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
     message = models.TextField()

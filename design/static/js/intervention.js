@@ -88,18 +88,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
     disable_interventions();    
 
     // Set countdown to the number of seconds left
-    function advance_session() {
-        selectAjaxUrl = ajaxUrl + "session_status_postsession/"
-        $.ajax({
-            url: selectAjaxUrl,
-            method: "PUT",
-            data: {
-                csrfmiddlewaretoken: csrftoken,
-            }
-        });
-    }
-
-    // Set countdown to the number of seconds left
     function seconds_left() {
         selectAjaxUrl = ajaxUrl + "elapsed_time/"
         $.ajax({
@@ -127,11 +115,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
     }
     seconds_left();
     setInterval(function(){
-        //Progress to PostSession      
-        if(countdown < 0) {
-            advance_session();
-        }
-
         //Check to see if intervention countdown finished
         //Could check against a single value like 0 or -1, but "just in case"
         //let's do a range
@@ -271,7 +254,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             var messageType = jsonMessage.type;
             var channelId = jsonMessage.channel;
             
-            //TODO: is sender always available? Check new messsage types
+            //TODO: is sender always available? Check new message types
             var sender = jsonMessage.sender;
 
             // red and blue are already used
