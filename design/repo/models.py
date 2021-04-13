@@ -140,6 +140,8 @@ class DataLog(models.Model):
     action = models.TextField()
     type = models.CharField(max_length=255, default='client')
 
+# Legacy tables 
+# TODO: remove
 class VehicleDemo(models.Model):
     xmlstring = models.TextField()
     tag = models.CharField(max_length=50)

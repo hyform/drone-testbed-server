@@ -1,10 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-#from repo.models import DesignTeam
-
-# Create your models here.
-
 class Organization(models.Model):
     name = models.CharField(max_length=50)
     def __str__(self):
@@ -36,6 +32,7 @@ class Structure(models.Model):
     def __str__(self):
         return self.name
 
+# TODO: Nothing for this table is implemented yet
 # If a structure appears in this table, then it is only available to the Organizations it is linked to in this table
 # This will be loose enforcement for now. Basically it only filters out options in session creation
 class StructureOrganization(models.Model):

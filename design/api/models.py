@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from exper.models import Session, Position
+from exper.models import Group, Session, Position, Organization, Study, Experiment
 from chat.models import Channel
 
 class SessionTimer(models.Model):
@@ -29,6 +29,31 @@ class MessageChat(models.Model):
     from_system = models.BooleanField(default=False)
 
     # Message
-    message = models.CharField(max_length=2048, null=True)
+    message = models.TextField(null=True, blank=True)
 
-    
+'''
+# ------ Vehicles --------
+class Vehicle(models.Model):
+    config = models.TextField()
+
+#TODO: ai_designer isn't correct yet. need to think some more on this one
+
+class VehicleEvaluation(models.Model):
+    config = models.ForeignKey(Vehicle, null=True, on_delete=models.SET_NULL) 
+    range = models.FloatField()
+    velocity = models.FloatField()
+    cost = models.FloatField()
+    payload = models.FloatField()
+    ai_designer = models.BooleanField(default=False)
+
+class VehicleSessionEvaluation(models.Model):
+    session = models.ForeignKey(Session, default=None, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, default=None, on_delete=models.CASCADE)    
+    tag = models.CharField(max_length=255)    
+    result = models.CharField(max_length=100)
+    evaluation = models.ForeignKey(VehicleEvaluation, null=True, on_delete=models.SET_NULL)
+
+# ------- Customers/Warehouse ---------------
+
+# ------- Plans/Scenarios ----------------
+'''
