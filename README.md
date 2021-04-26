@@ -31,8 +31,12 @@ This will put you into the virtual machine. From there run
 ```
 cd /vagrant/design  
 python3 manage.py migrate  
+python3 manage.py shell < scripts/process-manager.py
+python3 manage.py shell < scripts/process-manager-2.py
+python3 manage.py shell < scripts/links-fix.py
 python3 manage.py runserver 0:8000  
 ```  
+Note that the you only want to run these 3 shell commands once on your installation  
 
 Then in your browser go to  
 ```
@@ -88,6 +92,8 @@ In the initial-users.txt file of the distribution you will find the basic user a
   
 To get started, log in as the Experimenter and create a session. Once you start a session, the users in the team associated with that session can log in.  
 Note that each session is tied to a team, and only one session for a team can be active at once.  
+
+To create sessions using the Process Manager features, you should create them in the "2021 Spring Process Manager" Study, otherwise the user documents will not appear. If you want to use the feature for other studies, see the scripts/process-manager-2.py for how to create the CustomLinks properly.  
   
 
 ## Citing HyForm™

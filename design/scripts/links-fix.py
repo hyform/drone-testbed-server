@@ -21,7 +21,7 @@ for link_to_fix in links_to_fix:
 
 organizations = Organization.objects.all()
 for organization in organizations:
-    if organization.name == "ARL" or organization.name == "PSU" or organization.name == "PSU 2" or organization.name == "CMU" or organization.name == "CMU 2":
+    if organization:
         pm_study = Study.objects.filter(name="2021 Spring Process Manager", organization=organization).first()
         if pm_study:
             CustomLinks.objects.create(
