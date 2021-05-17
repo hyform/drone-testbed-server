@@ -37,8 +37,9 @@ def on_message(ws, message):
 
             if 'session_created_id' in info:
 
-                # send preference or run analysis
+                # send preference, set uncertainty, or run analysis
                 send_preference(session_id)
+                #send_uncertainty(session_id)
                 #run_session(session_id)
 
             # if desired, set the pause interval in the run session command ( the first run session command detrermines the pause interval throughout the simulation)
@@ -56,7 +57,17 @@ def on_message(ws, message):
             info = message_dict['info']
             session_id = str(message_dict['session_id'])
             if 'preference_set' in str(info):
+                # run session of send uncertainty
+                send_uncertainty(session_id)
+                #run_session(session_id)
+
+        if type == 'twin.uncertainty':
+            info = message_dict['info']
+            session_id = str(message_dict['session_id'])
+            if 'uncertainty_set' in str(info):
+                # run session or set preference
                 run_session(session_id)
+                # send_preference(session_id)
 
         if type == 'twin.log':
             print("log : uncomment next line in code to view the full log")    # uncomment the next line to see full log
@@ -76,7 +87,7 @@ def create_session():
 		'type' : 'twin.start',      # this is where initial team inputs will go
         'unit_structure' : 1,       # for now, just use 1
         'market' : 1,               # for now, just use 1
-        'ai' : 1,                   # for now, just use 1
+        'ai' : 1,                   # for now, just use 1, since the analysis currently does not prevent using AI agents
 		'channel' : 'twin'
 	}))
 
@@ -101,7 +112,7 @@ def send_preference(session_id):
                 'user_id' : 'arl_1',
                 'pref_type' : 1,        # 0 weight sums, 1 target or goal based, for now use 0
                 'profit' : 9000,
-                'fixed_cost' : 15000,
+                'cost' : 15000,
                 'no_customers' : 36
             },
             {
@@ -122,27 +133,97 @@ def send_preference(session_id):
                 'user_id' : 'arl_4',
                 'pref_type' : 1,        # 0 weight sums, 1 target or goal based, for now use 0
                 'profit' : 9000,
-                'fixed_cost' : 15000,
+                'cost' : 15000,
                 'no_customers' : 36
             },
             {
                 'user_id' : 'arl_5',
-                'pref_type' : 1,        # 0 weight sums, 1 target or goal based, for now use 0
-                'profit' : 9000,
-                'fixed_cost' : 15000,
-                'no_customers' : 36
             },
             {
-                'user_id' : 'arl_6',
-                'pref_type' : 1,        # 0 weight sums, 1 target or goal based, for now use 0
-                'profit' : 9000,
-                'fixed_cost' : 15000,
-                'no_customers' : 36
+                'user_id' : 'arl_6'
             }
+        ],
+        'reqs' : [
+            {
+                'user_id' : 'arl_1',
+                'profit': {
+                    'min' : 1000,
+                    'max' : 1000000
+                },
+                'cost': {
+                    'min' : 0,
+                    'max' : 15000
+                },
+                'no_customers': {
+                    'min' : 0,
+                    'max' : 1000000
+                }
+            },
+            {
+                'user_id' : 'arl_2',
+                'range': {
+                    'min' : 10,
+                    'max' : 20
+                },
+                'capacity': {
+                    'min' : 10000,
+                    'max' : 15000
+                },
+                'cost': {
+                    'min' : 0,
+                    'max' : 30
+                },
+                'no_structures': {
+                    'min' : 2,
+                    'max' : 4
+                }
+            },
+            {
+                'user_id' : 'arl_4',
+                'profit': {
+                    'min' : 1000,
+                    'max' : 1000000
+                },
+                'cost': {
+                    'min' : 0,
+                    'max' : 15000
+                },
+                'no_customers': {
+                    'min' : 0,
+                    'max' : 1000000
+                }
+            }
+
         ]
+
     }
 
     ws.send(json.dumps(prefs))
+
+ws = websocket.WebSocketApp("ws://localhost:8081/ws/chat/?token=" + token,
+	on_open = on_open,
+	on_message = on_message)
+
+def send_uncertainty(session_id):
+
+    uncertainties = {'channel' : 'twin',
+        'type' : 'twin.uncertainty',
+        'session_id' : session_id,
+        'uncertainties' : [                     # deviation by location, where a locations demand is adjusted by its delivery weight +- random[-deviation, deviation]
+            {
+                'x' : -0.8,
+                'z' : 6.4,
+                'deviation' : 1.0
+            },
+            {
+                'x' : -0.7,
+                'z' : 7.2,
+                'deviation' : 0.6
+            },
+        ]
+    }
+
+    ws.send(json.dumps(uncertainties))
 
 ws = websocket.WebSocketApp("ws://localhost:8081/ws/chat/?token=" + token,
 	on_open = on_open,

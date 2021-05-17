@@ -554,10 +554,7 @@ def start_digital_twin(request):
             for i in range(1):
                 t = AdaptiveTeamAIUpdatedPlanner()
                 session_new = t.setup_session(request.user)
-                print("------------------------ fire a ----------------------")
                 t.setup(session_new)
-            #t = AdaptiveTeamAIUpdatedPlanner()
-            #t.setup(session)
 
             return Response(status=status.HTTP_200_OK)
     return Response(status=status.HTTP_401_UNAUTHORIZED)

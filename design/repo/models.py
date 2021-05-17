@@ -26,7 +26,7 @@ class Profile(models.Model):
     PLAYER = 1
     EXPERIMENTER = 2
     MEDIATOR = 3
-    user_type = models.IntegerField(default=0)    
+    user_type = models.IntegerField(default=0)
 
     # Fields for Players
     team = models.ForeignKey(DesignTeam, null=True, blank=True, on_delete=models.SET_NULL)
@@ -107,6 +107,7 @@ class CustomerScenario(models.Model):
     scenario = models.ForeignKey(Scenario, on_delete=models.CASCADE)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     selected = models.BooleanField(default=True)
+    deviation = models.FloatField(default=0)
 
 class Waypoint(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)

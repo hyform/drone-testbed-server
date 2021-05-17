@@ -26,6 +26,10 @@ def pause_digital_twin(session_id):
 def set_digital_twin_preference(session_id, pref_info):
     result = set_preference_method(session_id, pref_info)
 
+@app.task
+def set_digital_twin_uncertainty(session_id, uncertainty_info):
+    result = set_uncertainty_method(session_id, uncertainty_info)
+
 # helpers
 def setup_digital_twin_method(user_id, unit_structure, market, ai):
     user = User.objects.filter(id=user_id).first()
@@ -50,3 +54,8 @@ def set_preference_method(session_id, pref_info):
     session = Session.objects.filter(id=session_id).first()
     t = AdaptiveTeamAIUpdatedPlanner()
     t.set_preference(session, pref_info)
+
+def set_uncertainty_method(session_id, uncertainty_info):
+    session = Session.objects.filter(id=session_id).first()
+    t = AdaptiveTeamAIUpdatedPlanner()
+    t.set_uncertainties(session, uncertainty_info)

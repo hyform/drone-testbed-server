@@ -8,7 +8,7 @@ from exper.models import SessionTeam, UserPosition, Session
 from repo.models import DataLog, DesignTeam, Profile
 from ai.agents.adaptive_team_ai_updated_planner import AdaptiveTeamAIUpdatedPlanner
 from exper.serializers import DigitalTwinSerializer
-from api.tasks import run_digital_twin, pause_digital_twin, setup_digital_twin, set_digital_twin_preference
+from api.tasks import run_digital_twin, pause_digital_twin, setup_digital_twin, set_digital_twin_preference, set_digital_twin_uncertainty
 from urllib.parse import parse_qs
 from collections import OrderedDict
 from django.conf import settings

@@ -40,6 +40,18 @@ def twin_pref_message(session_id, info):
         }
     )
 
+def twin_uncertainty_message(session_id, info):
+    async_to_sync(get_channel_layer().group_send)(
+    #get_channel_layer().group_send(
+        "twin",
+        {
+            'channel': 'twin',
+            'type': 'twin.uncertainty',
+            'session_id': session_id,
+            'info': info,
+        }
+    )
+
 def twin_log_message(session_id, usr, time, action):
     async_to_sync(get_channel_layer().group_send)(
     #get_channel_layer().group_send(

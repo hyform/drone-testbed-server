@@ -84,6 +84,8 @@ class OpsService(object):
         self.total_weight_delivered = 0
         self.total_food_delivered = 0
         self.total_parcel_delivered = 0
+        self.number_parcel_deliveries = 0
+        self.number_food_deliveries = 0
         self.number_deliveries = 0
         self.operating_cost = 0
         self.profit = 0
@@ -140,8 +142,10 @@ class OpsService(object):
                     path_capacity += weight
                     if is_food:
                         food_delivered += weight
+                        self.number_food_deliveries += 1
                     else:
                         parcel_delivered += weight
+                        self.number_parcel_deliveries
 
                 # to the last customer
                 path_range += self.distance(float(plan_path['customers'][len(plan_path['customers']) - 1]['address']['x']),

@@ -1,4 +1,5 @@
 import json
+import random
 from datetime import datetime, timedelta
 
 from exper.models import UserPosition, GroupPosition, Session, SessionTeam, Group
@@ -115,8 +116,10 @@ class DatabaseHelper:
         # get current scenarios, if any exist, get the last version number
         scenarios = Scenario.objects.filter(Q(group=self.user_primary_groups[self.user_name])&Q(session=self.session))
         version = 1
+        last_scenario = None
         if scenarios.exists():
-            version = scenarios.order_by('version').last().version + 1
+            last_scenario = scenarios.order_by('version').last()
+            version = last_scenario.version + 1
 
         # get the session
         warehouse = Warehouse.objects.filter(Q(group=self.user_primary_groups[self.user_name])&Q(session=self.session)).first()
@@ -132,7 +135,53 @@ class DatabaseHelper:
             if key_test in selected_nodes:
                 if selected_nodes[key_test] == 'False':
                     selected_customer = False;
-            CustomerScenario.objects.create(customer=customer, scenario=scenario, selected=selected_customer)
+            deviation = 0
+            if last_scenario is not None:
+                scenario_customer = CustomerScenario.objects.filter(Q(customer=customer)&Q(scenario=last_scenario)).first()
+                deviation = scenario_customer.deviation
+
+            CustomerScenario.objects.create(customer=customer, scenario=scenario, selected=selected_customer, deviation=deviation)
+
+        # return a string version of the scenario for datalog
+        serializer = ScenarioSerializer(scenario)
+        scenario_str = json.dumps(serializer.data)
+
+        # for real time agents notify user of a new scenario
+        new_scenario_message(self.user_primary_groups[self.user_name], self.session)
+
+        return scenario_str
+
+
+    # submit a scenario to the database
+    def add_uncertainty_to_scenario(self, customer_uncertainties):
+
+        # get current scenarios, if any exist, get the last version number
+        scenarios = Scenario.objects.filter(Q(group=self.user_primary_groups[self.user_name])&Q(session=self.session))
+        version = 1
+        if scenarios.exists():
+            version = scenarios.order_by('version').last().version + 1
+
+        # get the session
+        warehouse = Warehouse.objects.filter(Q(group=self.user_primary_groups[self.user_name])&Q(session=self.session)).first()
+        scenario = Scenario.objects.create(tag='Scenario', version=version, warehouse=warehouse, group=self.user_primary_groups[self.user_name], session = self.session)
+        # also need to select all of the customer's in this market
+        market = self.session.market
+        customers = Customer.objects.filter(market=market)
+
+        customer_dict = {}
+        for customer_uncertainty in customer_uncertainties["uncertainties"]:
+            customer_key = str(customer_uncertainty["x"]) + "|" + str(customer_uncertainty["z"])
+            customer_dict[customer_key] = customer_uncertainty["deviation"]
+
+        for customer in customers:
+            # this may be a little slow - keep an eye on it
+            # may want to create a list of objects and then use bulk_create
+            key_test = str(customer.address.x) + "|" + str(customer.address.z)
+            if key_test in customer_dict:
+                uncert_value = random.uniform(-customer_dict[key_test], customer_dict[key_test])
+                CustomerScenario.objects.create(customer=customer, scenario=scenario, selected=True, deviation=uncert_value)
+            else:
+                CustomerScenario.objects.create(customer=customer, scenario=scenario, selected=True, deviation=0)
 
         # return a string version of the scenario for datalog
         serializer = ScenarioSerializer(scenario)

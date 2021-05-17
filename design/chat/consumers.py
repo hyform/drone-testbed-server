@@ -14,7 +14,7 @@ from ai.seqtosql.dronebotseqtosql import DroneBotSeqToSQL
 from .chat_consumer_listener import ChatConsumerListener
 from rest_framework.authtoken.models import Token
 from django.conf import settings
-from api.tasks import run_digital_twin, pause_digital_twin, setup_digital_twin, set_digital_twin_preference
+from api.tasks import run_digital_twin, pause_digital_twin, setup_digital_twin, set_digital_twin_preference, set_digital_twin_uncertainty
 from api.models import SessionTimer
 from datetime import datetime, timezone
 
@@ -379,6 +379,10 @@ class ChatConsumer(WebsocketConsumer):
                         session_id = int(bleach.clean(str(text_data_json['session_id'])))
                         set_digital_twin_preference.delay(session_id, text_data)
 
+                    if message_type == "twin.uncertainty":
+                        session_id = int(bleach.clean(str(text_data_json['session_id'])))
+                        set_digital_twin_uncertainty.delay(session_id, text_data)
+
                     return
 
             # Experimenter, so all channels are user help channels, plus Setup and Session
@@ -606,6 +610,19 @@ class ChatConsumer(WebsocketConsumer):
         }))
 
     def twin_pref(self, event):
+        channel = event['channel']
+        type = event['type']
+        info = event['info'] # twin.info
+        session_id = event['session_id']
+        # send message to websocket
+        self.send(text_data=json.dumps({
+            'channel': channel,
+            'type': type,
+            'info': info,
+            'session_id': session_id,
+        }))
+
+    def twin_uncertainty(self, event):
         channel = event['channel']
         type = event['type']
         info = event['info'] # twin.info
