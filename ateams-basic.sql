@@ -59,6 +59,48 @@ ALTER SEQUENCE public.ai_designer1_id_seq OWNED BY public.ai_designer1.id;
 
 
 --
+-- Name: api_messagechat; Type: TABLE; Schema: public; Owner: atuser
+--
+
+CREATE TABLE public.api_messagechat (
+    id integer NOT NULL,
+    "timestamp" timestamp with time zone NOT NULL,
+    session_timestamp timestamp with time zone NOT NULL,
+    "channelId" character varying(255),
+    message_type character varying(255),
+    from_experimenter boolean NOT NULL,
+    from_system boolean NOT NULL,
+    message character varying(2048),
+    channel_id integer,
+    position_id integer
+);
+
+
+ALTER TABLE public.api_messagechat OWNER TO atuser;
+
+--
+-- Name: api_messagechat_id_seq; Type: SEQUENCE; Schema: public; Owner: atuser
+--
+
+CREATE SEQUENCE public.api_messagechat_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.api_messagechat_id_seq OWNER TO atuser;
+
+--
+-- Name: api_messagechat_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: atuser
+--
+
+ALTER SEQUENCE public.api_messagechat_id_seq OWNED BY public.api_messagechat.id;
+
+
+--
 -- Name: api_sessiontimer; Type: TABLE; Schema: public; Owner: atuser
 --
 
@@ -404,7 +446,7 @@ CREATE TABLE public.chat_message (
     message text NOT NULL,
     "timestamp" timestamp with time zone NOT NULL,
     channel_id integer NOT NULL,
-    sender_id integer NOT NULL,
+    sender_id integer,
     session_id integer NOT NULL
 );
 
@@ -1339,7 +1381,8 @@ CREATE TABLE public.repo_customerscenario (
     id integer NOT NULL,
     selected boolean NOT NULL,
     customer_id integer NOT NULL,
-    scenario_id integer NOT NULL
+    scenario_id integer NOT NULL,
+    deviation double precision NOT NULL
 );
 
 
@@ -1373,7 +1416,7 @@ ALTER SEQUENCE public.repo_customerlist_id_seq OWNED BY public.repo_customerscen
 
 CREATE TABLE public.repo_datalog (
     id integer NOT NULL,
-    user_id integer NOT NULL,
+    user_id integer,
     "time" timestamp with time zone NOT NULL,
     action text NOT NULL,
     session_id integer,
@@ -1934,6 +1977,13 @@ ALTER TABLE ONLY public.ai_designer1 ALTER COLUMN id SET DEFAULT nextval('public
 
 
 --
+-- Name: api_messagechat id; Type: DEFAULT; Schema: public; Owner: atuser
+--
+
+ALTER TABLE ONLY public.api_messagechat ALTER COLUMN id SET DEFAULT nextval('public.api_messagechat_id_seq'::regclass);
+
+
+--
 -- Name: api_sessiontimer id; Type: DEFAULT; Schema: public; Owner: atuser
 --
 
@@ -2342,6 +2392,14 @@ COPY public.ai_designer1 (id, config, range, cost, payload, velocity) FROM stdin
 
 
 --
+-- Data for Name: api_messagechat; Type: TABLE DATA; Schema: public; Owner: atuser
+--
+
+COPY public.api_messagechat (id, "timestamp", session_timestamp, "channelId", message_type, from_experimenter, from_system, message, channel_id, position_id) FROM stdin;
+\.
+
+
+--
 -- Data for Name: api_sessiontimer; Type: TABLE DATA; Schema: public; Owner: atuser
 --
 
@@ -2570,6 +2628,10 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 198	Can change session timer	50	change_sessiontimer
 199	Can delete session timer	50	delete_sessiontimer
 200	Can view session timer	50	view_sessiontimer
+201	Can add message chat	51	add_messagechat
+202	Can change message chat	51	change_messagechat
+203	Can delete message chat	51	delete_messagechat
+204	Can view message chat	51	view_messagechat
 \.
 
 
@@ -2744,6 +2806,7 @@ COPY public.django_content_type (id, app_label, model) FROM stdin;
 48	exper	digitaltwinpreference
 49	exper	structureorganization
 50	api	sessiontimer
+51	api	messagechat
 \.
 
 
@@ -2843,6 +2906,11 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 89	api	0001_initial	2021-03-19 11:08:49.862826+00
 90	exper	0023_session_use_process_ai	2021-03-19 11:08:50.001405+00
 91	exper	0024_customlinks_active	2021-03-19 11:08:50.021066+00
+92	chat	0009_auto_20210319_1400	2021-04-03 16:28:17.124882+00
+93	api	0002_messagechat	2021-04-03 16:28:17.167619+00
+94	repo	0033_auto_20210319_1400	2021-04-03 16:28:17.213983+00
+95	repo	0033_customerscenario_deviation	2021-05-17 11:37:15.883208+00
+96	repo	0034_merge_20210517_1041	2021-05-17 11:37:15.89145+00
 \.
 
 
@@ -3268,7 +3336,7 @@ COPY public.repo_customer (id, market_id, payload, weight, address_id) FROM stdi
 -- Data for Name: repo_customerscenario; Type: TABLE DATA; Schema: public; Owner: atuser
 --
 
-COPY public.repo_customerscenario (id, selected, customer_id, scenario_id) FROM stdin;
+COPY public.repo_customerscenario (id, selected, customer_id, scenario_id, deviation) FROM stdin;
 \.
 
 
@@ -3417,6 +3485,13 @@ SELECT pg_catalog.setval('public.ai_designer1_id_seq', 13214, true);
 
 
 --
+-- Name: api_messagechat_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atuser
+--
+
+SELECT pg_catalog.setval('public.api_messagechat_id_seq', 1, false);
+
+
+--
 -- Name: api_sessiontimer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atuser
 --
 
@@ -3441,7 +3516,7 @@ SELECT pg_catalog.setval('public.auth_group_permissions_id_seq', 1, false);
 -- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atuser
 --
 
-SELECT pg_catalog.setval('public.auth_permission_id_seq', 200, true);
+SELECT pg_catalog.setval('public.auth_permission_id_seq', 204, true);
 
 
 --
@@ -3497,14 +3572,14 @@ SELECT pg_catalog.setval('public.django_admin_log_id_seq', 1, true);
 -- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atuser
 --
 
-SELECT pg_catalog.setval('public.django_content_type_id_seq', 50, true);
+SELECT pg_catalog.setval('public.django_content_type_id_seq', 51, true);
 
 
 --
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atuser
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 91, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 96, true);
 
 
 --
@@ -3772,6 +3847,14 @@ SELECT pg_catalog.setval('public.repo_waypoint_id_seq', 1, false);
 
 ALTER TABLE ONLY public.ai_designer1
     ADD CONSTRAINT ai_designer1_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: api_messagechat api_messagechat_pkey; Type: CONSTRAINT; Schema: public; Owner: atuser
+--
+
+ALTER TABLE ONLY public.api_messagechat
+    ADD CONSTRAINT api_messagechat_pkey PRIMARY KEY (id);
 
 
 --
@@ -4260,6 +4343,20 @@ ALTER TABLE ONLY public.repo_warehouse
 
 ALTER TABLE ONLY public.repo_waypoint
     ADD CONSTRAINT repo_waypoint_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: api_messagechat_channel_id_c7c6c15e; Type: INDEX; Schema: public; Owner: atuser
+--
+
+CREATE INDEX api_messagechat_channel_id_c7c6c15e ON public.api_messagechat USING btree (channel_id);
+
+
+--
+-- Name: api_messagechat_position_id_da8f9675; Type: INDEX; Schema: public; Owner: atuser
+--
+
+CREATE INDEX api_messagechat_position_id_da8f9675 ON public.api_messagechat USING btree (position_id);
 
 
 --
@@ -4862,6 +4959,22 @@ CREATE INDEX repo_warehouse_session_id_f97e0bfc ON public.repo_warehouse USING b
 --
 
 CREATE INDEX repo_waypoint_customer_id_ab01026c ON public.repo_waypoint USING btree (customer_id);
+
+
+--
+-- Name: api_messagechat api_messagechat_channel_id_c7c6c15e_fk_chat_channel_id; Type: FK CONSTRAINT; Schema: public; Owner: atuser
+--
+
+ALTER TABLE ONLY public.api_messagechat
+    ADD CONSTRAINT api_messagechat_channel_id_c7c6c15e_fk_chat_channel_id FOREIGN KEY (channel_id) REFERENCES public.chat_channel(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_messagechat api_messagechat_position_id_da8f9675_fk_exper_position_id; Type: FK CONSTRAINT; Schema: public; Owner: atuser
+--
+
+ALTER TABLE ONLY public.api_messagechat
+    ADD CONSTRAINT api_messagechat_position_id_da8f9675_fk_exper_position_id FOREIGN KEY (position_id) REFERENCES public.exper_position(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
