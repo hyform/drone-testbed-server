@@ -1,0 +1,435 @@
+----- Using the HyForm API ---------------------------------------
+
+The instructions assume you're using a local
+Note: if using a local install of HyForm, replace "www.hyform.org" in the instructions below with the address of your install.
+
+To use the API you must first request an authorization token.
+To get a token you must supply the credentials of an existing Experimenter user.
+
+http://localhost:8080/api-token-auth/
+data = {
+	'username':'your_username', 
+	'password':'your_password'}
+
+For the starter data base, you would use the values
+data = {
+	'username':'hyform-exper', 
+	'password':'experpassword'}
+
+The token is returned as json with the key 'token'
+
+For http every request going forward will need to supply the token
+
+
+
+Basic Concepts ---------------------------------
+
+Organization: The space for an organization. An Organization has an Experimenter and a group of Teams with assigned Users.
+An Organization also contains a list of Studies, each of which has a list of Experiments, each of which has a list of Exercises, each of which has a list of Sessions.
+This heirarchy allows you to organize your organization's usage of HyForm.
+
+Market: A set of customers and orders and some configutation settings. This is analogous to a "level" or "map" you might choose while playing a video game.
+
+Exercise: An ordered list of Sessions intended to be played in sequence
+
+Session: A Market played by a Team assigned to a Structure. A Session has a few phases: 
+	Stopped: A Session which has been created and is ready to play
+	Setup: A Setup phase in which users time to connect and prepare to play. Only the first Session in an Exercise has a Setup phase.
+	PreSession: The Session introduction, which provides users with a problem statement, tutorials, and forms or surveys 
+	Running: This is where users "play the game"
+	PostSession: A wrap-up phase with optional surveys 
+	Archived: A completed Session which can no longer be played
+
+Structure: A set of Positions and and their communication channels. While playing a session, each User in a Team is assignmed to as Position
+
+Role: There are 3 Roles in the system: Business, OpsPlanner, and Design. Each Position in a Structure will be one of these Roles. The Role dictates which interface the users sees during the Running phase of a Session
+
+Position: A specialized Role. Examples are Operations Manager or Design Specialist.
+
+----- Digital Twin Specific ----------------------------------------------
+
+See the example file httpcalls-ws.py for how to run the Digital Twin.
+For this immediate version, it's probably easiest to copy this example then tweak the configuration values and add in the additional http calls you need
+to pull back extra information from the site (see next section for available calls). The current workflow needs to happen in a specific order, which the example follows.
+
+First you create a websocket connection to
+"ws://localhost:8081/ws/chat/?token=" + token
+where token is the authorization token
+
+You then send a series of messages over the websocket to create the session and send configuration
+
+First you need to send the "twin.start" message
+See create_session() in the example for how to do this.
+
+After the session is created, the site will send back a "twin.info" message with the session_id of the created session
+You listen for this message in the on_message function you define for the websocket. (see example)
+
+At this point, you send your preference values back through the websocket (see send_preference)
+
+The site will return a 'twin.pref' message, and you follow back by sending uncertainty values.
+The site will respond back with 'twin.uncertainty' and you finally respond back with 'twin.run' message which finally runs the simulation
+
+In the final 'twin.run' command, if you set the pause_interval to anything below 20, the simulation will pause after processing that many actions.
+If the simulation is paused, you need to send 'twin.run' again to continue running. When you're unpausing an already started simultaion run, the configuration settings in the 'twin.run' command will be ignored, and the simulation will continue running with the original settings.
+
+
+----- Basic available HTTP calls with sample return data ------------------
+
+
+http://localhost:8081/ai/designer1/
+Returns 5 of the top 100 pre-populated drone designs
+
+http://localhost:8081/exper/session/
+Gets the active session for a non Experimenter User (throws an error for Experimenter user)
+
+http://localhost:8081/exper/exper_sessions/
+Gets the list of sessions for the organization of the logged in user
+
+http://localhost:8081/exper/session/dump/<session_id>/
+Returns the log in csv format of the session
+
+http://localhost:8081/exper/session/vehicle/<session_id>/
+List of vehicles created in a session
+
+{
+    "count": 5,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 44,
+            "tag": "base",
+            "config": "*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",
+            "result": "Success",
+            "range": 10.6703462600708,
+            "velocity": 8.86079978942871,
+            "cost": 3470.20043945312,
+            "payload": 5.0
+        }, ....
+		
+
+http://localhost:8081/exper/session/plan/<session_id>/
+List of plans created in a session
+
+{
+    "count": 14,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 64,
+            "tag": "jn1",
+            "scenario": {
+                "id": 33,
+                "tag": "updated",
+                "version": 2,
+                "warehouse": {
+                    "id": 12,
+                    "address": {
+                        "id": 113,
+                        "x": -3.5,
+                        "z": 0.0,
+                        "region": "warehouse"
+                    }
+                },
+                "customers": [
+                    {
+                        "id": 57,
+                        "address": {
+                            "id": 57,
+                            "x": 7.4,
+                            "z": 5.7,
+                            "region": "r"
+                        },
+                        "market": 1,
+                        "payload": "package",
+                        "weight": 4.0,
+                        "selected": false
+                    },
+					
+				....
+				
+				"paths": [
+                {
+                    "id": 102,
+                    "vehicle": {
+                        "id": 49,
+                        "tag": "test_1",
+                        "config": "*aMM0+++++*bNM1+++*cMN2+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",
+                        "result": "Success",
+                        "range": 10.677703857421875,
+                        "velocity": 8.853076934814453,
+                        "cost": 3470.199951171875,
+                        "payload": 5.0
+                    },
+                    "warehouse": {
+                        "id": 12,
+                        "address": {
+                            "id": 113,
+                            "x": -3.5,
+                            "z": 0.0,
+                            "region": "warehouse"
+                        }
+                    },
+                    "customers": [
+                        {
+                            "id": 89,
+                            "address": {
+                                "id": 89,
+                                "x": -5.2,
+                                "z": 1.2,
+                                "region": "r"
+                            },
+                            "market": 1,
+                            "payload": "package",
+                            "weight": 3.0
+                        },
+                        {
+                            "id": 94,
+                            "address": {
+                                "id": 94,
+                                "x": -6.1,
+                                "z": 1.3,
+                                "region": "r"
+                            },
+                            "market": 1,
+                            "payload": "package",
+                            "weight": 2.0
+                        }
+                    ],
+                    "leavetime": 0.0,
+                    "returntime": 0.337329477
+                },
+				
+				...
+
+http://localhost:8081/exper/session/scenario/<session_id>/
+List of scenarios created in a session (A scenario is a set of selected/unselected customers)
+
+{
+    "count": 3,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 31,
+            "tag": "Initial Scenario",
+            "version": 0,
+            "warehouse": {
+                "id": 12,
+                "address": {
+                    "id": 113,
+                    "x": -3.5,
+                    "z": 0.0,
+                    "region": "warehouse"
+                }
+            },
+            "customers": [
+                {
+                    "id": 57,
+                    "address": {
+                        "id": 57,
+                        "x": 7.4,
+                        "z": 5.7,
+                        "region": "r"
+                    },
+                    "market": 1,
+                    "payload": "package",
+                    "weight": 4.0,
+                    "selected": true
+                },
+
+
+http://localhost:8081/repo/vehicle/
+List of vehicles visible to a Designer
+
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 525,
+            "tag": "base",
+            "config": "*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",
+            "result": "Success",
+            "range": 10.0,
+            "velocity": 20.0,
+            "cost": 3470.20043945312,
+            "payload": 5.0
+        }
+    ]
+}
+
+http://localhost:8081/repo/vehicle/<vehicle_id>/
+Details of a specific vehicle (throws error if called by an Experimenter)
+
+{
+    "id": 525,
+    "tag": "base",
+    "config": "*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3",
+    "result": "Success",
+    "range": 10.0,
+    "velocity": 20.0,
+    "cost": 3470.20043945312,
+    "payload": 5.0
+}
+
+http://localhost:8081/repo/scenario/
+The current scenario visible to the user
+
+{
+    "id": 261,
+    "tag": "Initial Scenario",
+    "version": 0,
+    "warehouse": {
+        "id": 202,
+        "address": {
+            "id": 113,
+            "x": -3.5,
+            "z": 0.0,
+            "region": "warehouse"
+        }
+    },
+    "customers": [
+        {
+            "id": 57,
+            "address": {
+                "id": 57,
+                "x": 7.4,
+                "z": 5.7,
+                "region": "r"
+            },
+            "market": 1,
+            "payload": "package",
+            "weight": 4.0,
+            "selected": true
+        },
+		...
+
+http://localhost:8081/repo/scenario/<version>
+Version of the current scenario
+
+{
+    "id": 261,
+    "tag": "Initial Scenario",
+    "version": 0,
+    "warehouse": {
+        "id": 202,
+        "address": {
+            "id": 113,
+            "x": -3.5,
+            "z": 0.0,
+            "region": "warehouse"
+        }
+    },
+    "customers": [
+        {
+            "id": 57,
+            "address": {
+                "id": 57,
+                "x": 7.4,
+                "z": 5.7,
+                "region": "r"
+            },
+            "market": 1,
+            "payload": "package",
+            "weight": 4.0,
+            "selected": true
+        },
+		...
+		
+http://localhost:8081/repo/plan/
+List of plans visible to the current user
+
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 556,
+            "tag": "asd",
+            "scenario": {
+                "id": 261,
+                "tag": "Initial Scenario",
+                "version": 0,
+                "warehouse": {
+                    "id": 202,
+                    "address": {
+                        "id": 113,
+                        "x": -3.5,
+                        "z": 0.0,
+                        "region": "warehouse"
+                    }
+                },
+                "customers": [
+                    {
+                        "id": 57,
+                        "address": {
+                            "id": 57,
+                            "x": 7.4,
+                            "z": 5.7,
+                            "region": "r"
+                        },
+                        "market": 1,
+                        "payload": "package",
+                        "weight": 4.0,
+                        "selected": true
+                    },
+		...
+
+http://localhost:8081/repo/plan/<plan_id>
+Details of specific plan
+
+{
+    "id": 556,
+    "tag": "asd",
+    "scenario": {
+        "id": 261,
+        "tag": "Initial Scenario",
+        "version": 0,
+        "warehouse": {
+            "id": 202,
+            "address": {
+                "id": 113,
+                "x": -3.5,
+                "z": 0.0,
+                "region": "warehouse"
+            }
+        },
+        "customers": [
+            {
+                "id": 57,
+                "address": {
+                    "id": 57,
+                    "x": 7.4,
+                    "z": 5.7,
+                    "region": "r"
+                },
+                "market": 1,
+                "payload": "package",
+                "weight": 4.0,
+                "selected": true
+            },
+
+http://localhost:8081/repo/planshort/
+A short list of plan ids and names
+
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 556,
+            "tag": "asd"
+        }
+    ]
+}
+
+http://localhost:8081/repo/sessiondatalog/
+The datalog of the session the (non-Experimenter) user is currenrly in
+
+http://localhost:8081/repo/datalog/list/<session_id>
+An HTML formatted datalog of a session
