@@ -1118,10 +1118,10 @@ class AdaptiveTeamAIUpdatedPlanner():
                     idx = starting_submit_ids[random.randrange(0, len(starting_submit_ids))]
                     #idx = submits_ids[i]
                     if "Manual" in planner_db[idx - 1][1]:
-                        results = self.planner_manual_calc("arl_4", planner_db[idx - 1][1])
+                        results = self.planner_manual_calc(usr, planner_db[idx - 1][1])
                         seq_results[planner_db[idx - 1][0]] = results
                     elif "Agent" in planner_db[idx - 1][1]:
-                        results = self.planner_agent_calc("arl_4", planner_db[idx - 1][1])
+                        results = self.planner_agent_calc(usr, planner_db[idx - 1][1])
                         seq_results[planner_db[idx - 1][0]] = results
                 except Exception as e:
                     traceback.print_exc()
