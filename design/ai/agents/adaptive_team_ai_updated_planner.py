@@ -1108,7 +1108,6 @@ class AdaptiveTeamAIUpdatedPlanner():
                 pass
 
         if is_pref:
-
             MM = 40
             seq_results = {}
             print("calculating planner agent with preference ...")

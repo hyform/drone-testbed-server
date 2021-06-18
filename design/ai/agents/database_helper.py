@@ -238,5 +238,9 @@ class DatabaseHelper:
                 dl.time=self.first_simulation_time_date + timedelta(minutes=time_min)
             dl.type = "digital_twin"                                                    # save the type of the Datalog as digital twin for now
             dl.save()
+            time_out = str(time_min)
+            if not real_time:
+                time_out = str(dl.time)
 
-            twin_log_message(self.session.id, user_name, time_min, action)
+            #twin_log_message(self.session.id, user_name, time_min, action)
+            twin_log_message(self.session.id, user_name, time_out, action)

@@ -36,7 +36,6 @@ def setup_digital_twin_method(user_id, unit_structure, market, ai):
     t = AdaptiveTeamAIUpdatedPlanner()
     session = t.setup_session(user, unit_structure, market, ai)
 
-
 # helpers
 def run_digital_twin_method(session_id, pause_interval):
     session = Session.objects.filter(id=session_id).first()

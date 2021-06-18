@@ -344,7 +344,6 @@ class ChatConsumer(WebsocketConsumer):
             if channel_id == "twin":
                 if settings.DIGITAL_TWIN_ENABLED:
                     if message_type == "twin.start":
-
                         # default values
                         unit_structure = 1
                         market = 1
@@ -369,11 +368,17 @@ class ChatConsumer(WebsocketConsumer):
                         user_id = int(bleach.clean(str(user.id)))
                         setup_digital_twin.delay(user_id, unit_structure, market, ai)
 
-
                     if message_type == "twin.run":
                         session_id = int(bleach.clean(str(text_data_json['session_id'])))
-                        pause_interval = int(bleach.clean(str(text_data_json['pause_interval'])))
-                        run_digital_twin.delay(session_id, pause_interval)
+                        #TODO: pause check hack until we can refactor out the nested delay calls
+                        session = Session.objects.filter(id=session_id).first()
+                        session_status = session.status
+                        if session_status == Session.PAUSED:
+                            session.status = Session.RUNNING
+                            session.save()
+                        else:
+                            pause_interval = int(bleach.clean(str(text_data_json['pause_interval'])))
+                            run_digital_twin.delay(session_id, pause_interval)
 
                     if message_type == "twin.pref":
                         session_id = int(bleach.clean(str(text_data_json['session_id'])))
