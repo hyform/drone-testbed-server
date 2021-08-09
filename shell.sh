@@ -16,11 +16,13 @@ pip3 install grpcio==1.34.0
 pip3 install pandas==1.1.5
 pip3 install torch==1.5.1+cpu torchvision==0.6.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
 pip3 install tabulate==0.8.7
-pip3 install celery==5.0.5
+pip3 install celery==5.1.2
 pip3 install redis==3.5.3
 pip3 install nltk==3.5
 pip3 install hunspell==0.5.5
 pip3 install scikit-learn==0.24.1
+pip3 install websocket-client==1.1.0
+pip3 install lark==0.11.3 
 sudo -u postgres psql -f /vagrant/psql-script
 mkdir /usr/share/ateams_service
 cp -r /vagrant/evaluation /usr/share/ateams_service
