@@ -136,7 +136,9 @@ class AdaptiveTeamAIUpdatedPlanner():
         #self.set_uncertainties(session, self.uncertainty_example())
 
         # sample initial events
+        twin_info_message(self.session.id, "generate initial events")
         self.generate_initial_events()
+        twin_info_message(self.session.id, "done generating initial events")
 
 
         # run simulation
@@ -164,7 +166,7 @@ class AdaptiveTeamAIUpdatedPlanner():
                 twin_info_message(self.session.id, "session_paused : segment " + str(self.pause_segment + 1) + " : go ahead and do something")
 
         # export to data log for debugging
-        #self.export_log_data_for_visualization()
+        self.export_log_data_for_visualization()
 
         # archive session
         self.session.status = Session.ARCHIVED
@@ -249,6 +251,9 @@ class AdaptiveTeamAIUpdatedPlanner():
 
                         # submit the scenario
                         scenario_str = self.db_helper.submit_scenario(select_nodes)
+
+                        twin_info_message(self.session.id, scenario_str)
+
                         # add datalog event
                         self.db_helper.submit_data_log(usr, "SubmitScenario;" + scenario_str, self.real_time, t)
                         self.cache_business_metrics(t, usr, "Scenario", number_selected, 0, 0, scenario_str)
@@ -368,7 +373,7 @@ class AdaptiveTeamAIUpdatedPlanner():
                             p = self.db_helper.plan_submit(plan)
                             # add datalog event
                             self.db_helper.submit_data_log(usr, "SubmitPlanToDB;" + plan['tag'] + ";" + plan_str + ";" + metrics, self.real_time, self.current_time)
-                            self.cache_planner_metrics(self.current_time, usr, "Submit", result.profit, result.startupCost, result.number_deliveries)
+                            self.cache_planner_metrics(self.current_time, usr, "Submit", result.profit, result.startupCost, result.number_deliveries, result.number_food_deliveries)
 
                             # add user plan to self bias list
                             self.self_bias_plans[usr].append(str(p.id))
@@ -404,7 +409,7 @@ class AdaptiveTeamAIUpdatedPlanner():
 
                         # add datalog event
                         self.db_helper.submit_data_log(usr, "Opened;" + close_plan_json['tag'] + ";" + plan_str + ";" + metrics, self.real_time, t)
-                        self.cache_planner_metrics(t, usr, "Open", result.profit, result.startupCost, result.number_deliveries)
+                        self.cache_planner_metrics(t, usr, "Open", result.profit, result.startupCost, result.number_deliveries, result.number_food_deliveries)
 
                 # runs the planner AI agent
                 elif "Agent" in tokens[0]:
@@ -486,7 +491,7 @@ class AdaptiveTeamAIUpdatedPlanner():
 
                     # add datalog event
                     self.db_helper.submit_data_log(usr, "PathAgentResult;" + plan_str + ";" + metrics, self.real_time, t)
-                    self.cache_planner_metrics(t, usr, "PathAgent", result.profit, result.startupCost, result.number_deliveries)
+                    self.cache_planner_metrics(t, usr, "PathAgent", result.profit, result.startupCost, result.number_deliveries, result.number_food_deliveries)
 
                 # user manually builds a path
                 elif "Manual" in tokens[0] and self.team_data[usr] is not None:
@@ -617,7 +622,7 @@ class AdaptiveTeamAIUpdatedPlanner():
                         metrics = "Profit," + str(result.profit) + ",OperatingCost," + str(result.operating_cost) + ",StartUpCost," + str(result.startupCost) + ",Number of Deliveries," + str(result.number_deliveries) + ",MassDelivered," + str(result.total_weight_delivered) + ",Parcel," + str(result.total_parcel_delivered) + ",Food," + str(result.total_food_delivered)
                         # add datalog event
                         self.db_helper.submit_data_log(usr, "ManualPathOperation;" + ";" + plan_str + ";" + metrics, self.real_time, t)
-                        self.cache_planner_metrics(t, usr, "ManualPathOperation", result.profit, result.startupCost, result.number_deliveries)
+                        self.cache_planner_metrics(t, usr, "ManualPathOperation", result.profit, result.startupCost, result.number_deliveries, result.number_food_deliveries)
 
 
         except Exception as e:
@@ -642,6 +647,10 @@ class AdaptiveTeamAIUpdatedPlanner():
 
         # get the vehicle metrics for each path and add a closest team vehicle and add an empty plan
         deliveries = action_str.split('_')[1].split("Path")
+
+
+        twin_info_message(self.session.id, " auto calc ")
+
         for delivery in deliveries:
             if len(delivery) > 0:
 
@@ -658,6 +667,8 @@ class AdaptiveTeamAIUpdatedPlanner():
 
                     used_vehicles, closest_dist = self.get_closest_vehicles(usr, [[vehiclerange, vehiclecapacity, vehiclecost]], False)
                     used_vehicle = used_vehicles[0]
+
+                    twin_info_message(self.session.id, " vehicle : " + str(used_vehicle.range) + " " + str(used_vehicle.payload))
 
                     path_obj = {}
                     vehicle_obj = {}
@@ -831,6 +842,7 @@ class AdaptiveTeamAIUpdatedPlanner():
                     current_path['customers'].append(closest_customer)
 
 
+
         # convert the json plan to a string to save to a DataLog and calculate metrics
         plan_str = self.convert_plan_json_to_str(plan)
         #print(plan_str)
@@ -971,7 +983,8 @@ class AdaptiveTeamAIUpdatedPlanner():
             p = 0
             has_constraint = False
             for req in req_values:
-                if req_values[req][0] != self.MINVALUE and req_values[req][1] != self.MAXVALUE:
+                constraint_check = (req_values[req][0] == self.MINVALUE and req_values[req][1] == self.MAXVALUE)
+                if not constraint_check:
                     has_constraint = True
                     p += self.constraint_penalty(values[req], req_values[req][0],  req_values[req][1], max_values[req])
             if p == 0 and has_constraint: # big reward for feasible design
@@ -1013,14 +1026,18 @@ class AdaptiveTeamAIUpdatedPlanner():
 
         # get sample size
         MM = feasible
+
         # get top 5 ranked at most
         MM = min(MM, 5)
 
         sorted_results = {k: v for k, v in sorted(results.items(), key=lambda item: item[1])}
 
         # selected index
-        selected_ind = int(self.linear_trend(1.0, -1.0, 0, MM, 1)[0])
+        selected_ind = random.randrange(0,len(intersection))
+        if MM > 0:
+            selected_ind = int(self.linear_trend(1.0, -1.0, 0, MM, 1)[0])
         seq_id = list(sorted_results.keys())[selected_ind]
+
         seq_events = self.business_sequences.query("seq == " + str(seq_id)).values.tolist()
 
         # assign timestamps to each event
@@ -1108,7 +1125,8 @@ class AdaptiveTeamAIUpdatedPlanner():
                 pass
 
         if is_pref:
-            MM = 40
+            twin_info_message(self.session.id, "M==20")
+            MM = 20
             seq_results = {}
             print("calculating planner agent with preference ...")
             for i in range(MM):
@@ -1156,11 +1174,12 @@ class AdaptiveTeamAIUpdatedPlanner():
                 p = 0
                 has_constraint = False
                 for req in req_values:
-                    if req_values[req][0] != self.MINVALUE and req_values[req][1] != self.MAXVALUE:
+                    constraint_check = (req_values[req][0] == self.MINVALUE and req_values[req][1] == self.MAXVALUE)
+                    if not constraint_check:
                         has_constraints = True
                         has_constraint = True
                         p += self.constraint_penalty(seq_results[seq][req], req_values[req][0],  req_values[req][1], max_values_dict[req])
-                if p == 0 and has_constraint: # big reward for feasible design
+                if (p == 0 and has_constraint): # big reward for feasible design
                     p = -10
                     feasible += 1
                 results[seq] += p
@@ -1427,7 +1446,7 @@ class AdaptiveTeamAIUpdatedPlanner():
         max_values_dict = {}
         max_values_dict['range'] = max_values["range"]
         max_values_dict['capacity'] = max_values["capacity"]
-        max_values_dict['cost'] = max_values["cost"]
+        max_values_dict['cost'] = min(max_values["cost"],15000) # since this is the budget
         max_values_dict['no_structures'] = 7    # based on the designer sequence database
         max_values_dict['no_motors'] = 18
         max_values_dict['no_foils'] = 10
@@ -1484,12 +1503,13 @@ class AdaptiveTeamAIUpdatedPlanner():
                         preference_distance += ((vehicle_values[var_name] - pref_values[var_name])/max(max_values_dict[var_name], pref_values[var_name]))**2
                         scaling_factor += 1
 
-
             if pref_type == 1:
                 # for goal-based, adjust distance then divide by square root of diaogaonal for 0-1 ,
                 # adjust so final preference value is [-1,0]
                 preference_distance = (preference_distance**0.5)/(max(scaling_factor,1)**0.5)
                 preference_distance = -1 + preference_distance
+
+
 
                 # if Submit, add to preference list, add 0.75 to get top close designs , but also score unsubmitted sequences events 0 to not always get perfect submits event sequences (tunable parameter)
                 if "Submit" in event_type:
@@ -1505,7 +1525,8 @@ class AdaptiveTeamAIUpdatedPlanner():
             norm_distance = 0
             total_quantity = 0
             for var_name in req_values:
-                if req_values[var_name][0] != self.MINVALUE or req_values[var_name][1] != self.MAXVALUE:
+                constraint_check = (req_values[var_name][0] == self.MINVALUE and req_values[var_name][1] == self.MAXVALUE)
+                if not constraint_check:
                     norm_distance += self.constraint_penalty(vehicle_values[var_name], req_values[var_name][0], req_values[var_name][1], max_values_dict[var_name])
                     total_quantity += 1
 
@@ -1560,6 +1581,7 @@ class AdaptiveTeamAIUpdatedPlanner():
     def generate_initial_events(self):
 
         for usr in self.team_role:
+            twin_info_message(self.session.id, "generate initial events " + str(usr))
             if self.team_role[usr] == "designer":
                 self.sample_designer(usr, 0, 10, 5, 3470)
             elif self.team_role[usr] == "planner":
@@ -1592,6 +1614,7 @@ class AdaptiveTeamAIUpdatedPlanner():
     def resample_planners_based_on_scenario_and_vehicles(self):
         for usr in self.team_role:
             if self.team_role[usr] == "planner":
+                twin_info_message(self.session.id, "resample_planner" + usr)
                 self.sample_planner(usr, False)
 
     # get the closest session plan to the target plan metrics
@@ -1893,24 +1916,12 @@ class AdaptiveTeamAIUpdatedPlanner():
             'type' : 'twin.pref',
             'session_id' : self.session.id,
             'prefs' : [                     # the below result in close approaximation to planners and designers to historical trends, with underperforming a bit in the final selected business plan
-#                {
-#                    'user_id' : 'arl_1',
-#                    'pref_type' : 1,
-#                    'profit' : 8000,
-#                    'no_customers' : 35
-#                },
-#                {
-#                    'user_id' : 'arl_4',
-#                    'pref_type' : 0,
-#                    'profit' : 0.9,
-#                    'no_customers' : 0.1
-#                }
             ], 'reqs' : [
                 {
-                    'user_id' : 'arl_4',
-                    'cost' : {
-                        'min' : 10000,
-                        'max' : 15000
+                    'user_id' : 'user-22',
+                    'range' : {
+                        'min' : 0,
+                        'max' : 10
                     }
                 }
             ]
@@ -1961,6 +1972,9 @@ class AdaptiveTeamAIUpdatedPlanner():
 
     def set_preference(self, session, pref_info):
 
+        twin_info_message(session.id, " ---- receive pref info ")
+        twin_info_message(session.id, pref_info)
+
         self.init_session_preference(session)
         msg = ""
         user_id = ""
@@ -1977,6 +1991,8 @@ class AdaptiveTeamAIUpdatedPlanner():
             print("received len ", len(prefs))
             print("msg", pref_info)
             for pref in prefs:
+                twin_info_message(session.id, "pref")
+                twin_info_message(session.id, pref)
                 user_id = pref['user_id']
                 if user_id in user_roles and user_id in user_positions:
                     digital_twin = DigitalTwin.objects.filter(user_position=user_positions[user_id]).first()
@@ -2001,7 +2017,13 @@ class AdaptiveTeamAIUpdatedPlanner():
 
             reqs = preference_dict['reqs']
             print('reqs updated', reqs)
+            #twin_info_message(session.id, " ---- receive req info ")
+
+            twin_info_message(session.id, reqs)
+
             for req in reqs:
+                twin_info_message(session.id, "req")
+                twin_info_message(session.id, req)
                 user_id = req['user_id']
                 print('user_id', user_id)
                 if user_id in user_roles and user_id in user_positions:
@@ -2050,8 +2072,8 @@ class AdaptiveTeamAIUpdatedPlanner():
     def cache_designer_metrics(self, t, usr, event_type, vehicle_range, vehicle_capacity, vehicle_cost, config):
         self.designer_vis_log.append(str(self.session.id) + "\t" + usr + "\t" + str(t) + "\t" + event_type + "\t" + str(vehicle_range) + "\t" + str(vehicle_capacity) + "\t" + str(vehicle_cost) + "\t" + config + "\n")
 
-    def cache_planner_metrics(self, t, usr, event_type, profit, startupCost, no_deliveries):
-        self.plan_vis_log.append(str(self.session.id) + "\t" + usr + "\t" + str(t) + "\t" + event_type + "\t" + str(profit) + "\t" + str(startupCost) + "\t" + str(no_deliveries) + "\n")
+    def cache_planner_metrics(self, t, usr, event_type, profit, startupCost, no_deliveries, no_food_deliveries):
+        self.plan_vis_log.append(str(self.session.id) + "\t" + usr + "\t" + str(t) + "\t" + event_type + "\t" + str(profit) + "\t" + str(startupCost) + "\t" + str(no_deliveries) + "\t" + str(no_food_deliveries) + "\n")
 
     def cache_business_metrics(self, t, usr, event_type, profit, startupCost, no_deliveries, scenario_str = ""):
         self.business_vis_log.append(str(self.session.id) + "\t" + usr + "\t" + str(t) + "\t" + event_type + "\t" + str(profit) + "\t" + str(startupCost) + "\t" + str(no_deliveries) + "\t" + str(scenario_str) + "\n")
