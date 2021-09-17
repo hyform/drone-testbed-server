@@ -41,12 +41,13 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',    
     'corsheaders',
     'channels',
-    'repo.apps.RepoConfig',
     'ai.apps.AiConfig',
-    'chat',
-    'exper',
-    'api',
-    'process',
+    'api.apps.ApiConfig',
+    'bot.apps.BotConfig',
+    'chat.apps.ChatConfig',
+    'exper.apps.ExperConfig',    
+    'process.apps.ProcessConfig',
+    'repo.apps.RepoConfig',
 ]
 
 MIDDLEWARE = [
@@ -199,6 +200,15 @@ DIGITAL_TWIN_ENABLED = True
 INTER_SEG_NUM = 8
 # Integer: Length of segments in seconds
 INTER_SEG_LEN = 150
+# This is used for server-side bots to "authenticate" with their websocket connection
+# Like the Django SECRET_KEY, this should be changed when the system is deployed
+BOT_SECRET_KEY = 'jsdflk234flse35532344wf4fwfwf'
+
+# Settings for connecting to the server locally
+LOCAL_ADDRESS = 'localhost' # TODO: This might need to be one of ALLOWED_HOSTS
+LOCAL_PORT = '8000'         # This should be the port used when starting Django
+LOCAL_ORIGIN = 'localhost'  # Make sure this is allowed by CORS_ORIGIN settings
+LOCAL_SSL = False           # Set to true if https/wss is required when connecting locally (depends on where certificate is installed)
 
 LOGGING = {
     'version': 1,

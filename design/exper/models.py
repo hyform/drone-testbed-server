@@ -66,6 +66,7 @@ class Session(models.Model):
     prior_session = models.ForeignKey('self', blank=True, null=True, on_delete=models.CASCADE) #TODO: This needs to be deprecated, then removed
     structure = models.ForeignKey(Structure, on_delete=models.CASCADE)
     market = models.ForeignKey(Market, on_delete=models.CASCADE)
+    is_tutorial = models.BooleanField(default=False)
     use_ai = models.BooleanField()
     use_process_ai = models.BooleanField(default=False)
 

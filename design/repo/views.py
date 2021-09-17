@@ -31,6 +31,9 @@ import hunspell
 import numpy as np
 from sklearn.decomposition import TruncatedSVD
 from scipy.spatial.distance import pdist, squareform
+import logging
+
+logger = logging.getLogger(__name__)
 
 spellchecker = hunspell.HunSpell('/usr/share/hunspell/en_US.dic', '/usr/share/hunspell/en_US.aff')
 tokenizer = RegexpTokenizer(r'\w+')
@@ -161,7 +164,7 @@ class PlanList(generics.ListCreateAPIView):
         groups = GroupPosition.objects.filter(Q(position=up.position)&Q(position__structure=st.session.structure)).values('group')
         start_time = time.time()
         plans = Plan.objects.filter(Q(group__in=groups)&Q(session=st.session))
-        print("time to get plans - %s secs" % (time.time() - start_time))
+        logger.debug("time to get plans - %s secs" % (time.time() - start_time))
         return plans
         # return Plan.objects.all()
 
@@ -207,7 +210,7 @@ class Plan2List(generics.ListAPIView):
         groups = GroupPosition.objects.filter(Q(position=up.position)&Q(position__structure=st.session.structure)).values('group')
         start_time = time.time()
         plans = Plan.objects.filter(Q(group__in=groups)&Q(session=st.session))
-        print("time to get plans - %s secs" % (time.time() - start_time))
+        logger.debug("time to get plans - %s secs" % (time.time() - start_time))
         return plans
         # return Plan.objects.all()
 
@@ -224,7 +227,7 @@ class PlanShortList(generics.ListAPIView):
         groups = GroupPosition.objects.filter(Q(position=up.position)&Q(position__structure=st.session.structure)).values('group')
         start_time = time.time()
         plans = Plan.objects.filter(Q(group__in=groups)&Q(session=st.session)).order_by('id')
-        print("time to get plans - %s secs" % (time.time() - start_time))
+        logger.debug("time to get plans - %s secs" % (time.time() - start_time))
         return plans
 
     serializer_class = PlanShortSerializer
@@ -604,14 +607,8 @@ class DataLogDetail(generics.RetrieveUpdateDestroyAPIView):
 class DataLogListView(generic.ListView):
 
     def get_queryset(self):
-        # if self.request.user.profile.is_exper is True:
-        #    team = self.request.get('team','')
-        # else:
-        #    team = self.request.user.username.split('_')[0]
-        # return DataLog.objects.filter(team=team).order_by('time')
         user = self.request.user
         session = Session.objects.get(id=self.kwargs['session_id'])
-        # st = SessionTeam.objects.filter(Q(session__status=1)&Q(team=user.profile.team)).first()
         if session:
             log = DataLog.objects.filter(session=session).order_by('-time')
         else:

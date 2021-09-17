@@ -13,7 +13,7 @@ from operator import attrgetter
 from exper.models import Role, UserPosition, Structure
 from exper.models import Session, SessionTeam, Market
 from exper.models import CustomLinks, Exercise
-from repo.models import Profile, DesignTeam, Study, Experiment, ExperOrg
+from repo.models import Profile, DesignTeam, Study, Experiment
 import collections
 import json
 from chat.chat_consumer_listener import ChatConsumerListener
@@ -21,9 +21,11 @@ from process.mediation import Interventions
 from api.models import SessionTimer
 from datetime import datetime
 from design.utilities import cache_bust
+import logging
 
+logger = logging.getLogger(__name__)
 
-def ateams_homepage(request):
+def ateams_homepage(request):    
     context = {}
     context['BUST'] = cache_bust()
     response = None
@@ -75,9 +77,7 @@ def ateams_experiment(request):
             context = {}
             context['BUST'] = cache_bust()
             orgs = []
-            exper_orgs = ExperOrg.objects.filter(user=request.user)
-            for exper_org in exper_orgs:
-                orgs.append(exper_org.organization)
+            orgs.append(request.user.profile.organization)
             context["orgs"] = orgs
             response = HttpResponse(render(request, "organization.html", context))
         else:
@@ -339,6 +339,7 @@ def ateams_setup(request):
                 context['is_team'] = is_team
                 response = HttpResponse(render(request, "setup.html", context))
                 response.set_cookie('use_ai', st.session.use_ai)
+                response.set_cookie('is_tutorial', st.session.is_tutorial)
                 response.set_cookie('username', request.user.username)
             else:
                 if st.session.status == Session.PRESESSION:
@@ -406,6 +407,7 @@ def ateams_presession(request):
 
                 response = HttpResponse(render(request, "presession.html", context))
                 response.set_cookie('use_ai', st.session.use_ai)
+                response.set_cookie('is_tutorial', st.session.is_tutorial)
                 response.set_cookie('username', request.user.username)
             else:
                 if st.session.status == Session.SETUP:
@@ -442,6 +444,7 @@ def ateams_design(request):
             if st.session.status == Session.RUNNING:
                 response = HttpResponse(render(request, "design.html"))
                 response.set_cookie('use_ai', st.session.use_ai)
+                response.set_cookie('is_tutorial', st.session.is_tutorial)
                 response.set_cookie('username', request.user.username)
             else:
                 if st.session.status == Session.SETUP:
@@ -469,6 +472,7 @@ def ateams_ops(request):
             if st.session.status == Session.RUNNING:
                 response = HttpResponse(render(request, "ops.html"))
                 response.set_cookie('use_ai', st.session.use_ai)
+                response.set_cookie('is_tutorial', st.session.is_tutorial)
                 response.set_cookie('username', request.user.username)
             else:
                 if st.session.status == Session.SETUP:
@@ -496,6 +500,7 @@ def ateams_business(request):
             if st.session.status == Session.RUNNING:
                 response = HttpResponse(render(request, "business.html"))
                 response.set_cookie('use_ai', st.session.use_ai)
+                response.set_cookie('is_tutorial', st.session.is_tutorial)
                 response.set_cookie('username', request.user.username)
             else:
                 if st.session.status == Session.SETUP:
@@ -578,6 +583,7 @@ def ateams_postsession(request):
 
                 response = HttpResponse(render(request, "postsession.html", context))
                 response.set_cookie('use_ai', st.session.use_ai)
+                response.set_cookie('is_tutorial', st.session.is_tutorial)
                 response.set_cookie('username', request.user.username)
             else:
                 if st.session.status == Session.SETUP:
@@ -621,6 +627,7 @@ def ateams_info(request):
             response = HttpResponse(render(request, "info.html", context))
             response.set_cookie('username', request.user.username)
             response.set_cookie('use_ai', st.session.use_ai)
+            response.set_cookie('is_tutorial', st.session.is_tutorial)
         else:
             response = HttpResponse(render(request, "info.html"))
             response.set_cookie('username', request.user.username)

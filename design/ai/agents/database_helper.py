@@ -8,6 +8,7 @@ from repo.serializers import ScenarioSerializer
 from django.db.models import Q
 
 from chat.messaging import new_vehicle_message, new_plan_message, new_scenario_message
+from chat.models import Channel, ChannelPosition
 from api.messaging import twin_log_message
 
 # helper for agents to load and save database objects
@@ -19,11 +20,13 @@ class DatabaseHelper:
         self.user_primary_groups = {}               # dictionary that saves the primary user group to a user name (to save objects)
         self.user_roles = {}                        # dictionary that save the user roles to a user name
         self.user_positions = {}                    # dictionary that saves the user positions to a user name (to save data logs)
+        self.users = {}                             # dictionary that saves the user to a user name (to save data logs)
         self.first_simulation_time_date = None      # save the first event time to save to save datalog with the correct time when running in batch mode
 
         self.st = SessionTeam.objects.filter(Q(session=self.session)).first()       # get the session team
         ups = UserPosition.objects.filter(Q(session=self.st.session))               # get the user positions of the session
         for u in ups:                                                               # for each user position
+            self.users[u.user.username] = u.user                                    # user object by user name
             self.user_roles[u.user.username] = u.position.role.name                 # get the role
             self.user_positions[u.user.username] = u                                # store the user position based on the user name
             # for each user, find multile groups itis associated with
@@ -32,9 +35,23 @@ class DatabaseHelper:
                 if gp.primary:
                     self.user_primary_groups[u.user.username] = gp.group            # save objects should use the user positions primary group
 
+
+    def get_others_in_channel(self, session, channel, sender):
+        channel_positions = ChannelPosition.objects.filter(Q(channel=channel))
+        others = []
+        for channel_pos in channel_positions:
+            user_name = UserPosition.objects.filter(Q(position=channel_pos.position)&Q(session=session)).first().user.username
+            if user_name not in sender:
+                others.append(user_name)
+        return others
+
     # gets the user roles (ex. designer, ops planner, ...)
     def get_user_roles(self):
         return self.user_roles
+
+    # gets users
+    def get_users(self):
+        return self.users
 
     # gets the user roles (ex. designer, ops planner, ...)
     def get_user_positions(self):
@@ -51,6 +68,22 @@ class DatabaseHelper:
     # query vehicles for a user with a tag and configuration
     def query_vehicles_with_tag(self, vehicle_tag, config):
         return Vehicle.objects.filter(session=self.session, group=self.user_primary_groups[self.user_name], tag=vehicle_tag, config=config)
+
+    # query vehicles for a user with a tag and configuration
+    def query_vehicles_with_name(self, vehicle_tag):
+        return Vehicle.objects.filter(session=self.session, group=self.user_primary_groups[self.user_name], tag=vehicle_tag)
+
+    # get the last id
+    def query_last_vehicle_id(self):
+        return Vehicle.objects.filter(session=self.session, group=self.user_primary_groups[self.user_name]).order_by('-id')
+
+    # get the last id
+    def query_last_plan_id(self):
+        return Plan.objects.filter(session=self.session).order_by('-id')
+
+    def query_plans_with_name(self, plan_tag):
+        return Plan.objects.filter(session=self.session, tag=plan_tag)
+
 
     # submit a vehicle to the database
     def submit_vehicle_db(self, tag, config, range, capacity, cost, velocity):

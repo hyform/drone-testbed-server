@@ -63,9 +63,8 @@
                             <div class="col-1 border p-0 text-center">Structure</div>
                             <div class="col-1 border p-0 text-center">Market</div>
                             <div class="col-1 border p-0 text-center">Status</div>
-                            <div class="col-2 border p-0 text-center">Info</div>
+                            <div class="col-3 border p-0 text-center">Info</div>
                             <div class="col-2 border p-0 text-center">Controls</div>
-                            <div class="col-1 border p-0 text-center">Twin</div>
                         </div>
                     </li>
                     {% for exercise, sessions in exercises.items %}
@@ -74,7 +73,10 @@
                         {% if sess.status == 1 or sess.status == 4 or sess.status == 5 or sess.status == 6 or sess.status == 7 or sess.status == 8 %}
                         <li class="list-group-item p-0">
                             <div class="row m-0">
-                                <div class="col-2 border p-0">{{sess.name}}</div>
+                                <div class="col-2 border p-0">
+                                    {% if sess.is_tutorial %}<div style="color:red; font-weight: bold;">(Tutorial)</div>{% endif %}
+                                    {{sess.name}}
+                                </div>
                                 <div class="col-1 border p-0">
                                     {% for key, value in st_dict.items %}
                                         {% if key == sess.id %}
@@ -115,7 +117,7 @@
                                     <button type="button" class="btn ctrl_button play_button" id="play_button_{{sess.id}}">Archive</button>
                                     {% endif %}
                                 </div>
-                                <div class="col-1 border p-0">
+                                <div class="col-2 border p-0">
                                     {% if sess.status == 1 %}
                                     <div id="info_text_{{sess.id}}">Continue to <b>Post-Session</b></div>
                                     {% elif sess.status == 4 %}
@@ -137,9 +139,6 @@
                                     <button type="button" class="btn ctrl_button stop_button" id="stop_button_{{sess.id}}">Stop</button>
                                     <button type="button" class="btn ctrl_button archive_button" id="archive_button_{{sess.id}}">Archive</button>
                                     {% endif %}
-                                </div>
-                                <div class="col-1 border p-0 text-center">
-                                    <button type="button" class="btn ctrl_button sim_button" id="sim_button_{{sess.id}}">run</button>
                                 </div>
                             </div>
                         </li>
@@ -287,6 +286,15 @@
                                     </div>
                                     <div class="col-9">
                                         <input class="form-control" id="session-name-new" type="text" placeholder="Enter Session Name">
+                                    </div>
+                                </div>
+
+                                <div class="row" id="session-tutorial-new-row">
+                                    <div class="col-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="session-tutorial-new">
+                                            <label class="form-check-label" for="session-tutorial-new">tutorial</label>
+                                        </div>
                                     </div>
                                 </div>
 

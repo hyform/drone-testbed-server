@@ -24,6 +24,10 @@ from api.models import SessionTimer
 from datetime import datetime, timezone
 from ai.tasks import mediation_loop, human_mediation_loop
 from design.utilities import cache_bust
+from bot.tasks import bot_connect
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 
@@ -248,11 +252,34 @@ def session_status_play(request):
                                 if team_session_session and team_session_session.status in Session.ACTIVE_STATES:
                                     return Response(status=status.HTTP_409_CONFLICT)
                     new_status = Session.SETUP
+
+                    '''
+                    # Not using this right now, so block this out, but keep here in case we come back to this
+                    # If a bot session, startup bots here
+                    #TODO: Create bot structure, and add position names
+                    if session.structure.name == "A": #TODO: using Structure A temporarily
+                        position_1_name = "Design Specialist"
+                        position_2_name = "Operations Specialist 2"
+                        position_1 = Position.objects.filter(structure=session.structure).filter(name=position_1_name)
+                        position_2 = Position.objects.filter(structure=session.structure).filter(name=position_2_name)
+                        if position_1 and position_2 :
+                            bot_connect.delay(session.id, position_1.id) #get designer
+                            #TODO: add p1 loop task
+                            bot_connect.delay(session.id, position_2.id) #get planner
+                            #TODO: add p2 loop task
+                        else:
+                            logger.error("Cannot start bots")
+                            if not position_1:
+                                logger.error("Position " + position_1_name + " not found in session " + str(session.id))
+                            if not position_2:
+                                logger.error("Position " + position_2_name + " not found in session " + str(session.id))
+                    '''
+
                 elif session.status == Session.SETUP:
                     new_status = Session.PRESESSION
                 elif session.status == Session.PRESESSION:
                     new_status = Session.RUNNING
-                    
+
                     # Update the session's RUNNING start timer
                     running_timer = SessionTimer.objects.filter(session=session).filter(timer_type=SessionTimer.RUNNING_START).first()
                     if running_timer:
@@ -266,12 +293,12 @@ def session_status_play(request):
                         data = {}
                         data['session_id'] = session.id
                         human_mediation_loop.delay(data)
-                        
+
                     elif session.structure.name == "Process Manager (AI)":
                         print("AI Process Manager")
                         data = {}
                         data['session_id'] = session.id
-                        mediation_loop.delay(data)                  
+                        mediation_loop.delay(data)
 
                 elif session.status == Session.RUNNING:
                     new_status = Session.POSTSESSION
@@ -332,7 +359,7 @@ def session_status_archive(request):
                 if session.structure.name == "Extra":
                     isTeam = False
                 next_session = Session.objects.filter(exercise=session.exercise).filter(index=session.index+1).first()
-                if next_session:
+                if next_session and not session.is_tutorial: # copy data to next session if this is not a tutorial
                     same_market = True
                     if session.market != next_session.market:
                         same_market = False
@@ -421,11 +448,15 @@ def create_session_group(request):
         experiment = request.user.profile.experiment
         newExercise = Exercise.objects.create(experiment=experiment)
         sessionIndex = 0
+        have_tutorial = False
 
         team = DesignTeam.objects.filter(id=teamId).first()
         for item in newSessionList:
             sessionIndex = sessionIndex + 1
             sessionName = item['name']
+            sessionTutorial = item['tutorial']
+            if sessionTutorial:
+                have_tutorial = True
             sessionUseAI = item['ai']
             sessionStructureId = item['structure']
             sessionStructure = Structure.objects.filter(id=sessionStructureId).first()
@@ -434,7 +465,7 @@ def create_session_group(request):
                 sessionUseAIProcess = False
             sessionMarketId = item['market']
             sessionMarket = Market.objects.filter(id=sessionMarketId).first()
-            newSession = Session.objects.create(name=sessionName, experiment=experiment, exercise=newExercise, index=sessionIndex, prior_session=None, structure=sessionStructure, market=sessionMarket, use_ai=sessionUseAI, use_process_ai=sessionUseAIProcess, status=4)
+            newSession = Session.objects.create(name=sessionName, experiment=experiment, exercise=newExercise, index=sessionIndex, prior_session=None, structure=sessionStructure, market=sessionMarket, is_tutorial=sessionTutorial, use_ai=sessionUseAI, use_process_ai=sessionUseAIProcess, status=4)
             sessionTeam = SessionTeam.objects.create(team=team, session=newSession)
             structurePositions = list(Position.objects.filter(structure=sessionStructure).order_by('name'))
 
@@ -456,7 +487,12 @@ def create_session_group(request):
             if sessionIndex == 1:
                 baseConfig = "*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3"
                 Vehicle.objects.create(tag="base", config=baseConfig, result="Success", range=10.0, velocity=20.0, cost=3470.20043945312, payload=5, group=warehouseGroup, session=newSession)
-                print("session vehicle add")
+
+            # If we have a tutorial, then add the base vehicle to the second session since nothing will be copied over
+            # We are assuming only one tutorial can exist
+            if have_tutorial and sessionIndex == 2:                
+                baseConfig = "*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3"
+                Vehicle.objects.create(tag="base", config=baseConfig, result="Success", range=10.0, velocity=20.0, cost=3470.20043945312, payload=5, group=warehouseGroup, session=newSession)
 
         return Response(status=status.HTTP_200_OK)
     return Response(status=status.HTTP_401_UNAUTHORIZED)
@@ -555,6 +591,7 @@ def start_digital_twin(request):
                 t = AdaptiveTeamAIUpdatedPlanner()
                 session_new = t.setup_session(request.user)
                 t.setup(session_new)
+                #t.start_analysis()
 
             return Response(status=status.HTTP_200_OK)
     return Response(status=status.HTTP_401_UNAUTHORIZED)

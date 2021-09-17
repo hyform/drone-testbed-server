@@ -3,6 +3,8 @@ import os
 from celery import Celery
 from django.conf import settings
 
+print("run code for auto discover")
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'design.settings')
 
 app = Celery('design')

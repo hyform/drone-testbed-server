@@ -4,6 +4,34 @@ from asgiref.sync import async_to_sync
 
 from channels.layers import get_channel_layer
 
+def get_event_channel(session_id):
+    event_channel = "session_event" + "__" + str(session_id)
+
+def session_start_message(session_id, time):
+    channel = get_event_channel(session_id)
+    async_to_sync(get_channel_layer().group_send)(
+        channel,
+        {
+            'channel': channel,
+            'type': 'session.start',
+            'time': time,
+        }
+    )
+
+def session_stop_message(session_id, time):
+    channel = get_event_channel(session_id)
+    async_to_sync(get_channel_layer().group_send)(
+        channel,
+        {
+            'channel': channel,
+            'type': 'session.stop',
+            'time': time,
+        }
+    )
+
+# Process Manager
+# TODO: migrate this to new events
+
 def event_info_message(channel, position, info, time):
     async_to_sync(get_channel_layer().group_send)(
         channel,
@@ -15,6 +43,9 @@ def event_info_message(channel, position, info, time):
             'time': time,
         }
     )
+
+# Digital Twin
+# TODO: move this to a Twin app
 
 def twin_info_message(session_id, info):
     async_to_sync(get_channel_layer().group_send)(

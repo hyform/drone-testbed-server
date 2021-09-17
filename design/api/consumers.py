@@ -1,7 +1,7 @@
 # api/consumers.py
 from asgiref.sync import async_to_sync
 from django.db.models import Q
-from channels.generic.websocket import WebsocketConsumer
+from channels.generic.websocket import WebsocketConsumer, AsyncWebsocketConsumer
 from django.contrib.auth.models import User
 from exper.models import DigitalTwin
 from exper.models import SessionTeam, UserPosition, Session

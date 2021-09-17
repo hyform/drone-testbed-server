@@ -90,6 +90,7 @@ class OpsService(object):
         self.operating_cost = 0
         self.profit = 0
         self.result = "valid"
+        self.path_results = []
 
         # plan duration
         plan_duration = 0
@@ -170,6 +171,11 @@ class OpsService(object):
                 if path_capacity > float(plan_path['vehicle']['payload']):
                     self.result = "PlanPathCapacityTooHigh"
 
+                if path_range == float(plan_path['vehicle']['range']):
+                    self.path_results.append([plan_path['vehicle']['tag'], "range_limit"])
+                if path_capacity == float(plan_path['vehicle']['payload']):
+                    self.path_results.append([plan_path['vehicle']['tag'], "capacity_limit"])
+
             else:
                 self.result = "PlanNoCustomers"
 
@@ -205,7 +211,7 @@ class OpsService(object):
         return is_food, weight, end_time
 
 class OpsPlan(object):
-    def __init__(self, input):
+    def __init__(self, input, geo_preferences = None):
         self.input = input
 
         plan_json = json.loads(self.input)
@@ -258,11 +264,18 @@ class OpsPlan(object):
                 step_input_demands.append(10000)
             for j in range(len(unsatisfied)):
                 step_input_demands[unsatisfied[j]] = inputdemands[unsatisfied[j]]
+                if geo_preferences is not None:
+                    if len(geo_preferences) > 0:
+                        score_geo = self.get_geo_score(geo_preferences, positions[unsatisfied[j]][0], positions[unsatisfied[j]][1])
+                        if score_geo <= 0:
+                            step_input_demands[unsatisfied[j]] = 10000
+
+
             step_input_demands[0] = 0  # warehouse
 
             # run path finding for the vehicle, vehicles[i][0-3] quantity, range, velocity, payload
             results = self.start(inputdemands, step_input_demands, inputdemandstype,
-                vehicles[i][0], vehicles[i][1], vehicles[i][2], vehicles[i][3], positions)
+                vehicles[i][0], vehicles[i][1], vehicles[i][2], vehicles[i][3], positions, geo_preferences)
 
             # parse the results from the or tools anaylsis
             pathdata = results[1]
@@ -334,7 +347,7 @@ class OpsPlan(object):
         return data
 
     def start(self, originalinputdemands, inputdemands, inputdemandstype, num_vehicles,
-            vehicle_range, vehicle_velocity, vehicle_payload_capacity, positions):
+            vehicle_range, vehicle_velocity, vehicle_payload_capacity, positions, geo_preference):
 
         sc = 1000
 
@@ -390,12 +403,20 @@ class OpsPlan(object):
         # Allow to drop nodes.
         penalty = 100000000
 
-        # dropout penalty, try to fulfill food , can adjust this in the future
+        # dropout penalty
         for node in range(1, len(data['time_matrix'])):
             dd = 1
             try:
+
+                # since food is twice the profit by weight, add this as a minor reward to not remove these from a plan
+                # the double profit is not really accounted for in the problem setup that minimizes time
                 if data['inputdemandstype'][node] == "food2":
-                    dd = 4
+                    dd += 2  ## was 4
+
+                # this did not work for some reason
+                #if geo_preference is not None:
+                #    dd += self.get_geo_score(geo_preference, data['positions'][node][0],  data['positions'][node][1])
+                #print(node, dd, data['inputdemandstype'][node])
             except Exception as e:
                 print(e)
             routing.AddDisjunction([manager.NodeToIndex(node)], dd*penalty)
@@ -469,3 +490,19 @@ class OpsPlan(object):
     def intersection(self, lst1, lst2):
         lst3 = [value for value in lst1 if value in lst2]
         return lst3
+
+    def get_geo_score(self, geo_preference, x, z):
+        score = 0
+        if "east" in geo_preference:
+            if x > -3.5:
+                score += 4*int(round(x))
+        if "west" in geo_preference:
+            if x < -3.5:
+                score += -4*int(round(x))
+        if "north" in geo_preference:
+            if z > 0:
+                score += 4*int(round(z))
+        if "south" in geo_preference:
+            if z < 0:
+                score += -4*int(round(z))
+        return score

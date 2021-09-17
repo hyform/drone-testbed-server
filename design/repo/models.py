@@ -33,8 +33,8 @@ class Profile(models.Model):
     temp_code = models.TextField(default="", blank=True)
 
     # Fields for Experimenters
-    is_exper = models.BooleanField(default=False) # TODO: deprecate, then delete
-    organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.SET_NULL) # TODO: deprecate, then delete
+    is_exper = models.BooleanField(default=False) # TODO: deprecate, then delete, this is replaced by user_type
+    organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.SET_NULL)
     study = models.ForeignKey(Study, null=True, blank=True, on_delete=models.SET_NULL)
     experiment = models.ForeignKey(Experiment, null=True, blank=True, on_delete=models.SET_NULL)
 
@@ -53,6 +53,8 @@ class Profile(models.Model):
             return True
         return False
 
+# TODO: remove
+# This was for having an Experimenter handle multiple organizations, but not doing that right now
 class ExperOrg(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)

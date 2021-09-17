@@ -5,7 +5,7 @@ from channels.generic.websocket import WebsocketConsumer
 from django.contrib.auth.models import User
 from .models import ChannelPosition, Message, Channel
 from exper.models import SessionTeam, UserPosition, Session, UserChecklist
-from repo.models import DataLog, DesignTeam, Profile, ExperOrg
+from repo.models import DataLog, DesignTeam, Profile
 from urllib.parse import parse_qs
 from collections import OrderedDict
 import json
@@ -17,21 +17,26 @@ from django.conf import settings
 from api.tasks import run_digital_twin, pause_digital_twin, setup_digital_twin, set_digital_twin_preference, set_digital_twin_uncertainty
 from api.models import SessionTimer
 from datetime import datetime, timezone
+from ai.agents.adaptive_team_ai_updated_planner import AdaptiveTeamAIUpdatedPlanner
+from ai.agents.botmanager import BotManager
+import logging
+import time
+
+logger = logging.getLogger(__name__)
 
 # Websocket for Experimenters in an organization
 class OrganizationConsumer(WebsocketConsumer):
-    def connect(self):
+    def connect(self):        
         self.user = self.scope['user']
         if self.user.profile.is_experimenter():
             self.accept()
-            experOrg = ExperOrg.objects.filter(user=self.user).first() #TODO: finalize decision on experimenter in different orgs
-            if experOrg:
-                help_channel = Channel.objects.filter(name="Help").first()
-                channel_instance = str(help_channel.id) + "_organization_" + str(experOrg.organization.id)
-                async_to_sync(self.channel_layer.group_add)(
-                    channel_instance,
-                    self.channel_name,
-                )
+            org = self.user.profile.organization
+            help_channel = Channel.objects.filter(name="Help").first()
+            channel_instance = str(help_channel.id) + "_organization_" + str(org.id)
+            async_to_sync(self.channel_layer.group_add)(
+                channel_instance,
+                self.channel_name,
+            )
 
     # message templates
     def message_template(self, event):
@@ -326,6 +331,7 @@ class ChatConsumer(WebsocketConsumer):
 
     # receive message from websocket
     def receive(self, text_data):
+
         if self.authenticated_user:
             user = self.authenticated_user
         else:
@@ -353,22 +359,25 @@ class ChatConsumer(WebsocketConsumer):
                         try:
                             unit_structure = int(bleach.clean(str(text_data_json['unit_structure'])))
                         except Exception as e:
-                            print(e)
+                            logger.error(e)
 
                         try:
                             market = int(bleach.clean(str(text_data_json['market'])))
                         except Exception as e:
-                            print(e)
+                            logger.error(e)
 
                         try:
                             ai = int(bleach.clean(str(text_data_json['ai'])))
                         except Exception as e:
-                            print(e)
+                            logger.error(e)
 
                         user_id = int(bleach.clean(str(user.id)))
+
+                        print("------- starting delay ----")
                         setup_digital_twin.delay(user_id, unit_structure, market, ai)
 
                     if message_type == "twin.run":
+                        print("------- run message received ----")
                         session_id = int(bleach.clean(str(text_data_json['session_id'])))
                         #TODO: pause check hack until we can refactor out the nested delay calls
                         session = Session.objects.filter(id=session_id).first()
@@ -474,9 +483,10 @@ class ChatConsumer(WebsocketConsumer):
                     }
                 )
             else:
+
+                # log and display the chat message
                 Message.objects.create(sender=user, channel=channel, message=message, session=st.session)
                 DataLog.objects.create(user=user, session=st.session, action=message, type='chat: ' + channel.name + ' @' + channel_instance)
-
                 async_to_sync(self.channel_layer.group_send)(
                     channel_instance,
                     {
@@ -486,6 +496,54 @@ class ChatConsumer(WebsocketConsumer):
                         'channel': channel_instance
                     }
                 )
+
+
+                #TODO: Add structure check here so bot stuff below only executes in correct structure
+                #check is like this, with check on structure name (whatever it is once added)
+                #then bot code below is under this if statement
+                #if session.structure.name == "Bot":
+
+                # any bots ?
+                bm = BotManager()
+                # we need to add a bot selection, and update the database to store users as bots
+                # for a test, just set a bot by name
+                ##bm.register_session_bot(st.session, "arl_3", channel)
+                ##bm.register_session_bot(st.session, "arl_5", channel)
+                # send message to bot manager to indentify bots thta are listening on this channel
+                ####msgs, bot_user = bm.test_grammar_and_distribute(message, user.username, channel, st.session, channel_instance, self.channel_layer)
+                ##msgs = bm.test_grammar_and_distribute(message, user.username, channel, st.session)
+                msgs = bm.send_to_bots(message, user.username, channel, st.session)
+
+                # if a bot returns a message
+                for bot_user in msgs:
+
+                    # get the position name of the bot
+                    st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=bot_user.profile.team)).first()
+                    user_position = UserPosition.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(user=bot_user)).first()
+                    if user_position:
+                        position = user_position.position
+                        if position:
+                            sender_string = position.name
+
+                    for msg in msgs[bot_user]:
+                        # add object and datalog
+                        Message.objects.create(sender=bot_user, channel=channel, message=msg, session=st.session)
+                        DataLog.objects.create(user=bot_user, session=st.session, action=msg, type='chat: ' + channel.name + ' @' + channel_instance)
+
+                        if "intent" in msg:
+                            msg = "<b>" + msg + "</b>"
+
+                        # get the position name of the bot
+                        async_to_sync(self.channel_layer.group_send)(
+                            channel_instance,
+                            {
+                                'type': 'chat.message',
+                                'message': msg,
+                                'sender': sender_string,
+                                'channel': channel_instance
+                            }
+                        )
+
 
             if channel.name == "DroneBot":
 

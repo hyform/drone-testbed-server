@@ -340,6 +340,40 @@ $(document).ready(function () {
         nameRowInput.value = sessionNameNew
         nameRowInputCol.appendChild(nameRowInput);
 
+        //is tutorial                
+        var tutorialRow = document.createElement("div");
+        tutorialRow.classList.add("row");
+        //Only want to show this if it's true
+        var tutorialElement = document.getElementById("session-tutorial-new");
+        if(!tutorialElement.checked) {
+            tutorialRow.classList.add('hidden-row');
+        }
+
+        newSessionBorder.appendChild(tutorialRow);
+
+        var tutorialRowLabelCol = document.createElement("div");
+        tutorialRowLabelCol.classList.add("col-3");
+        tutorialRow.appendChild(tutorialRowLabelCol);
+
+        var tutorialFormCheck = document.createElement("div");
+        tutorialFormCheck.classList.add("form-check");
+        tutorialRowLabelCol.appendChild(tutorialFormCheck);
+
+        var tutorialCheckInput = document.createElement("input");
+        tutorialCheckInput.classList.add("form-check-input");
+        tutorialCheckInput.classList.add("new-session-tutorial");
+        tutorialCheckInput.id = "session-tutorial-" + newSessionIndex;
+        tutorialCheckInput.type = "checkbox"
+
+        tutorialCheckInput.checked = tutorialElement.checked;
+        tutorialFormCheck.appendChild(tutorialCheckInput);
+
+        var tutorialCheckLabel = document.createElement("label");
+        tutorialCheckLabel.classList.add("form-check-label");
+        tutorialCheckLabel.htmlFor = "session-tutorial-" + newSessionIndex;
+        tutorialCheckLabel.innerHTML = "tutorial"
+        tutorialFormCheck.appendChild(tutorialCheckLabel);
+
         //new AI
         var aiRow = document.createElement("div");
         aiRow.classList.add("row");
@@ -474,6 +508,10 @@ $(document).ready(function () {
         sessionNameNewElement.value = "";
         sessionNameNewElement.placeholder = "Enter Session Name";
 
+        var tutorialRow = document.getElementById( "session-tutorial-new-row");       
+        tutorialElement.checked = false;
+        tutorialRow.classList.add('hidden-row');
+
         //already have this from above
         //var aiElement = document.getElementById("session-ai-new");
         aiElement.checked = true;
@@ -522,7 +560,12 @@ $(document).ready(function () {
                 return;
             }
         }
-
+        
+        var newSessionTutorial = document.querySelectorAll('.new-session-tutorial');
+        for (i = 0; i < newSessionTutorial.length; ++i) {
+            newSessionList[i].tutorial = newSessionTutorial[i].checked;
+        }
+        
         var newSessionAI = document.querySelectorAll('.new-session-ai');
         for (i = 0; i < newSessionAI.length; ++i) {
             newSessionList[i].ai = newSessionAI[i].checked;

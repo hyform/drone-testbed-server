@@ -6,11 +6,17 @@ from exper.models import DigitalTwin
 from ai.agents.adaptive_team_ai_updated_planner import AdaptiveTeamAIUpdatedPlanner
 from exper.serializers import DigitalTwinSerializer
 from design.celery import app
+from django.conf import settings
+import websocket
+import threading
+import time
 
-#@celery.task
-#@shared_task
+# Digital Twin --------------------
+
+# Tasks
 @app.task
 def setup_digital_twin(user_id, unit_structure, market, ai):
+    print("received setup digital twin")
     setup_digital_twin_method(user_id, unit_structure, market, ai)
 
 @app.task
@@ -30,13 +36,13 @@ def set_digital_twin_preference(session_id, pref_info):
 def set_digital_twin_uncertainty(session_id, uncertainty_info):
     result = set_uncertainty_method(session_id, uncertainty_info)
 
-# helpers
+# Helpers
 def setup_digital_twin_method(user_id, unit_structure, market, ai):
+    print("setup_digital_twin_method")
     user = User.objects.filter(id=user_id).first()
     t = AdaptiveTeamAIUpdatedPlanner()
     session = t.setup_session(user, unit_structure, market, ai)
 
-# helpers
 def run_digital_twin_method(session_id, pause_interval):
     session = Session.objects.filter(id=session_id).first()
     session_status = session.status
@@ -58,3 +64,5 @@ def set_uncertainty_method(session_id, uncertainty_info):
     session = Session.objects.filter(id=session_id).first()
     t = AdaptiveTeamAIUpdatedPlanner()
     t.set_uncertainties(session, uncertainty_info)
+                    
+
