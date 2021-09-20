@@ -7,7 +7,12 @@ roleBusiness = Role.objects.filter(name="Business").first()
 roleOps = Role.objects.filter(name="OpsPlanner").first()
 roleDesign = Role.objects.filter(name="Designer").first()
 
-structureTest = Structure.objects.filter(name="Bot 2")
+botChannel = Structure.objects.filter(name="Bot").first()
+if botChannel:
+    botChannel.name = "Fall 2021 Alternate"
+    botChannel.save()
+
+structureTest = Structure.objects.filter(name="Fall 2021 Bot")
 if not structureTest:
     structure_process = Structure.objects.create(name="Bot 2")
     pos_des_1 = Position.objects.create(name="Design Manager", structure=structure_process, role=roleDesign)
@@ -16,22 +21,16 @@ if not structureTest:
     pos_ops_2 = Position.objects.create(name="Operations Specialist", structure=structure_process, role=roleOps)
     pos_bus = Position.objects.create(name="Problem Manager", structure=structure_process, role=roleBusiness)
 
-    chan_1 = Channel.objects.create(name="Design Management", structure=structure_process)
-    chan_2 = Channel.objects.create(name="Design", structure=structure_process)
-    chan_3 = Channel.objects.create(name="Operations Management", structure=structure_process)
-    chan_4 = Channel.objects.create(name="Operations", structure=structure_process)
+    chan_1 = Channel.objects.create(name="Design", structure=structure_process)
+    chan_2 = Channel.objects.create(name="Operations", structure=structure_process)
 
     ChannelPosition.objects.create(channel=chan_1, position=pos_bus)
     ChannelPosition.objects.create(channel=chan_1, position=pos_des_1)
+    ChannelPosition.objects.create(channel=chan_1, position=pos_des_2)
 
-    ChannelPosition.objects.create(channel=chan_2, position=pos_des_1)
-    ChannelPosition.objects.create(channel=chan_2, position=pos_des_2)
-
-    ChannelPosition.objects.create(channel=chan_3, position=pos_bus)
-    ChannelPosition.objects.create(channel=chan_3, position=pos_ops_1)
-
-    ChannelPosition.objects.create(channel=chan_4, position=pos_ops_1)
-    ChannelPosition.objects.create(channel=chan_4, position=pos_ops_2)
+    ChannelPosition.objects.create(channel=chan_2, position=pos_bus)
+    ChannelPosition.objects.create(channel=chan_2, position=pos_ops_1)
+    ChannelPosition.objects.create(channel=chan_2, position=pos_ops_2)
 
     # All channel currently required for every group
     group_All = Group.objects.create(name="All", structure=structure_process)

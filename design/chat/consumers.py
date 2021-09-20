@@ -502,7 +502,7 @@ class ChatConsumer(WebsocketConsumer):
                 #TODO: Add structure check here so bot stuff below only executes in correct structure
                 #check is like this, with check on structure name (whatever it is once added)
                 #then bot code below is under this if statement
-                if session.structure.name == "Bot" or session.structure.name == "Bot 2":
+                if session.structure.name == "Fall 2021 Bot":
 
                     # any bots ?
                     bm = BotManager()
