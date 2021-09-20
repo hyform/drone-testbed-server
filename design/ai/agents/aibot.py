@@ -19,6 +19,7 @@ class AiBot():
         self.db_helper = db_helper
         self.name = name
         self.user= user
+        self.channel = None
 
         self.SEND = "send"
         self.RECEIVE = "receive"
@@ -27,11 +28,10 @@ class AiBot():
 
         self.saved_states = {}
 
-####        self.queue_time = 0
-####        self.channel = None
-####        self.channel_instance = None
-
         self.reset_preferece()
+
+    def set_channel(self, channel):
+        self.channel = channel
 
     def reset_preferece(self):
         self.command = None

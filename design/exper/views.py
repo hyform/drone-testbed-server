@@ -23,6 +23,7 @@ from exper.serializers import DigitalTwinSerializer
 from api.models import SessionTimer
 from datetime import datetime, timezone
 from ai.tasks import mediation_loop, human_mediation_loop
+#from ai.tasks import mediation_loop, human_mediation_loop, bot_loop
 from design.utilities import cache_bust
 from bot.tasks import bot_connect
 import logging
@@ -299,6 +300,12 @@ def session_status_play(request):
                         data = {}
                         data['session_id'] = session.id
                         mediation_loop.delay(data)
+
+                    #elif 'bot' in session.structure.name:
+                    #    print("Bot Timer")
+                    #    data = {}
+                    #    data['session_id'] = session.id
+                    #    bot_loop.delay(data)
 
                 elif session.status == Session.RUNNING:
                     new_status = Session.POSTSESSION

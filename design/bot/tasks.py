@@ -4,7 +4,7 @@ from celery.utils.log import get_task_logger
 from exper.models import UserPosition, Session, User
 from design.celery import app
 from django.conf import settings
-import websocket
+#import websocket
 import threading
 import time
 
@@ -57,5 +57,4 @@ def bot_connect(session_id, position_id):
                               on_close=on_close)
     wst = threading.Thread(target=ws.run_forever)
     #wst.daemon = True
-    wst.start()                     
-
+    wst.start()

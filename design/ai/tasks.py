@@ -18,6 +18,7 @@ from process.messaging import send_intervention
 from exper.models import Session
 from chat.models import Channel
 from api.models import SessionTimer
+from ai.agents.botmanager import BotManager
 
 import time
 
@@ -224,7 +225,7 @@ def evaluation(config, trajectory):
             trajectory_data.append(traj_data)
             current_line = current_line + 1
         out_data["trajectory"] = trajectory_data
-   
+
     # return out_data
 
     return out_data
@@ -278,7 +279,7 @@ def mediation(seg_num, seg_len, i, session_id, timestamp):
                 else:
                     # enter action branch
                     intervention_id = action_id
-                    
+
             else:
                 chat_data = MediationChatView().get_data(session_id=session_id, section_id=i-2)
                 # calculate comms z scores
@@ -291,7 +292,7 @@ def mediation(seg_num, seg_len, i, session_id, timestamp):
                 comm_scores[5] = (count_data['comms_pm']-mediation_means['comms_pm'][index])/mediation_ranges['comms_pm'][index]
                 comm_id = np.argmin(comm_scores) + 7
                 print('comm score id: ', comm_id)
-                    
+
                 if z_score_act > -1:
                     # enter comms branch
                     intervention_id = comm_id
@@ -356,6 +357,35 @@ def end_running(session_id, timestamp):
                                 }
                             )
 
+#@shared_task
+#def bot_timer(seg_num, seg_len, i, session_id, timestamp):
+#    print("bot_timer get session")
+    # This routine will call itself many times to determine the correct mediation to send out
+    # get the current session
+#    session = Session.objects.get(id=session_id)
+#    print("got session")
+#    running_timer = SessionTimer.objects.filter(session=session).filter(timer_type=SessionTimer.RUNNING_START).first()
+#    if session.status != Session.RUNNING or timestamp != str(running_timer.timestamp):
+#        print("Session restarted or no longer running, so exit mediation loop")
+#        return
+
+#    print("start", session.name, session.index)
+#    if i < seg_num:
+        # first step is to schedule the next time to call
+#        bot_timer.s(seg_num, seg_len, i+1, session_id, timestamp).apply_async(countdown=seg_len)
+        # we don't care about the first 2 times (time 0 and time 2.5 minutes)
+#        if i<2:
+#            BotManager.register_timed_event(session_id, "no")
+#            print('waiting for next interval')
+#        else:
+#            print("session start ", index)
+#            BotManager.register_timed_event(session_id, "iterate")
+#            print("session send ", index)
+            #send_intervention(None, intervention_id, session_id)
+
+#    return i
+
+
 @shared_task
 def mediation_loop(data):
     seg_num = settings.INTER_SEG_NUM
@@ -374,3 +404,13 @@ def human_mediation_loop(data):
     # Only need to schedule the end for human process manager
     running_timer = SessionTimer.objects.filter(session__id=data['session_id']).filter(timer_type=SessionTimer.RUNNING_START).first()
     end_running.s(data['session_id'], str(running_timer.timestamp)).apply_async(countdown=total_len)
+
+#@shared_task
+#def bot_loop(data):
+#    print("bot_loop")
+#    seg_num = settings.INTER_SEG_NUM
+#    seg_len = settings.INTER_SEG_LEN
+
+    # this routine will start up the mediation cycle
+#    running_timer = SessionTimer.objects.filter(session__id=data['session_id']).filter(timer_type=SessionTimer.RUNNING_START).first()
+#    bot_timer.s(seg_num, seg_len, 0, data['session_id'], str(running_timer.timestamp)).apply_async()

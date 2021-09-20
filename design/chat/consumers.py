@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 # Websocket for Experimenters in an organization
 class OrganizationConsumer(WebsocketConsumer):
-    def connect(self):        
+    def connect(self):
         self.user = self.scope['user']
         if self.user.profile.is_experimenter():
             self.accept()
@@ -461,6 +461,7 @@ class ChatConsumer(WebsocketConsumer):
         else:
             # Non-Experimenter, so all channels are their own
             st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=user.profile.team)).first()
+            session = st.session
             user_position = UserPosition.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(user=user)).first()
             if user_position:
                 position = user_position.position
@@ -510,8 +511,8 @@ class ChatConsumer(WebsocketConsumer):
                     designer_bot = UserPosition.objects.filter(session=session).filter(position__name="Design Specialist").first()
                     ops_bot = UserPosition.objects.filter(session=session).filter(position__name="Operations Specialist").first()
 
-                    bm.register_session_bot(st.session, designer_bot.user.name, channel)
-                    bm.register_session_bot(st.session, ops_bot.user.name, channel)
+                    bm.register_session_bot(st.session, designer_bot.user.username, channel)
+                    bm.register_session_bot(st.session, ops_bot.user.username, channel)
                     # send message to bot manager to indentify bots thta are listening on this channel
                     ####msgs, bot_user = bm.test_grammar_and_distribute(message, user.username, channel, st.session, channel_instance, self.channel_layer)
                     ##msgs = bm.test_grammar_and_distribute(message, user.username, channel, st.session)

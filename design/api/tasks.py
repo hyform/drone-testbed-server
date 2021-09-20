@@ -7,7 +7,7 @@ from ai.agents.adaptive_team_ai_updated_planner import AdaptiveTeamAIUpdatedPlan
 from exper.serializers import DigitalTwinSerializer
 from design.celery import app
 from django.conf import settings
-import websocket
+#import websocket
 import threading
 import time
 
@@ -64,5 +64,3 @@ def set_uncertainty_method(session_id, uncertainty_info):
     session = Session.objects.filter(id=session_id).first()
     t = AdaptiveTeamAIUpdatedPlanner()
     t.set_uncertainties(session, uncertainty_info)
-                    
-

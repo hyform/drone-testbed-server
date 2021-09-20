@@ -9,6 +9,7 @@ class BotManager():
     # dictionary that key bots by session id and origianl user name
     session_bot_twins = {}
 
+
     def __init__(self):
         print("init bot manager")
 
@@ -27,8 +28,10 @@ class BotManager():
                     if key not in BotManager.session_bot_twins:
                         if 'Design' in user_roles[usr]:
                             BotManager.session_bot_twins[key] = DesignerBot(usr, session, db_helper, db_helper.get_users()[usr])
+                            BotManager.session_bot_twins[key].set_channel(channel)
                         if 'Plan' in user_roles[usr]:
                             BotManager.session_bot_twins[key] = OpsBot(usr, session, db_helper, db_helper.get_users()[usr])
+                            BotManager.session_bot_twins[key].set_channel(channel)
 
 
 
@@ -88,7 +91,7 @@ class BotManager():
     def send_to_bots(self, s, user, channel, session):
 
         structure_name = session.structure.name
-        if "bot" not in structure_name:
+        if "Bot" not in structure_name:
             return []
 
         # register bots if needed
@@ -99,13 +102,14 @@ class BotManager():
                 others = db_helper.get_others_in_channel(session, channel, usr)
                 for other in others:
                     other_id = other.split("_")[1]
-                    if str(other_id) == "3" or str(other_id) == "5":            # add other id like 10 12, ect
-                        key = self.get_bot_key2(session, user, other)
-                        if key not in BotManager.session_bot_twins:
-                            if 'Design' in user_roles[usr]:
-                                BotManager.session_bot_twins[key] = DesignerBot(usr, session, db_helper, db_helper.get_users()[usr])
-                            if 'Plan' in user_roles[usr]:
-                                BotManager.session_bot_twins[key] = OpsBot(usr, session, db_helper, db_helper.get_users()[usr])
+                    key = self.get_bot_key2(session, user, other)
+                    if key not in BotManager.session_bot_twins:
+                        if 'Design' in user_roles[usr]:
+                            BotManager.session_bot_twins[key] = DesignerBot(usr, session, db_helper, db_helper.get_users()[usr])
+                            BotManager.session_bot_twins[key].set_channel(channel)
+                        if 'Plan' in user_roles[usr]:
+                            BotManager.session_bot_twins[key] = OpsBot(usr, session, db_helper, db_helper.get_users()[usr])
+                            BotManager.session_bot_twins[key].set_channel(channel)
 
         # get responses
         bot_responses = {}
@@ -138,6 +142,32 @@ class BotManager():
 
         return bot_responses
 
+#    @staticmethod
+#    def register_timed_event(session_id, event_str):
+
+
+#        print("register timed event", session_id, event_str)
+        # register bots if needed
+#        session = Session.objects.filter(id=session_id).first()
+#        db_helper = DatabaseHelper(session)
+#        user_roles = db_helper.get_user_roles()
+#        for usr in user_roles:
+#            if usr == user:
+#                others = db_helper.get_others_in_channel(session, channel, usr)
+#                for other in others:
+#                    other_id = other.split("_")[1]
+#                    if str(other_id) == "3" or str(other_id) == "5":            # add other id like 10 12, ect
+#                        key = self.get_bot_key2(session, user, other)
+#                        if key not in BotManager.session_bot_twins:
+#                            if 'Design' in user_roles[usr]:
+#                                BotManager.session_bot_twins[key] = DesignerBot(usr, session, db_helper, db_helper.get_users()[usr])
+#                            if 'Plan' in user_roles[usr]:
+#                                BotManager.session_bot_twins[key] = OpsBot(usr, session, db_helper, db_helper.get_users()[usr])
+#        print("number of bots", len(BotManager.session_bot_twins))
+
+#        for key in BotManager.session_bot_twins:
+#            bot = BotManager.session_bot_twins[key]
+#            BotManager.session_bot_twins[key].receive_message(event_str, bot.channel, bot.user)
 
 
     # keys a bot using the session id and user name
