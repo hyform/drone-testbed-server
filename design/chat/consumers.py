@@ -501,48 +501,51 @@ class ChatConsumer(WebsocketConsumer):
                 #TODO: Add structure check here so bot stuff below only executes in correct structure
                 #check is like this, with check on structure name (whatever it is once added)
                 #then bot code below is under this if statement
-                #if session.structure.name == "Bot":
+                if session.structure.name == "Bot":
 
-                # any bots ?
-                bm = BotManager()
-                # we need to add a bot selection, and update the database to store users as bots
-                # for a test, just set a bot by name
-                ##bm.register_session_bot(st.session, "arl_3", channel)
-                ##bm.register_session_bot(st.session, "arl_5", channel)
-                # send message to bot manager to indentify bots thta are listening on this channel
-                ####msgs, bot_user = bm.test_grammar_and_distribute(message, user.username, channel, st.session, channel_instance, self.channel_layer)
-                ##msgs = bm.test_grammar_and_distribute(message, user.username, channel, st.session)
-                msgs = bm.send_to_bots(message, user.username, channel, st.session)
+                    # any bots ?
+                    bm = BotManager()
+                    # we need to add a bot selection, and update the database to store users as bots
+                    # for a test, just set a bot by name
+                    designer_bot = UserPosition.objects.filter(session=session).filter(position__name="Design Specialist").first()
+                    ops_bot = UserPosition.objects.filter(session=session).filter(position__name="Operations Specialist").first()
 
-                # if a bot returns a message
-                for bot_user in msgs:
+                    bm.register_session_bot(st.session, designer_bot.user.name, channel)
+                    bm.register_session_bot(st.session, ops_bot.user.name, channel)
+                    # send message to bot manager to indentify bots thta are listening on this channel
+                    ####msgs, bot_user = bm.test_grammar_and_distribute(message, user.username, channel, st.session, channel_instance, self.channel_layer)
+                    ##msgs = bm.test_grammar_and_distribute(message, user.username, channel, st.session)
+                    msgs = bm.send_to_bots(message, user.username, channel, st.session)
 
-                    # get the position name of the bot
-                    st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=bot_user.profile.team)).first()
-                    user_position = UserPosition.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(user=bot_user)).first()
-                    if user_position:
-                        position = user_position.position
-                        if position:
-                            sender_string = position.name
-
-                    for msg in msgs[bot_user]:
-                        # add object and datalog
-                        Message.objects.create(sender=bot_user, channel=channel, message=msg, session=st.session)
-                        DataLog.objects.create(user=bot_user, session=st.session, action=msg, type='chat: ' + channel.name + ' @' + channel_instance)
-
-                        if "intent" in msg:
-                            msg = "<b>" + msg + "</b>"
+                    # if a bot returns a message
+                    for bot_user in msgs:
 
                         # get the position name of the bot
-                        async_to_sync(self.channel_layer.group_send)(
-                            channel_instance,
-                            {
-                                'type': 'chat.message',
-                                'message': msg,
-                                'sender': sender_string,
-                                'channel': channel_instance
-                            }
-                        )
+                        st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=bot_user.profile.team)).first()
+                        user_position = UserPosition.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(user=bot_user)).first()
+                        if user_position:
+                            position = user_position.position
+                            if position:
+                                sender_string = position.name
+
+                        for msg in msgs[bot_user]:
+                            # add object and datalog
+                            Message.objects.create(sender=bot_user, channel=channel, message=msg, session=st.session)
+                            DataLog.objects.create(user=bot_user, session=st.session, action=msg, type='chat: ' + channel.name + ' @' + channel_instance)
+
+                            if "intent" in msg:
+                                msg = "<b>" + msg + "</b>"
+
+                            # get the position name of the bot
+                            async_to_sync(self.channel_layer.group_send)(
+                                channel_instance,
+                                {
+                                    'type': 'chat.message',
+                                    'message': msg,
+                                    'sender': sender_string,
+                                    'channel': channel_instance
+                                }
+                            )
 
 
             if channel.name == "DroneBot":
