@@ -34,7 +34,6 @@ class BotManager():
                             BotManager.session_bot_twins[key].set_channel(channel)
 
 
-
                 #key = self.get_bot_key(session, usr)
                 #if key not in BotManager.session_bot_twins:
                 #    if 'Design' in user_roles[usr]:
@@ -97,19 +96,6 @@ class BotManager():
         # register bots if needed
         db_helper = DatabaseHelper(session)
         user_roles = db_helper.get_user_roles()
-        for usr in user_roles:
-            if usr == user:
-                others = db_helper.get_others_in_channel(session, channel, usr)
-                for other in others:
-                    other_id = other.split("_")[1]
-                    key = self.get_bot_key2(session, user, other)
-                    if key not in BotManager.session_bot_twins:
-                        if 'Design' in user_roles[usr]:
-                            BotManager.session_bot_twins[key] = DesignerBot(usr, session, db_helper, db_helper.get_users()[usr])
-                            BotManager.session_bot_twins[key].set_channel(channel)
-                        if 'Plan' in user_roles[usr]:
-                            BotManager.session_bot_twins[key] = OpsBot(usr, session, db_helper, db_helper.get_users()[usr])
-                            BotManager.session_bot_twins[key].set_channel(channel)
 
         # get responses
         bot_responses = {}

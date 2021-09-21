@@ -14,7 +14,7 @@ class BotGrammar():
             # define boat grammar
             bot_grammar = r"""
 
-                sentence: want | working | ping | NO | UNSATISFIED | "bot" want | "bot" working | "bot" ping | "bot" NO | "bot" UNSATISFIED | ITERATE | "bot" ITERATE
+                sentence: want | working | ping | NO | UNSATISFIED | HELP | "bot" want | "bot" working | "bot" ping | "bot" NO | "bot" UNSATISFIED | ITERATE | "bot" ITERATE | "bot" HELP
                 want: ref? "want" want_cond+                                                            -> want
                 working: "working" want_cond+                                                           -> working
                 want_cond: PREFDIR? VARIABLE "of"? SIGNED_NUMBER? "and"?                                -> want_cond
@@ -27,6 +27,7 @@ class BotGrammar():
                 NO: "no"
                 UNSATISFIED: "unsatisfied"
                 ITERATE: "iterate"
+                HELP: "help"
 
                 SPECIAL_CHAR: "_" | "{" | "}" | "~" | "!" | "#" | "$" | "%" | "^" | "&" | "*" | "(" | ")" | "-" | "+" | "="
 
@@ -57,7 +58,7 @@ class BotGrammar():
             # define boat grammar
             bot_grammar = r"""
 
-                sentence: want | working | ping | NO | UNSATISFIED | "bot" want | "bot" working | "bot" ping | "bot" NO | "bot" UNSATISFIED | ITERATE | "bot" ITERATE
+                sentence: want | working | ping | NO | UNSATISFIED | HELP | "bot" want | "bot" working | "bot" ping | "bot" NO | "bot" UNSATISFIED | ITERATE | "bot" ITERATE | "bot" HELP
                 want: ref? "want" want_cond+ GEO*                                                       -> want
                 working: "working" want_cond+                                                           -> working
                 want_cond: PREFDIR? VARIABLE "of"? SIGNED_NUMBER? "and"?                                -> want_cond
@@ -71,6 +72,7 @@ class BotGrammar():
                 NO: "no"
                 UNSATISFIED: "unsatisfied"
                 ITERATE: "iterate"
+                HELP: "help"
 
                 SPECIAL_CHAR: "_" | "{" | "}" | "~" | "!" | "#" | "$" | "%" | "^" | "&" | "*" | "(" | ")" | "-" | "+" | "="
 

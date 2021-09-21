@@ -51,6 +51,15 @@ class OpsBot(AiBot):
 
     def receive_message(self, s, channel, usr):
 
+        if "help" in s:
+            self.response = []
+            self.response.append("Send commands with profit, cost, customers, values, and reference plans. Some examples are")
+            self.response.append("want higher profit")
+            self.response.append("want lower cost of 10000")
+            self.response.append("want higher profit and higher customers of 6")
+            self.response.append("@ref_plan_name : want higher profit")
+            return self.response
+
 
         # unsatisfied, keep old preference and command
         if "unsatisfied" in s:
@@ -276,16 +285,13 @@ class OpsBot(AiBot):
                 self.no_customers = submit_no_customers
 
                 # create some kind of id for now
-                id_num = 0
-                plan_query = self.db_helper.query_last_plan_id()
-                if plan_query:
-                    id_num = plan_query[0].id + 1
-                submit_json_plan['tag'] = self.name + "-" + str(id_num)
+                tag_id = "p" + str(int(self.profit)) + "_$" + str(int(self.cost)) + "_c" + str(int(self.no_customers))
+                submit_json_plan['tag'] = tag_id
 
                 # save a submitted design
                 self.db_helper.plan_submit(submit_json_plan)
 
-                self.response.append("I submitted a plan @" + self.name + "-" + str(id_num) + ", profit= " + str(round(self.profit, 1)) + ", cost=" + str(round(self.cost, 0)) + ", nocustomers = " + str(int(self.no_customers)) + ". Let me know of any feedback.")
+                self.response.append("I submitted a plan @" + tag_id + ", profit= " + str(round(self.profit, 1)) + ", cost=" + str(round(self.cost, 0)) + ", nocustomers = " + str(int(self.no_customers)) + ". Let me know of any feedback.")
 
                 # send a return message (update this) , just an example
                 return self.response
@@ -315,17 +321,14 @@ class OpsBot(AiBot):
 
             if random.random() < 0.5:
 
-                # create some kind of id for now
-                id_num = 0
-                plan_query = self.db_helper.query_last_plan_id()
-                if plan_query:
-                    id_num = plan_query[0].id + 1
-                json_obj_plan['tag'] = self.name + "-" + str(id_num)
+
+                tag_id = "p" + str(int(self.profit)) + "_$" + str(int(self.cost)) + "_c" + str(int(self.no_customers))
+                json_obj_plan['tag'] = tag_id
 
                 # save a submitted design
                 self.db_helper.plan_submit(json_obj_plan)
 
-                self.response.append("I could not create a plan that matched your request, but I submitted a plan @" + self.name + "-" + str(id_num) + ", profit=" + str(self.profit) + ", cost=" + str(self.cost) + ", customers=" + str(self.no_customers) + ". Let me know of any feedback.")
+                self.response.append("I could not create a plan that matched your request, but I submitted a plan @" + tag_id + ", profit=" + str(self.profit) + ", cost=" + str(self.cost) + ", customers=" + str(self.no_customers) + ". Let me know of any feedback.")
 
                 # send a return message (update this) , just an example
                 return self.response

@@ -513,9 +513,6 @@ class ChatConsumer(WebsocketConsumer):
 
                     bm.register_session_bot(st.session, designer_bot.user.username, channel)
                     bm.register_session_bot(st.session, ops_bot.user.username, channel)
-                    # send message to bot manager to indentify bots thta are listening on this channel
-                    ####msgs, bot_user = bm.test_grammar_and_distribute(message, user.username, channel, st.session, channel_instance, self.channel_layer)
-                    ##msgs = bm.test_grammar_and_distribute(message, user.username, channel, st.session)
                     msgs = bm.send_to_bots(message, user.username, channel, st.session)
 
                     # if a bot returns a message
@@ -543,7 +540,7 @@ class ChatConsumer(WebsocketConsumer):
                                 {
                                     'type': 'chat.message',
                                     'message': msg,
-                                    'sender': sender_string,
+                                    'sender': "Bot",
                                     'channel': channel_instance
                                 }
                             )

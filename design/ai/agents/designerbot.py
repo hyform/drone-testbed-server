@@ -47,6 +47,16 @@ class DesignerBot(AiBot):
 ####    def receive_message(self, s, channel, channel_instance, channel_layer):
     def receive_message(self, s, channel, usr):
 
+        if "help" in s:
+            self.response = []
+            self.response.append("Send commands with range, capacity, cost, values, and reference drones. Some examples are")
+            self.response.append("want higher range")
+            self.response.append("want lower cost of 4000")
+            self.response.append("want higher range and higher capacity of 20")
+            self.response.append("@ref_drone_name : want higher range")
+            return self.response
+
+
         if "unsatisfied" in s:
             self.response = []
             self.response.append("Can you provide guidance on what you are unsatisfied about with respect to range, capacity, or cost ? ")
@@ -216,15 +226,12 @@ class DesignerBot(AiBot):
 
                 self.saved_states[usr] = [self.config, self.range, self.capacity, self.cost, self.velocity]
 
-                # get an id for the vehicle submit
-                id_num = 0
-                veh_query = self.db_helper.query_last_vehicle_id()
-                if veh_query:
-                    id_num = veh_query[0].id + 1
+                tag_id = "r" + str(int(self.range)) + "_c" + str(int(self.capacity)) + "_$" + str(int(self.cost))
 
-                    self.db_helper.submit_vehicle_db(self.name + "-" + str(id_num), self.config, self.range, self.capacity, self.cost, self.velocity)
-                    self.response.append("I submitted a drone design @" + self.name + "-" + str(id_num) + ", range= " + str(round(self.range, 1)) + ", capacity=" + str(round(self.capacity, 0)) + ", cost = " + str(int(self.cost)) + ". Let me know of any feedback.")
-                    return self.response  # time delay
+                # get an id for the vehicle submit
+                self.db_helper.submit_vehicle_db(tag_id, self.config, self.range, self.capacity, self.cost, self.velocity)
+                self.response.append("I submitted a drone design @" + tag_id +", range= " + str(round(self.range, 1)) + ", capacity=" + str(round(self.capacity, 0)) + ", cost = " + str(int(self.cost)) + ". Let me know of any feedback.")
+                return self.response  # time delay
 
             # we could not find a feasible design, but we will submit our last state anyways, tune the 0.5
             if random.random() < 0.5:
@@ -238,15 +245,11 @@ class DesignerBot(AiBot):
 
                 self.saved_states[usr] = [self.config, self.range, self.capacity, self.cost, self.velocity]
 
-                # get an id for the vehicle submit
-                id_num = 0
-                veh_query = self.db_helper.query_last_vehicle_id()
-                if veh_query:
-                    id_num = veh_query[0].id + 1
+                tag_id = "r" + str(int(self.range)) + "_c" + str(int(self.capacity)) + "_$" + str(int(self.cost))
 
-                    self.db_helper.submit_vehicle_db(self.name + "-" + str(id_num), self.config, self.range, self.capacity, self.cost, self.velocity)
-                    self.response.append("I could not create a drone that matched your request, but I submitted a drone design @" + self.name + "-" + str(id_num) + ", range=" + str(self.range)+ ", capacity=" + str(self.capacity) + ", cost=" + str(self.cost) + ". Let me know of any feedback.")
-                    return self.response  # time delay
+                self.db_helper.submit_vehicle_db(tag_id, self.config, self.range, self.capacity, self.cost, self.velocity)
+                self.response.append("I could not create a drone that matched your request, but I submitted a drone design @" + tag_id + ", range=" + str(self.range)+ ", capacity=" + str(self.capacity) + ", cost=" + str(self.cost) + ". Let me know of any feedback.")
+                return self.response  # time delay
 
             # reset or state to the last design or the referenced vehicle in the command
             self.range = last_range
