@@ -46,7 +46,8 @@ for organization in organizations:
             link="/static/docs/bot/designbot_tutorial.pdf",
             link_type=4,
             structure=structure_process,
-            position=pos_des_1
+            position=pos_des_1,
+            org=organization
             )
 
         CustomLinks.objects.create(
@@ -54,5 +55,6 @@ for organization in organizations:
             link="/static/docs/bot/opsbot_tutorial.pdf",
             link_type=4,
             structure=structure_process,
-            position=pos_ops_1
+            position=pos_ops_1,
+            org=organization
             )
