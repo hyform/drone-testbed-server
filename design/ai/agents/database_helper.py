@@ -40,9 +40,11 @@ class DatabaseHelper:
         channel_positions = ChannelPosition.objects.filter(Q(channel=channel))
         others = []
         for channel_pos in channel_positions:
-            user_name = UserPosition.objects.filter(Q(position=channel_pos.position)&Q(session=session)).first().user.username
-            if user_name not in sender:
-                others.append(user_name)
+            user_position = UserPosition.objects.filter(Q(position=channel_pos.position)&Q(session=session)).first()
+            if user_position:
+                user_name = user_position.user.username
+                if user_name not in sender:
+                    others.append(user_name)
         return others
 
     # gets the user roles (ex. designer, ops planner, ...)
