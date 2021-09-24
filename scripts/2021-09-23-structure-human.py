@@ -7,12 +7,7 @@ roleBusiness = Role.objects.filter(name="Business").first()
 roleOps = Role.objects.filter(name="OpsPlanner").first()
 roleDesign = Role.objects.filter(name="Designer").first()
 
-structureTest = Structure.objects.filter(name="Fall 2021 Bot").first()
-if structureTest:
-    structureTest.name=("DON'T USE")
-    structureTest.save()
-
-structure_process = Structure.objects.create(name="Fall 2021 Bot")
+structure_process = Structure.objects.create(name="Fall 2021 Human")
 pos_des_1 = Position.objects.create(name="Design Manager", structure=structure_process, role=roleDesign)
 pos_des_2 = Position.objects.create(name="Design Specialist", structure=structure_process, role=roleDesign)
 pos_ops_1 = Position.objects.create(name="Operations Manager", structure=structure_process, role=roleOps)
@@ -37,24 +32,3 @@ GroupPosition.objects.create(group=group_All, position=pos_des_2, primary=True)
 GroupPosition.objects.create(group=group_All, position=pos_ops_1, primary=True)
 GroupPosition.objects.create(group=group_All, position=pos_ops_2, primary=True)
 GroupPosition.objects.create(group=group_All, position=pos_bus, primary=True)
-
-organizations = Organization.objects.all()
-for organization in organizations:
-    if organization.name == "ARL" or organization.name == "PSU" or organization.name == "PSU 2" or organization.name == "CMU" or organization.name == "CMU 2":
-        CustomLinks.objects.create(
-            text="Designer Bot Tutorial",
-            link="/static/docs/bot/designbot_tutorial.pdf",
-            link_type=4,
-            structure=structure_process,
-            position=pos_des_1,
-            org=organization
-            )
-
-        CustomLinks.objects.create(
-            text="Operations Planner Bot Tutorial",
-            link="/static/docs/bot/opsbot_tutorial.pdf",
-            link_type=4,
-            structure=structure_process,
-            position=pos_ops_1,
-            org=organization
-            )
