@@ -137,7 +137,7 @@ def ateams_experiment(request):
                         exercises[exercise] = exercise_sessions
 
                 markets = Market.objects.all()
-                structures = Structure.objects.all()
+                structures = Structure.objects.exclude(name="DON'T USE")                
 
                 sorted_all_users = collections.OrderedDict()
                 for key, value in sorted(all_users.items()):
