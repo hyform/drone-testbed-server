@@ -301,11 +301,11 @@ def session_status_play(request):
                         data['session_id'] = session.id
                         mediation_loop.delay(data)
 
-                    #elif 'bot' in session.structure.name:
-                    #    print("Bot Timer")
-                    #    data = {}
-                    #    data['session_id'] = session.id
-                    #    bot_loop.delay(data)
+                    elif 'Bot' in session.structure.name:
+                        print("Bot Timer")
+                        data = {}
+                        data['session_id'] = session.id
+                        #bot_loop.delay(data)
 
                 elif session.status == Session.RUNNING:
                     new_status = Session.POSTSESSION
@@ -497,7 +497,7 @@ def create_session_group(request):
 
             # If we have a tutorial, then add the base vehicle to the second session since nothing will be copied over
             # We are assuming only one tutorial can exist
-            if have_tutorial and sessionIndex == 2:                
+            if have_tutorial and sessionIndex == 2:
                 baseConfig = "*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3"
                 Vehicle.objects.create(tag="base", config=baseConfig, result="Success", range=10.0, velocity=20.0, cost=3470.20043945312, payload=5, group=warehouseGroup, session=newSession)
 

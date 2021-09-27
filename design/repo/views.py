@@ -32,6 +32,7 @@ import numpy as np
 from sklearn.decomposition import TruncatedSVD
 from scipy.spatial.distance import pdist, squareform
 import logging
+from ai.agents.botmanager import BotManager
 
 logger = logging.getLogger(__name__)
 
@@ -256,10 +257,12 @@ class DataLogList(generics.CreateAPIView):
             log = str(serializer)
             action_val = serializer.validated_data.get('action')
             if action_val:
+                if "Open" in action_val:
+                    BotManager.set_metrics_From_open(st.session.id, user.username, action_val)
                 values = action_val.split(';')
                 length = len(values)
                 if length > 0:
-                    # should be more specific, but client source strings aren't consistent                    
+                    # should be more specific, but client source strings aren't consistent
                     first = action_val
                     action = None
                     ITERATE_ON_DESIGN = "Iterate on Design"
@@ -270,11 +273,11 @@ class DataLogList(generics.CreateAPIView):
                     SUBMIT_PLAN = "Submit Plan"
 
                     # temporary checks until we can send better messages from the client
-                    if "ToggleCWMotor" in first: 
+                    if "ToggleCWMotor" in first:
                         action = "Iterate on Design"
-                    elif "ScaleUp" in first:  
+                    elif "ScaleUp" in first:
                         action = "Iterate on Design"
-                    elif "AssemblyHandle" in first:  
+                    elif "AssemblyHandle" in first:
                         action = "Iterate on Design"
                     elif "Evaluate" in first:
                         action = "Evaluate/Submit Design"
@@ -282,57 +285,57 @@ class DataLogList(generics.CreateAPIView):
                         action = "Iterate on Design"
                     elif "SubmittingToDB" in first:
                         action = "Evaluate/Submit Design"
-                    elif "ToggleFoil" in first:  
+                    elif "ToggleFoil" in first:
                         action = "Iterate on Design"
-                    elif "ToggleStructure" in first:  
+                    elif "ToggleStructure" in first:
                         action = "Iterate on Design"
-                    elif "CapacityInput" in first:  
+                    elif "CapacityInput" in first:
                         action = "Iterate on Design"
-                    elif "SelectedAIDesign" in first:  
+                    elif "SelectedAIDesign" in first:
                         action = "Run Design Agent"
-                    elif "HotKeyComponentToMotorCCW" in first:  
+                    elif "HotKeyComponentToMotorCCW" in first:
                         action = "Iterate on Design"
-                    elif "HotKeyComponentToMotorCW" in first:  
+                    elif "HotKeyComponentToMotorCW" in first:
                         action = "Iterate on Design"
-                    elif "ResetView" in first:  
+                    elif "ResetView" in first:
                         action = "Iterate on Design"
-                    elif "HotKeyComponentToFoil" in first: 
+                    elif "HotKeyComponentToFoil" in first:
                         action = "Iterate on Design"
-                    elif "HotKeyComponentToStructure'" in first:  
+                    elif "HotKeyComponentToStructure'" in first:
                         action = "Iterate on Design"
-                    elif "ManualPathAdded" in first:  
+                    elif "ManualPathAdded" in first:
                         action = "Iterating on path"
-                    elif "ManualPathRemove" in first: 
+                    elif "ManualPathRemove" in first:
                         action = "Iterating on path"
-                    elif "OrthogonalCamera" in first:  
+                    elif "OrthogonalCamera" in first:
                         action = "Iterating on path"
-                    elif "PathMetrics" in first:  
+                    elif "PathMetrics" in first:
                         action = "Iterating on path"
-                    elif "PerspectiveCamera" in first:  
+                    elif "PerspectiveCamera" in first:
                         action = "Iterating on path"
-                    elif "RemoveAllPaths" in first:  
+                    elif "RemoveAllPaths" in first:
                         action = "Iterating on path"
-                    elif "ResetView" in first:  
+                    elif "ResetView" in first:
                         action = "Iterating on path"
-                    elif "RunPathAgent" in first:  
+                    elif "RunPathAgent" in first:
                         action = "Running AI"
-                    elif "SelectPath" in first:  
+                    elif "SelectPath" in first:
                         action = "Iterating on path"
-                    elif "SubmitPlanToDB" in first:  
+                    elif "SubmitPlanToDB" in first:
                         action = "Submit Plan"
-                    elif "SubmitScenario" in first:  
+                    elif "SubmitScenario" in first:
                         action = "Submit Plan"
-                    elif "ToggleInfoPanel" in first:  
+                    elif "ToggleInfoPanel" in first:
                         action = "Iterating on path"
-                    elif "ToggleWeightIcons" in first:  
+                    elif "ToggleWeightIcons" in first:
                         action = "Iterating on path"
-                    elif "VehicleDuplicated" in first:  
+                    elif "VehicleDuplicated" in first:
                         action = "Iterating on path"
-                    elif "VehiclePathRemoved" in first:  
+                    elif "VehiclePathRemoved" in first:
                         action = "Iterating on path"
-                    elif "VehicleToggle'" in first:  
+                    elif "VehicleToggle'" in first:
                         action = "Iterating on path"
-                    
+
                     if action:
                         up = UserPosition.objects.filter(Q(user=user)&Q(session=st.session)).first()
                         if up:
@@ -367,7 +370,7 @@ class MediationCountView(APIView):
         data ={"session_id" : session_id}
         session = Session.objects.get(id=data["session_id"])
         start_time = SessionTimer.objects.filter(session=session).filter(timer_type=SessionTimer.RUNNING_START).first()
-        
+
         # Calculate the start and end times for the desired interval
         starttime = start_time.timestamp + (section_id-1)*timedelta(minutes=2, seconds=30)
 
@@ -391,7 +394,7 @@ class MediationCountView(APIView):
         planner_logs = logs.filter(action__startswith='planner')
         designer_logs = logs.filter(action__startswith='designer')
         act_iter_commands = ['AssemblyChange', 'AssemblyHandle', 'CapacityInput', 'HotKeyComponentToEmpty', 'HotKeyComponentToMotorCCW', 'HotKeyComponentToMotorCW',
-            'HotKeyComponentToFoil', 'HotKeyComponentToStructure', 'RemovedComponent', 'RemovedConnector', 'ResetDesign', 'ResetView', 'ScaleDown', 'ScaleUp', 
+            'HotKeyComponentToFoil', 'HotKeyComponentToStructure', 'RemovedComponent', 'RemovedConnector', 'ResetDesign', 'ResetView', 'ScaleDown', 'ScaleUp',
             'ToggleCCWMotor', 'ToggleCWMotor', 'ToggleEmpty', 'ToggleFoil', 'ToggleInfoPanel', 'ToggleStructure']
         act_submit_commands = ['Evaluate', 'Evaluated', 'SubmittingToDB', 'SubmitToDB']
         act_AI_commands = ['RunDesignAgent', 'SelectedAIDesign']
@@ -421,7 +424,7 @@ class MediationChatView(APIView):
         data ={"session_id" : session_id}
         session = Session.objects.get(id=data["session_id"])
         start_time = SessionTimer.objects.filter(session=session).filter(timer_type=SessionTimer.RUNNING_START).first()
-        
+
         # Calculate the start and end times for the desired interval
         starttime = start_time.timestamp + (section_id-1)*timedelta(minutes=2, seconds=30)
 
@@ -440,7 +443,7 @@ class MediationChatView(APIView):
             'price', 'profit', 'range', 'requirement', 'route', 'speed', 'velocity', 'warehouse', 'weight']
         strategy_words = ['add', 'balance', 'big', 'change', 'cheap', 'cluster', 'combine', 'communicate', 'compare', 'cover', 'create',
             'decrease', 'develop', 'evaluate', 'expand', 'far', 'fast', 'focus', 'generate', 'heavy', 'improve', 'increase', 'integrate',
-            'large', 'limit', 'little', 'long', 'lot', 'low', 'maximize', 'operate', 'optimal', 'optimize', 'prioritize', 'quick', 
+            'large', 'limit', 'little', 'long', 'lot', 'low', 'maximize', 'operate', 'optimal', 'optimize', 'prioritize', 'quick',
             'reduce', 'refresh', 'sacrifice', 'short', 'small', 'strategy', 'submit', 'update']
         # we need to match the word stems
         parameter_stems = [porter.stem(word) for word in parameter_words]
@@ -448,7 +451,7 @@ class MediationChatView(APIView):
         roles = ['Business', 'OpsPlanner', 'Designer']
         ups = UserPosition.objects.filter(Q(session=session)&Q(position__role__name__in=roles))
         all_chats=[]
-        # word freq is a dictionary that holds a total count of words for each 
+        # word freq is a dictionary that holds a total count of words for each
         wordfreq = {}
         for up in ups:
             # print(up.user)
@@ -483,7 +486,7 @@ class MediationChatView(APIView):
                 else:
                     wordfreq[token] += 1
             all_chats.append(stem_tokens)
-        # count parameter and strategy word frequency 
+        # count parameter and strategy word frequency
         parameter_count = 0
         strategy_count = 0
         for stem in wordfreq.keys():
@@ -491,12 +494,12 @@ class MediationChatView(APIView):
                 parameter_count += wordfreq[stem]
             if stem in strategy_stems:
                 strategy_count += wordfreq[stem]
-        
+
         # create bag of words matrix and tf-idf matrix
         # we have a complete list of words, a bag of words is a matrix that counts the occurance of each
         # word in each document
         # the tf-idf is the term frequency - inverse document frequency matrix for each word in each document
-        # it is simple term count in each document (tf) times the inverse document frequency is the 
+        # it is simple term count in each document (tf) times the inverse document frequency is the
         # log((total # documents)/(# documents term appears)). The tf-idf is simply the tf * idf
         # assuming the log function is base 10
         tf = np.zeros((len(all_chats), len(wordfreq)))
@@ -511,7 +514,7 @@ class MediationChatView(APIView):
                 i += 1
         total_docs = i
         total_terms = j
-        # remove rows of zeros  
+        # remove rows of zeros
         tf = np.delete(tf, range(total_docs,len(all_chats)), 0)
 
         # print('total docs: ', total_docs)
@@ -562,7 +565,7 @@ class MediationChatView(APIView):
 
     def correctSpelling(self, words):
         # auto-correct words
-        enc = spellchecker.get_dic_encoding() 
+        enc = spellchecker.get_dic_encoding()
         corrected = []
         for w in words:
             ok = spellchecker.spell(w)   # check spelling
@@ -577,7 +580,7 @@ class MediationChatView(APIView):
                 corrected.append(w)   # this word is correct
 
         return corrected
-           
+
 
 
 

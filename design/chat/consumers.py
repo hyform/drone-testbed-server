@@ -209,6 +209,17 @@ class ChatConsumer(WebsocketConsumer):
                                 }))
         else:
             st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=self.user.profile.team)).first()
+
+            if st.session.structure.name == "Fall 2021 Bot":
+
+                # any bots ?
+                self.bm = BotManager()
+                # we need to add a bot selection, and update the database to store users as bots
+                # for a test, just set a bot by name
+                self.designer_bot = UserPosition.objects.filter(session=st.session).filter(position__name="Design Specialist").first()
+                self.ops_bot = UserPosition.objects.filter(session=st.session).filter(position__name="Operations Specialist").first()
+
+
             if st:
                 help_channel = Channel.objects.filter(name="Help").first()
                 help_instance = str(help_channel.id) + "_" + str(self.user.id) + "___" + str(st.session.id)
@@ -219,6 +230,12 @@ class ChatConsumer(WebsocketConsumer):
                     for channel in user_channels:
                         channel_instance = str(channel.id) + "___" + str(st.session.id)
                         self.channels[channel_instance] = channel
+                        if st.session.structure.name == "Fall 2021 Bot":
+                            if 'Design' in channel.name:
+                                self.bm.register_session_bot(st.session, self.designer_bot.user.username, channel)
+                            if 'Operation' in channel.name:
+                                self.bm.register_session_bot(st.session, self.ops_bot.user.username, channel)
+
                     self.channels[help_instance] = help_channel
                 elif st.session.status == Session.SETUP:
                     #TODO: possibly add org level setting for including setup chat
@@ -276,6 +293,7 @@ class ChatConsumer(WebsocketConsumer):
                             'channel': help_instance
                         })
         if st:
+
             # Send out the old messages to this user
             chat_logs = DataLog.objects.filter(session=st.session).filter(Q(type__startswith="chat: ") | Q(type__startswith="intervention: ")).order_by('time')
             for chat_log in chat_logs:
@@ -504,16 +522,7 @@ class ChatConsumer(WebsocketConsumer):
                 #then bot code below is under this if statement
                 if session.structure.name == "Fall 2021 Bot":
 
-                    # any bots ?
-                    bm = BotManager()
-                    # we need to add a bot selection, and update the database to store users as bots
-                    # for a test, just set a bot by name
-                    designer_bot = UserPosition.objects.filter(session=session).filter(position__name="Design Specialist").first()
-                    ops_bot = UserPosition.objects.filter(session=session).filter(position__name="Operations Specialist").first()
-
-                    bm.register_session_bot(st.session, designer_bot.user.username, channel)
-                    bm.register_session_bot(st.session, ops_bot.user.username, channel)
-                    msgs = bm.send_to_bots(message, user.username, channel, st.session)
+                    msgs = self.bm.send_to_bots(message, user.username, channel, st.session)
 
                     # if a bot returns a message
                     for bot_user in msgs:

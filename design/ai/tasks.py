@@ -358,21 +358,21 @@ def end_running(session_id, timestamp):
                             )
 
 #@shared_task
-#def bot_timer(seg_num, seg_len, i, session_id, timestamp):
-#    print("bot_timer get session")
+def bot_timer(seg_num, seg_len, i, session_id, timestamp):
+    print("bot_timer get session")
     # This routine will call itself many times to determine the correct mediation to send out
     # get the current session
-#    session = Session.objects.get(id=session_id)
-#    print("got session")
-#    running_timer = SessionTimer.objects.filter(session=session).filter(timer_type=SessionTimer.RUNNING_START).first()
-#    if session.status != Session.RUNNING or timestamp != str(running_timer.timestamp):
-#        print("Session restarted or no longer running, so exit mediation loop")
-#        return
+    session = Session.objects.get(id=session_id)
+    print("got session")
+    running_timer = SessionTimer.objects.filter(session=session).filter(timer_type=SessionTimer.RUNNING_START).first()
+    if session.status != Session.RUNNING or timestamp != str(running_timer.timestamp):
+        print("Session restarted or no longer running, so exit mediation loop")
+        return
 
-#    print("start", session.name, session.index)
-#    if i < seg_num:
+    print("start", session.name, session.index)
+    if i < seg_num:
         # first step is to schedule the next time to call
-#        bot_timer.s(seg_num, seg_len, i+1, session_id, timestamp).apply_async(countdown=seg_len)
+        bot_timer.s(seg_num, seg_len, i+1, session_id, timestamp).apply_async(countdown=seg_len)
         # we don't care about the first 2 times (time 0 and time 2.5 minutes)
 #        if i<2:
 #            BotManager.register_timed_event(session_id, "no")
@@ -405,12 +405,12 @@ def human_mediation_loop(data):
     running_timer = SessionTimer.objects.filter(session__id=data['session_id']).filter(timer_type=SessionTimer.RUNNING_START).first()
     end_running.s(data['session_id'], str(running_timer.timestamp)).apply_async(countdown=total_len)
 
-#@shared_task
-#def bot_loop(data):
-#    print("bot_loop")
-#    seg_num = settings.INTER_SEG_NUM
-#    seg_len = settings.INTER_SEG_LEN
+@shared_task
+def bot_loop(data):
+    print("bot_loop")
+    seg_num = settings.INTER_SEG_NUM
+    seg_len = settings.INTER_SEG_LEN
 
     # this routine will start up the mediation cycle
-#    running_timer = SessionTimer.objects.filter(session__id=data['session_id']).filter(timer_type=SessionTimer.RUNNING_START).first()
-#    bot_timer.s(seg_num, seg_len, 0, data['session_id'], str(running_timer.timestamp)).apply_async()
+    running_timer = SessionTimer.objects.filter(session__id=data['session_id']).filter(timer_type=SessionTimer.RUNNING_START).first()
+    bot_timer.s(seg_num, seg_len, 0, data['session_id'], str(running_timer.timestamp)).apply_async()

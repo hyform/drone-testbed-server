@@ -2,6 +2,9 @@ from .botgrammar import BotGrammar
 from .database_helper import DatabaseHelper
 from .designerbot import DesignerBot
 from .opsbot import OpsBot
+from django.db.models import Q
+import json
+from repo.models import Vehicle, Plan
 
 # manages all bots for all sessions
 class BotManager():
@@ -127,6 +130,38 @@ class BotManager():
                         bot_responses[db_helper.get_users()[other]] = ["intent not understood"]
 
         return bot_responses
+
+
+    @staticmethod
+    def set_metrics_From_open(session_id, usr, action):
+        try:
+            for key in BotManager.session_bot_twins:
+                if usr in key:
+                    if 'Profit' in action:
+                        opsbot = BotManager.session_bot_twins[key]
+                        profit = float(action.split("Profit,")[1].split(",")[0])
+                        startupcost = float(action.split("StartUpCost,")[1].split(",")[0])
+                        no_customers = float(action.split("Number of Deliveries,")[1].split(",")[0])
+                        config_json = action.split(";")[2]
+                        config_json_fix = config_json.replace("\'","\"").replace("True", "true").replace("False", "false")
+                        config = json.dumps(json.loads(config_json_fix)["paths"])
+                        json_obj_plan = json.loads(config)
+                        plan_str = json.dumps(json_obj_plan)
+                        opsbot.profit = profit
+                        opsbot.cost = startupcost
+                        opsbot.no_customers = no_customers
+                        opsbot.config = config
+                    else:
+                        designbot = BotManager.session_bot_twins[key]
+                        config = action.split(";")[3]
+                        vehicle = Vehicle.objects.filter(Q(config=config, session_id=session_id)).first()
+                        designbot.range = vehicle.range
+                        designbot.capacity = vehicle.payload
+                        designbot.cost = vehicle.cost
+                        designbot.config = vehicle.config
+
+        except Exception as e:
+            print("exception", e)
 
 #    @staticmethod
 #    def register_timed_event(session_id, event_str):

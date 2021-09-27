@@ -18,7 +18,7 @@ class BotGrammar():
                 want: ref? "want" want_cond+                                                            -> want
                 working: "working" want_cond+                                                           -> working
                 want_cond: PREFDIR? VARIABLE "of"? SIGNED_NUMBER? "and"?                                -> want_cond
-                PREFDIR: "lower" | "higher"
+                PREFDIR: "lower" | "higher" | "less" | "more"
                 VARIABLE: "range" | "capacity" | "cost"
                 ref: "@" REF_CHAR+ ":"?                                                                 -> reference
                 REF_CHAR : LETTER
@@ -62,7 +62,7 @@ class BotGrammar():
                 want: ref? "want" want_cond+ GEO*                                                       -> want
                 working: "working" want_cond+                                                           -> working
                 want_cond: PREFDIR? VARIABLE "of"? SIGNED_NUMBER? "and"?                                -> want_cond
-                PREFDIR: "lower" | "higher"
+                PREFDIR: "lower" | "higher" | "less" | "more"
                 VARIABLE: "cost" | "profit" | "customers"
                 ref: "@" REF_CHAR+ ":"?                                                                 -> reference
                 REF_CHAR : LETTER
