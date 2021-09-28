@@ -139,7 +139,10 @@ class BotManager():
     def set_metrics_From_open(session_id, usr, action):
         logger.debug("set_metrics_From_open, action = " + str(action))
         try:
+            logger.debug("set_metrics_From_open, BotManager.session_bot_twins = " + str(BotManager.session_bot_twins))
             for key in BotManager.session_bot_twins:
+                logger.debug("set_metrics_From_open, usr = " + str(usr))
+                logger.debug("set_metrics_From_open, key = " + str(key))
                 if usr in key:
                     if 'Profit' in action:
                         logger.debug("set_metrics_From_open: if 'Profit' in action == true")
