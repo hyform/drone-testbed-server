@@ -29,6 +29,7 @@ from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 import hunspell
 import numpy as np
+import json
 from sklearn.decomposition import TruncatedSVD
 from scipy.spatial.distance import pdist, squareform
 import logging
@@ -249,6 +250,39 @@ class DataLogList(generics.CreateAPIView):
     # queryset = DataLog.objects.all()
     serializer_class = DataLogSerializer
 
+    def update_bot(self, session_id, usr, action):
+        try:
+            print("session_bot_twins", len(BotManager.session_bot_twins))
+            for key in BotManager.session_bot_twins:
+                if usr in key:
+                    if 'Profit' in action:
+                        opsbot = BotManager.session_bot_twins[key]
+                        profit = float(action.split("Profit,")[1].split(",")[0])
+                        startupcost = float(action.split("StartUpCost,")[1].split(",")[0])
+                        no_customers = float(action.split("Number of Deliveries,")[1].split(",")[0])
+                        config_json = action.split(";")[2]
+                        config_json_fix = config_json.replace("\'","\"").replace("True", "true").replace("False", "false")
+                        config = json.dumps(json.loads(config_json_fix)["paths"])
+                        json_obj_plan = json.loads(config)
+                        plan_str = json.dumps(json_obj_plan)
+                        opsbot.profit = profit
+                        opsbot.cost = startupcost
+                        opsbot.no_customers = no_customers
+                        opsbot.config = config
+                        print("opsbot.profit ", opsbot.profit )
+                    else:
+                        designbot = BotManager.session_bot_twins[key]
+                        config = action.split(";")[3]
+                        vehicle = Vehicle.objects.filter(Q(config=config, session_id=session_id)).first()
+                        designbot.range = vehicle.range
+                        designbot.capacity = vehicle.payload
+                        designbot.cost = vehicle.cost
+                        designbot.config = vehicle.config
+                        print("designbot.range ", designbot.range )
+
+        except Exception as e:
+            print("exception", e)
+
     def perform_create(self, serializer):
         user = self.request.user
         st = SessionTeam.objects.filter(Q(session__status=1)&Q(team=user.profile.team)).first()
@@ -261,7 +295,7 @@ class DataLogList(generics.CreateAPIView):
                 logger.debug("perform_create: before if 'Open' in action_val:")
                 if "Open" in action_val:
                     logger.debug("perform_create: 'Open' in action_val == true")
-                    BotManager.set_metrics_From_open(st.session.id, user.username, action_val)
+                    self.update_bot(st.session.id, user.username, action_val)
                 logger.debug("perform_create: after if 'Open' in action_val:")
                 values = action_val.split(';')
                 length = len(values)
