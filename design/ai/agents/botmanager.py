@@ -5,6 +5,9 @@ from .opsbot import OpsBot
 from django.db.models import Q
 import json
 from repo.models import Vehicle, Plan
+import logging
+
+logger = logging.getLogger(__name__)
 
 # manages all bots for all sessions
 class BotManager():
@@ -134,10 +137,12 @@ class BotManager():
 
     @staticmethod
     def set_metrics_From_open(session_id, usr, action):
+        logger.debug("set_metrics_From_open, action = " + str(action))
         try:
             for key in BotManager.session_bot_twins:
                 if usr in key:
                     if 'Profit' in action:
+                        logger.debug("set_metrics_From_open: if 'Profit' in action == true")
                         opsbot = BotManager.session_bot_twins[key]
                         profit = float(action.split("Profit,")[1].split(",")[0])
                         startupcost = float(action.split("StartUpCost,")[1].split(",")[0])
@@ -152,6 +157,7 @@ class BotManager():
                         opsbot.no_customers = no_customers
                         opsbot.config = config
                     else:
+                        logger.debug("set_metrics_From_open: if 'Profit' in action == false")
                         designbot = BotManager.session_bot_twins[key]
                         config = action.split(";")[3]
                         vehicle = Vehicle.objects.filter(Q(config=config, session_id=session_id)).first()
@@ -159,9 +165,12 @@ class BotManager():
                         designbot.capacity = vehicle.payload
                         designbot.cost = vehicle.cost
                         designbot.config = vehicle.config
+                        logger.debug("range = " + str(vehicle.range))
 
         except Exception as e:
-            print("exception", e)
+            logger.error("exception", e)
+
+        logger.debug("set_metrics_From_open complete")
 
 #    @staticmethod
 #    def register_timed_event(session_id, event_str):

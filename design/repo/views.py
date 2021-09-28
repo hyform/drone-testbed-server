@@ -256,9 +256,13 @@ class DataLogList(generics.CreateAPIView):
             channel = 'm_' + str(st.session.id)
             log = str(serializer)
             action_val = serializer.validated_data.get('action')
+            logger.debug("perform_create: action = " + str(action_val))
             if action_val:
+                logger.debug("perform_create: before if 'Open' in action_val:")
                 if "Open" in action_val:
+                    logger.debug("perform_create: "Open" in action_val == true")
                     BotManager.set_metrics_From_open(st.session.id, user.username, action_val)
+                logger.debug("perform_create: after if 'Open' in action_val:")
                 values = action_val.split(';')
                 length = len(values)
                 if length > 0:
