@@ -78,6 +78,8 @@ class Vehicle(models.Model):
     velocity = models.FloatField()
     cost = models.FloatField()
     payload = models.FloatField()
+    valid = models.BooleanField(default=True)
+
 
 class Address(models.Model):
     x = models.FloatField()
@@ -121,6 +123,7 @@ class Plan(models.Model):
     scenario = models.ForeignKey(Scenario, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, null=True, on_delete=models.CASCADE)
     session = models.ForeignKey(Session, null=True, on_delete=models.CASCADE)
+    valid = models.BooleanField(default=True)
 
 class Path(models.Model):
     plan = models.ForeignKey(Plan, related_name='paths', null=True, on_delete=models.CASCADE)
@@ -143,7 +146,7 @@ class DataLog(models.Model):
     action = models.TextField()
     type = models.CharField(max_length=255, default='client')
 
-# Legacy tables 
+# Legacy tables
 # TODO: remove
 class VehicleDemo(models.Model):
     xmlstring = models.TextField()

@@ -543,6 +543,9 @@ class ChatConsumer(WebsocketConsumer):
                             if "intent" in msg:
                                 msg = "<b>" + msg + "</b>"
 
+                            if "Do you have any preference on" in msg:
+                                msg = "@" + user.username + " : " + msg
+
                             # get the position name of the bot
                             async_to_sync(self.channel_layer.group_send)(
                                 channel_instance,

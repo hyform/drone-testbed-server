@@ -88,7 +88,7 @@ class DatabaseHelper:
 
 
     # submit a vehicle to the database
-    def submit_vehicle_db(self, tag, config, range, capacity, cost, velocity):
+    def submit_vehicle_db(self, tag, config, range, capacity, cost, velocity, valid=True):
 
         # check for a vehicle with a similar tag and configuration
         vehicle_query = self.query_vehicles_with_tag(tag, config)
@@ -106,6 +106,7 @@ class DatabaseHelper:
             v.payload = capacity
             v.cost = cost
             v.velocity = velocity
+            v.valid = valid
             v.save()
 
             # for real time agents notify user of a new vehicle

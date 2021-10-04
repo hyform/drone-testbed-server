@@ -29,7 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
 class VehicleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vehicle
-        fields = ['id', 'tag', 'config', 'result', 'range', 'velocity', 'cost', 'payload']
+        fields = ['id', 'tag', 'config', 'result', 'range', 'velocity', 'cost', 'payload', 'valid']
 
 
 class AddressSerializer(serializers.ModelSerializer):
@@ -141,7 +141,7 @@ class PlanSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Plan
-        fields = ['id', 'tag', 'scenario', 'paths']
+        fields = ['id', 'tag', 'scenario', 'paths', 'valid']
         # read_only_fields = fields
 
 class Plan2Serializer(serializers.Serializer):

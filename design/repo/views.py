@@ -90,6 +90,20 @@ class VehicleDetail(generics.RetrieveUpdateDestroyAPIView):
         groups = GroupPosition.objects.filter(Q(position=up.position)&Q(position__structure=st.session.structure)).values('group')
         return Vehicle.objects.filter(group__in=groups, session=st.session)
 
+    def put(self,request,pk,format=None):
+        # grab the last version of the scenario
+        vehicle = Vehicle.objects.filter(id=pk).first()
+        vehicle.valid = True
+        vehicle.save()
+
+        user = self.request.user
+        st = SessionTeam.objects.filter(Q(session__status=1)&Q(team=user.profile.team)).first()
+        up = UserPosition.objects.filter(Q(user=user)&Q(session=st.session)).first()
+        gp = GroupPosition.objects.filter(Q(position=up.position)&Q(position__structure=st.session.structure)&Q(primary=True)).first()
+        new_vehicle_message(gp.group, st.session)
+
+        return Response(status=status.HTTP_201_CREATED)
+
 
 class ScenarioDetail(APIView):
     """
@@ -241,6 +255,20 @@ class PlanDetail(generics.RetrieveAPIView):
 
     queryset = Plan.objects.all()
     serializer_class = PlanSerializer
+
+    def put(self,request,pk,format=None):
+        # grab the last version of the scenario
+        plan = Plan.objects.filter(id=pk).first()
+        plan.valid = True
+        plan.save()
+
+        user = self.request.user
+        st = SessionTeam.objects.filter(Q(session__status=1)&Q(team=user.profile.team)).first()
+        up = UserPosition.objects.filter(Q(user=user)&Q(session=st.session)).first()
+        gp = GroupPosition.objects.filter(Q(position=up.position)&Q(position__structure=st.session.structure)&Q(primary=True)).first()
+        new_plan_message(gp.group, st.session, plan.tag)
+
+        return Response(status=status.HTTP_201_CREATED)
 
 
 class DataLogList(generics.CreateAPIView):

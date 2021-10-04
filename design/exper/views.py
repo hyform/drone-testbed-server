@@ -386,14 +386,15 @@ def session_status_archive(request):
                                 c.scenario = s
                                 c.save()
                     warehouse = Warehouse.objects.filter(session=next_session).first()
-                    for v in Vehicle.objects.filter(session=session).iterator():
-                        oldVehicleId = v.pk
-                        v.pk=None
-                        v.session=next_session
-                        if isTeam:
-                            v.group=group
-                        v.save()
-                        vehicleMap[oldVehicleId] = v
+                    if same_market or (session.market.name != "Market 3" and next_session.market.name != "Market 3"):
+                        for v in Vehicle.objects.filter(session=session).iterator():
+                            oldVehicleId = v.pk
+                            v.pk=None
+                            v.session=next_session
+                            if isTeam:
+                                v.group=group
+                            v.save()
+                            vehicleMap[oldVehicleId] = v
                     if same_market:
                         for p in Plan.objects.filter(session=session).iterator():
                             originalpk = p.pk

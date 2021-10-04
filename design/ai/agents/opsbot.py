@@ -272,6 +272,7 @@ class OpsBot(AiBot):
                         submit_no_customers = self.no_customers
                         submit_json_plan = json_obj_plan
 
+            no_shock = self.session.market.name != "Market 3"
             if submit_plan:
 
                 self.response = []
@@ -289,9 +290,13 @@ class OpsBot(AiBot):
                 submit_json_plan['tag'] = tag_id
 
                 # save a submitted design
-                self.db_helper.plan_submit(submit_json_plan)
+                plan_obj = self.db_helper.plan_submit(submit_json_plan)
+                plan_obj.valid = False
+                plan_obj.save()
 
                 self.response.append("I submitted a plan @" + tag_id + ", profit= " + str(round(self.profit, 1)) + ", cost=" + str(round(self.cost, 0)) + ", nocustomers = " + str(int(self.no_customers)) + ". Let me know of any feedback.")
+                if not no_shock:
+                    self.response.append("A team planner needs to evaluate this plan for it to become usuable")
 
                 # send a return message (update this) , just an example
                 return self.response
@@ -326,9 +331,14 @@ class OpsBot(AiBot):
                 json_obj_plan['tag'] = tag_id
 
                 # save a submitted design
-                self.db_helper.plan_submit(json_obj_plan)
+                plan_obj = self.db_helper.plan_submit(json_obj_plan)
+                plan_obj.valid = False
+                plan_obj.save()
 
                 self.response.append("I could not create a plan that matched your request, but I submitted a plan @" + tag_id + ", profit=" + str(self.profit) + ", cost=" + str(self.cost) + ", customers=" + str(self.no_customers) + ". Let me know of any feedback.")
+                if not no_shock:
+                    self.response.append("A team planner needs to evaluate this plan for it to become usuable")
+
 
                 # send a return message (update this) , just an example
                 return self.response

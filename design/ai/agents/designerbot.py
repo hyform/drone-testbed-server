@@ -228,9 +228,17 @@ class DesignerBot(AiBot):
 
                 tag_id = "r" + str(int(self.range)) + "_c" + str(int(self.capacity)) + "_$" + str(int(self.cost))
 
+                no_shock = self.session.market.name != "Market 3"
+
                 # get an id for the vehicle submit
-                self.db_helper.submit_vehicle_db(tag_id, self.config, self.range, self.capacity, self.cost, self.velocity)
+                self.db_helper.submit_vehicle_db(tag_id, self.config, self.range, self.capacity, self.cost, self.velocity, no_shock)
                 self.response.append("I submitted a drone design @" + tag_id +", range= " + str(round(self.range, 1)) + ", capacity=" + str(round(self.capacity, 0)) + ", cost = " + str(int(self.cost)) + ". Let me know of any feedback.")
+                if not no_shock:
+                    self.response.append("A team designer needs to evaluate this design for it to become usuable")
+
+
+
+
                 return self.response  # time delay
 
             # we could not find a feasible design, but we will submit our last state anyways, tune the 0.5
