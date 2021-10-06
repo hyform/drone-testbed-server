@@ -92,7 +92,6 @@ class BotManager():
 
         return bot_responses
 
-
     def send_to_bots(self, s, user, channel, session):
 
         structure_name = session.structure.name
@@ -112,25 +111,38 @@ class BotManager():
 
             # check for a bot key
             #key = self.get_bot_key(session, other)
-            key = self.get_bot_key2(session, user, other)
+            key1 = self.get_bot_key2(session, user, other)
+            key2 = self.get_bot_key2(session, other, user)
+
+            key = None
+            if key1 in BotManager.session_bot_twins and user in key1:
+                key = key1
+            if key2 in BotManager.session_bot_twins and user in key2:
+                key = key2
 
             # is this a bot
-            if key in BotManager.session_bot_twins:
+            if key:
 
                 bot_type = BotManager.session_bot_twins[key].get_type()
                 bg = BotGrammar(bot_type)
                 res = bg.get_json_of_chat(s)
+
                 if res is not None:
 
                     # send a message to the bot
                     msgs = BotManager.session_bot_twins[key].receive_message(s, channel, user)
-
+                    print("key", key)
                     # if response, return the message and the user or bot who created it
                     if msgs is not None:
                         bot_responses[db_helper.get_users()[other]] = msgs
+                        print("key---------------------", key, msgs)
                 else:
                     if "bot" in s:
                         bot_responses[db_helper.get_users()[other]] = ["intent not understood"]
+
+
+
+        print("bot_responses", bot_responses)
 
         return bot_responses
 

@@ -9,7 +9,13 @@ from chat.models import ChannelPosition, Message, Channel
 from exper.models import SessionTeam, UserPosition, Session, UserChecklist
 from repo.models import DataLog, DesignTeam, Profile, ExperOrg
 
+from process.messaging import send_bot_helper
+
 import time
+
+from api.models import SessionTimer
+from datetime import datetime, timedelta, timezone
+
 
 # parent class of all bots
 class AiBot():
@@ -28,10 +34,39 @@ class AiBot():
 
         self.saved_states = {}
 
+        running_timer = SessionTimer.objects.filter(session=self.session).filter(timer_type=SessionTimer.RUNNING_START).first()
+        elapsed_seconds = -1
+        if running_timer:
+            current_time = datetime.now(timezone.utc)
+            running_timestamp = running_timer.timestamp
+            if running_timestamp:
+                time_difference = current_time - running_timestamp
+                elapsed_seconds = round(time_difference.total_seconds())
+        else:
+            elapsed_seconds = 0
+
+        self.ITERATION_INTERVAL = 5
+        self.iter_Time = self.ITERATION_INTERVAL + elapsed_seconds
+
         self.reset_preferece()
 
     def set_channel(self, channel):
         self.channel = channel
+
+    def is_adapt(self):
+        return self.adapt
+
+    def set_time(self, time_experiment, to_user):
+        if time_experiment >= self.iter_Time*60:
+            self.iter_Time += self.ITERATION_INTERVAL
+            if self.command is None:
+                res = self.adapt_function("iterate")
+            else:
+                res = self.receive_message("iterate", self.channel, self.user)
+            print(res)
+            for r in res:
+                send_bot_helper(self.user, self.channel, self.session, '@'  + to_user + " " + r)
+
 
     def reset_preferece(self):
         self.command = None

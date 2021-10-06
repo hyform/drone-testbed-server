@@ -24,6 +24,7 @@ from api.models import SessionTimer
 from datetime import datetime, timezone
 from ai.tasks import mediation_loop, human_mediation_loop
 #from ai.tasks import mediation_loop, human_mediation_loop, bot_loop
+from ai.tasks import bot_loop
 from design.utilities import cache_bust
 from bot.tasks import bot_connect
 import logging

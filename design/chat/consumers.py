@@ -522,7 +522,11 @@ class ChatConsumer(WebsocketConsumer):
                 #then bot code below is under this if statement
                 if session.structure.name == "Fall 2021 Bot":
 
+                    print("user.username", user.username)
+
                     msgs = self.bm.send_to_bots(message, user.username, channel, st.session)
+
+                    print("check -----------", user.username, msgs, message)
 
                     # if a bot returns a message
                     for bot_user in msgs:

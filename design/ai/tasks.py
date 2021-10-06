@@ -366,24 +366,16 @@ def bot_timer(seg_num, seg_len, i, session_id, timestamp):
     print("got session")
     running_timer = SessionTimer.objects.filter(session=session).filter(timer_type=SessionTimer.RUNNING_START).first()
     if session.status != Session.RUNNING or timestamp != str(running_timer.timestamp):
-        print("Session restarted or no longer running, so exit mediation loop")
+        print("Session restarted or no longer running, so exit bot loop")
         return
 
-    print("start", session.name, session.index)
     if i < seg_num:
         # first step is to schedule the next time to call
         bot_timer.s(seg_num, seg_len, i+1, session_id, timestamp).apply_async(countdown=seg_len)
         # we don't care about the first 2 times (time 0 and time 2.5 minutes)
-#        if i<2:
-#            BotManager.register_timed_event(session_id, "no")
-#            print('waiting for next interval')
-#        else:
-#            print("session start ", index)
-#            BotManager.register_timed_event(session_id, "iterate")
-#            print("session send ", index)
-            #send_intervention(None, intervention_id, session_id)
-
-#    return i
+        if i == 0 or i == 1 or i == 2:
+            BotManager.register_timed_event(session_id, "iterate")
+    return i
 
 
 @shared_task
@@ -407,7 +399,7 @@ def human_mediation_loop(data):
 
 @shared_task
 def bot_loop(data):
-    print("bot_loop")
+
     seg_num = settings.INTER_SEG_NUM
     seg_len = settings.INTER_SEG_LEN
 

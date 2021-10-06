@@ -425,6 +425,12 @@ class DataLogList(generics.CreateAPIView):
                             else:
                                 elapsed_seconds = 0
 
+                            for key in BotManager.session_bot_twins:
+                                bot_user = key.split(",")[2]
+                                to_user = key.split(",")[1]
+                                aibot = BotManager.session_bot_twins[key]
+                                aibot.set_time(elapsed_seconds, to_user)
+
                             event_info_message(channel, up.position.name, action, elapsed_seconds)
 
             serializer.save(user=user, session=st.session, type='client')

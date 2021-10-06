@@ -17,7 +17,7 @@ def send_helper(user, channel, session, intervention):
     instance = ""
     if channel:
         channel_name = channel.name
-        instance = str(channel.id) + "___" + str(session.id)           
+        instance = str(channel.id) + "___" + str(session.id)
 
     if channel:
         Message.objects.create(sender=user, channel=channel, message=intervention, session=session)
@@ -30,6 +30,29 @@ def send_helper(user, channel, session, intervention):
                 'type': 'chat.message',
                 'message': intervention,
                 'sender': "Process Manager",
+                'channel': instance
+            }
+        )
+
+
+def send_bot_helper(user, channel, session, msg):
+    channel_name = ""
+    instance = ""
+    if channel:
+        channel_name = channel.name
+        instance = str(channel.id) + "___" + str(session.id)
+
+    if channel:
+        Message.objects.create(sender=user, channel=channel, message=msg, session=session)
+    DataLog.objects.create(user=user, session=session, action=msg, type='bot: ' + channel_name + ' @' + instance)
+
+    if channel:
+        async_to_sync(get_channel_layer().group_send)(
+            instance,
+            {
+                'type': 'chat.message',
+                'message': msg,
+                'sender': "Bot",
                 'channel': instance
             }
         )
@@ -52,11 +75,11 @@ def send_intervention(user, num, session_id):
         elif str(num) == str(2):
             send_helper(user, operationsChannel, session, Interventions.ACTION_2)
         elif str(num) == str(3):
-            send_helper(user, operationsChannel, session, Interventions.ACTION_3) 
+            send_helper(user, operationsChannel, session, Interventions.ACTION_3)
         elif str(num) == str(4):
             send_helper(user, designerChannel, session, Interventions.ACTION_4)
         elif str(num) == str(5):
-            send_helper(user, designerChannel, session, Interventions.ACTION_5)            
+            send_helper(user, designerChannel, session, Interventions.ACTION_5)
         elif str(num) == str(6):
             send_helper(user, designerChannel, session, Interventions.ACTION_6)
         elif str(num) == str(7):
