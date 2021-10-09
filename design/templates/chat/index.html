@@ -16,21 +16,21 @@
     <div class="outerer-container">
         {% if not experimenter %}
         <div class="chat-header">
-            <div class="row">
-                <div class="col-7">
+            <div class="row chat-header-row">
+                <div class="col-7 chat-header-col">
                     {% if position_name %}
                     {{position_name}}
                     {% endif %}
                 </div>
-                <div class="col-3">
+                <div class="col-3 chat-header-col">
                     <a href="/info/" target="_blank">Info</a>
                 </div>
-                <div class="col-2">
+                <div class="col-2 chat-header-col">
                     <a target="_parent" href="{% url 'logout' %}">logout</a>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-12 running-timer" id="running-timer" hidden></div>
+            <div class="row chat-header-row">
+                <div class="col-12 chat-header-col running-timer" id="running-timer" hidden></div>
             </div>
         </div>        
         {% else %}
@@ -43,7 +43,18 @@
         <div class="outer-container">
             <ul id="channel-list" class="list-unstyled channel-list"></ul>
         </div>
-        <div class="message-controls">
+        <!-- TODO: if bot enabled -->
+        <div id="design-bot-div" hidden>
+            <div class="col-12 bot-col">
+                <button id="design-bot-options" type="submit" class="bot-btn">&nbsp</button>
+            </div>
+        </div>
+        <div id="ops-bot-div" hidden>
+            <div class="col-12 bot-col">
+                <button id="ops-bot-options" type="submit" class="bot-btn">&nbsp</button>
+            </div>
+        </div>
+        <div class="message-controls">            
             <div class="col-9 chat-message">
               <textarea id="message" placeholder="Type Here" type="text" autofocus autocomplete="off"
                 spellcheck="false" autocorrect="off" class="form-control input-xs" ></textarea>
@@ -54,7 +65,29 @@
         </div>
     </div>
 
+    <div class="modal fade" id="design-bot-chat-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <ul id="design-bot-chat-options" class="list-unstyled channel-list"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="ops-bot-chat-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <ul id="ops-bot-chat-options" class="list-unstyled channel-list"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script type='application/javascript' src="/static/js/jquery-3.4.1.min.js"></script>
+    <script type='application/javascript' src="/static/js/bootstrap.bundle.min.js"></script>
     <script type='application/javascript' src="/static/js/ajax.js{{BUST}}"></script>
     <script type='application/javascript' src="/static/js/chat.js{{BUST}}"></script>
     <script type='application/javascript' src="/static/js/helpers.js{{BUST}}"></script>

@@ -162,6 +162,15 @@ html, body {
     flex-grow: 1;
 }
 
+.chat-header-row {
+    padding: 0;
+    margin: 0;
+}
+
+.chat-header-col {
+    padding: 0;
+}
+
 .message-controls {
     display: flex;
     flex-direction: row;
@@ -199,4 +208,30 @@ textarea {
     text-align: center;
     font-weight: bold;
     font-size: 20px;
+}
+
+.bot-col {
+    padding: 0;
+    height: 12px;
+}
+
+.bot-btn {
+    background-color: #d69c30;
+    min-width: 100%;
+    text-align: center;
+    color: white;
+    border: 0;
+    padding-left: 0;
+    padding-right: 0;
+    height: 10px;
+}
+
+.bot-choice-btn {
+    background-color: #d69c30;
+    min-width: 100%;
+    text-align: center;
+    color: white;
+    border: 1;
+    padding-left: 0;
+    padding-right: 0;
 }

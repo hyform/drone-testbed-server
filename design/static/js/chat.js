@@ -67,6 +67,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     var sendButton = $("#send");
     var messageText = $("#message");
+    var designBotButton = $("#design-bot-options");
+    var opsBotButton = $("#ops-bot-options");
 
     sendButton.prop("disabled", true);
 
@@ -181,6 +183,15 @@ document.addEventListener("DOMContentLoaded", function (event) {
         }
 
         activeChannel = channel;
+
+        //TODO: only have this for the bot structure
+        if(channelLabel.innerHTML === "Design") {
+            enableDesignBot();
+        } else if(channelLabel.innerHTML === "Operations") {
+            enableOpsBot();
+        } else {
+            disableBot();
+        }
     };
 
     var send = function () {
@@ -211,6 +222,280 @@ document.addEventListener("DOMContentLoaded", function (event) {
         }
     }
 
+    // ---------- Bot Chat Functions ------------------    
+    var clearAndAdd = function (chosenText, isDesign) {
+        var botChatOptions = null;
+        if(isDesign) {
+            botChatOptions = document.getElementById("design-bot-chat-options");
+        } else {
+            botChatOptions = document.getElementById("ops-bot-chat-options");
+        }
+        botChatOptions.innerHTML = "";
+        if(chosenText) {
+            currentMessage = messageText.val();
+            if(currentMessage === "") {
+                messageText.val(chosenText);
+            } else {
+                messageText.val(currentMessage + " " + chosenText);
+            }
+        }       
+    };
+
+    var addLabelBotChoice = function(text, isDesign) {
+        var botChatOptions = null;
+        if(isDesign) {
+            botChatOptions = document.getElementById("design-bot-chat-options");
+        } else {
+            botChatOptions = document.getElementById("ops-bot-chat-options");
+        }
+        var newBotChatOption = newBotChatOption = document.createElement("li");
+        var newBotChatOptionItem = newBotChatOptionItem = document.createElement("label");        
+        newBotChatOptionItem.innerHTML = text;
+        newBotChatOption.appendChild(newBotChatOptionItem);
+        botChatOptions.appendChild(newBotChatOption);
+    };
+
+    var addButtonBotChoice = function(text, action, isDesign) {
+        var botChatOptions = null;
+        if(isDesign) {
+            botChatOptions = document.getElementById("design-bot-chat-options");
+        } else {
+            botChatOptions = document.getElementById("ops-bot-chat-options");
+        }
+        var newBotChatOption = newBotChatOption = document.createElement("li");
+        var newBotChatOptionItem = newBotChatOptionItem = document.createElement("button");   
+        newBotChatOptionItem.classList.add("bot-choice-btn");        
+        newBotChatOptionItem.innerHTML = text + " -->";
+        newBotChatOptionItem.onclick = function() {
+            action(text, isDesign);
+        };
+        newBotChatOption.appendChild(newBotChatOptionItem);
+        botChatOptions.appendChild(newBotChatOption);
+    };
+
+    var addTerminalButtonBotChoice = function(text, isDesign) {
+        var botChatOptions = null;
+        if(isDesign) {
+            botChatOptions = document.getElementById("design-bot-chat-options");
+        } else {
+            botChatOptions = document.getElementById("ops-bot-chat-options");
+        }
+        var newBotChatOption = newBotChatOption = document.createElement("li");
+        var newBotChatOptionItem = newBotChatOptionItem = document.createElement("button");  
+        newBotChatOptionItem.classList.add("bot-choice-btn");   
+        newBotChatOptionItem.innerHTML = text;
+        newBotChatOptionItem.onclick = function() {
+            clearAndAdd(text, isDesign);
+            if(isDesign) {
+                $("#design-bot-chat-modal").modal("hide");
+            } else {
+                $("#ops-bot-chat-modal").modal("hide");
+            }
+        };
+        newBotChatOption.appendChild(newBotChatOptionItem);
+        botChatOptions.appendChild(newBotChatOption);
+    };
+
+    var addTerminalDone = function(isDesign) {
+        var text = "[Done]"
+        var botChatOptions = null;
+        if(isDesign) {
+            botChatOptions = document.getElementById("design-bot-chat-options");
+        } else {
+            botChatOptions = document.getElementById("ops-bot-chat-options");
+        }
+        var newBotChatOption = newBotChatOption = document.createElement("li");
+        var newBotChatOptionItem = newBotChatOptionItem = document.createElement("button");  
+        newBotChatOptionItem.classList.add("bot-choice-btn");   
+        newBotChatOptionItem.innerHTML = text;
+        newBotChatOptionItem.onclick = function() {
+            clearAndAdd("", isDesign);
+            if(isDesign) {
+                $("#design-bot-chat-modal").modal("hide");
+            } else {
+                $("#ops-bot-chat-modal").modal("hide");
+            }
+        };
+        newBotChatOption.appendChild(newBotChatOptionItem);
+        botChatOptions.appendChild(newBotChatOption);
+    };
+
+    // Design Bot --------------------
+    var botChatWant4 = function (text, bot) {
+        clearAndAdd(text, bot);
+
+        addTerminalButtonBotChoice("[Number]", bot);
+    }
+
+    var botChatWant3 = function (text, bot) {
+        clearAndAdd(text, bot);
+
+        addTerminalDone(bot);
+        addButtonBotChoice("of", botChatWant4, bot);
+    }
+
+    var botChatWant2 = function (text, bot) {
+        clearAndAdd(text, bot);
+
+        addButtonBotChoice("range", botChatWant3, bot);
+        addButtonBotChoice("capacity", botChatWant3, bot);
+        addButtonBotChoice("cost", botChatWant3, bot);
+    };
+
+    var botChatWant1 = function (text, bot) {
+        clearAndAdd(text, bot);
+
+        addButtonBotChoice("lower", botChatWant2, bot);
+        addButtonBotChoice("higher", botChatWant2, bot);
+        addButtonBotChoice("less", botChatWant2, bot);
+        addButtonBotChoice("more", botChatWant2, bot);
+    };
+
+    var botChatWant0 = function (text, bot) {
+        clearAndAdd(text, bot);
+
+        addButtonBotChoice("want", botChatWant1, bot);
+    };
+
+    var botChatPing = function (text, bot) {
+        clearAndAdd(text, bot);
+
+        addTerminalButtonBotChoice("status", bot);
+        //addButtonBotChoice("satisfied",, bot);
+        //addButtonBotChoice("unsatisfied",, bot);
+        //addButtonBotChoice("response",, bot);
+        //addTerminalButtonBotChoice("start", bot); //TODO: does this do anything?
+    };
+
+    var designBotChatInitial = function () {
+        var bot = true;
+        clearAndAdd(null, bot);
+
+        addLabelBotChoice("Questions", bot);
+        addButtonBotChoice("[DESIGN]", botChatWant0, bot);
+        addButtonBotChoice("want", botChatWant1, bot);
+        addButtonBotChoice("ping", botChatPing, bot);
+        addTerminalButtonBotChoice("help", bot);
+        addLabelBotChoice("Responses", bot);
+        addTerminalButtonBotChoice("no", bot);
+        addTerminalButtonBotChoice("unsatisfied", bot);
+    }
+
+    var designBot = function () {
+        $("#design-bot-chat-modal").modal();        
+        designBotChatInitial();
+    }
+
+    // Ops Bot --------------------
+    var opsBotChatInitial = function () {
+        var bot = false;
+        clearAndAdd(null, bot);        
+
+        addLabelBotChoice("Questions", bot);
+        addButtonBotChoice("[PLAN]", opsBotChatWant0, bot);
+        addButtonBotChoice("want", opsBotChatWant1, bot);
+        addButtonBotChoice("ping", opsBotChatPing, bot);
+        addTerminalButtonBotChoice("help", bot);
+        addLabelBotChoice("Responses", bot);
+        addTerminalButtonBotChoice("no", bot);
+        addTerminalButtonBotChoice("unsatisfied", bot);
+    }
+
+    var opsBotChatWant0 = function (text, bot) {
+        clearAndAdd(text, bot);
+
+        addButtonBotChoice("want", opsBotChatWant1, bot);
+    };
+
+    var opsBotChatWant1 = function (text, bot) {
+        clearAndAdd(text, bot);
+
+        addButtonBotChoice("lower", opsBotChatWant2, bot);
+        addButtonBotChoice("higher", opsBotChatWant2, bot);
+        addButtonBotChoice("less", opsBotChatWant2, bot);
+        addButtonBotChoice("more", opsBotChatWant2, bot);
+    };
+
+    var opsBotChatWant2 = function (text, bot) {
+        clearAndAdd(text, bot);
+
+        addButtonBotChoice("cost", opsBotChatWant3, bot);
+        addButtonBotChoice("profit", opsBotChatWant3, bot);
+        addButtonBotChoice("customers", opsBotChatWant3, bot);
+    };
+
+    var opsBotChatWant3 = function (text, bot) {
+        clearAndAdd(text, bot);
+
+        addTerminalDone(bot);
+        addButtonBotChoice("of", opsBotChatWant4, bot);
+        addButtonBotChoice("north", opsBotChatWant5, bot);
+        addButtonBotChoice("south", opsBotChatWant5, bot);
+        addButtonBotChoice("east", opsBotChatWant5, bot);
+        addButtonBotChoice("west", opsBotChatWant5, bot);
+    }    
+
+    var opsBotChatWant4 = function (text, bot) {
+        clearAndAdd(text, bot);
+
+        addButtonBotChoice("[Number]", opsBotChatWant4_5, bot);
+        addButtonBotChoice("and", opsBotChatWant1, bot);
+    }
+
+    var opsBotChatWant4_5 = function (text, bot) {
+        clearAndAdd(text, bot);
+
+        addTerminalDone(bot);
+        addButtonBotChoice("and", opsBotChatWant1, bot);
+        addButtonBotChoice("north", opsBotChatWant5, bot);
+        addButtonBotChoice("south", opsBotChatWant5, bot);
+        addButtonBotChoice("east", opsBotChatWant5, bot);
+        addButtonBotChoice("west", opsBotChatWant5, bot);
+    }
+
+    var opsBotChatWant5 = function (text, bot) {
+        clearAndAdd(text, bot);
+
+        addTerminalDone(bot);
+        addButtonBotChoice("north", opsBotChatWant5, bot);
+        addButtonBotChoice("south", opsBotChatWant5, bot);
+        addButtonBotChoice("east", opsBotChatWant5, bot);
+        addButtonBotChoice("west", opsBotChatWant5, bot);
+    }
+
+    var opsBotChatPing = function (text, bot) {
+        clearAndAdd(text, bot);
+
+        addTerminalButtonBotChoice("status", bot);
+        //addButtonBotChoice("satisfied",, bot);
+        //addButtonBotChoice("unsatisfied",, bot);
+        //addButtonBotChoice("response",, bot);
+        //addTerminalButtonBotChoice("start", bot); //TODO: does this do anything?
+    };
+
+    var opsBot = function () {
+        $("#ops-bot-chat-modal").modal();        
+        opsBotChatInitial();
+    }
+
+    // --------
+
+    var enableDesignBot = function () {
+        document.getElementById("design-bot-div").hidden = false;
+        document.getElementById("ops-bot-div").hidden = true;
+    }
+
+    var enableOpsBot = function () {
+        document.getElementById("design-bot-div").hidden = true;
+        document.getElementById("ops-bot-div").hidden = false;
+    }
+
+    var disableBot = function () {
+        document.getElementById("design-bot-div").hidden = true;
+        document.getElementById("ops-bot-div").hidden = true;
+    }
+    // ------------------------------------------------
+
     var websocketConnect = function (url) {
 
         connection = new WebSocket(url);
@@ -230,6 +515,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
                     send();
                 }
             });
+
+            designBotButton.off();
+            designBotButton.on('click', designBot);
+            opsBotButton.off();
+            opsBotButton.on('click', opsBot);
         };
 
         connection.onclose = function (e) {
