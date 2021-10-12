@@ -229,9 +229,9 @@ class OpsBot(AiBot):
                         if math.isnan(value):  # maybe apply some kind of delta here
                             value = last_profit
                             value_specified = True
-                        if ("lower" in pref_dir or "less" in pref_dir) and self.profit >= value:
+                        if ("lower" in pref_dir or "less" in pref_dir ) and self.profit >= value:
                             self.response.append("ping unsatisfied profit")
-                        elif ("higher" in pref_dir or "more" in pref_dir) and self.profit <= value:
+                        elif ("higher" in pref_dir or "more" in pref_dir ) and self.profit <= value:
                             self.response.append("ping unsatisfied profit")
                     if 'cost' == var_info.variable:
                         pref_dir = var_info.pref_dir
@@ -239,9 +239,9 @@ class OpsBot(AiBot):
                         if math.isnan(value):  # maybe apply some kind of delta here
                             value = last_cost
                             value_specified = True
-                        if ("lower" in pref_dir or "less" in pref_dir) and self.cost >= value:
+                        if ("lower" in pref_dir or "less" in pref_dir ) and self.cost >= value:
                             self.response.append("ping unsatisfied cost")
-                        elif ("higher" in pref_dir or "more" in pref_dir) and self.cost <= value:
+                        elif ("higher" in pref_dir or "more" in pref_dir ) and self.cost <= value:
                             self.response.append("ping unsatisfied cost")
                     if 'customers' == var_info.variable:
                         pref_dir = var_info.pref_dir
@@ -249,9 +249,9 @@ class OpsBot(AiBot):
                         if math.isnan(value):  # maybe apply some kind of delta here
                             value = last_no_customers
                             value_specified = True
-                        if ("lower" in pref_dir or "less" in pref_dir) and self.no_customers >= value:
+                        if ("lower" in pref_dir or "less" in pref_dir ) and self.no_customers >= value:
                             self.response.append("ping unsatisfied customers")
-                        elif ("higher" in pref_dir or "more" in pref_dir) and self.no_customers <= value:
+                        elif ("higher" in pref_dir or "more" in pref_dir ) and self.no_customers <= value:
                             self.response.append("ping unsatisfied customers")
 
                 if len(self.response) == 0:
@@ -293,7 +293,7 @@ class OpsBot(AiBot):
 
                 # save a submitted design
                 plan_obj = self.db_helper.plan_submit(submit_json_plan)
-                plan_obj.valid = False
+                plan_obj.valid = no_shock
                 plan_obj.save()
 
                 self.response.append("I submitted a plan @" + tag_id + ", profit= " + str(round(self.profit, 1)) + ", cost=" + str(round(self.cost, 0)) + ", nocustomers = " + str(int(self.no_customers)) + ". Let me know of any feedback.")

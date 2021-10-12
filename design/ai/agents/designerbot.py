@@ -164,9 +164,9 @@ class DesignerBot(AiBot):
                             value = last_range
                         else:
                             value_specified = True
-                        if ("lower" in pref_dir or "less" in pref_dir) and self.range >= value:
+                        if ("lower" in pref_dir or "less" in pref_dir ) and self.range >= value:
                             self.response.append("ping unsatisfied range")
-                        elif ("higher" in pref_dir or "more" in pref_dir) and self.range <= value:
+                        elif ("higher" in pref_dir or "more" in pref_dir ) and self.range <= value:
                             self.response.append("ping unsatisfied range")
                     if 'capacity' == var_info.variable:
                         pref_dir = var_info.pref_dir
@@ -175,9 +175,9 @@ class DesignerBot(AiBot):
                             value = last_capacity
                         else:
                             value_specified = True
-                        if ("lower" in pref_dir or "less" in pref_dir) and self.capacity >= value:
+                        if ("lower" in pref_dir or "less" in pref_dir ) and self.capacity >= value:
                             self.response.append("ping unsatisfied capacity")
-                        elif ("higher" in pref_dir or "more" in pref_dir) and self.capacity <= value:
+                        elif ("higher" in pref_dir or "more" in pref_dir ) and self.capacity <= value:
                             self.response.append("ping unsatisfied capacity")
                     if 'cost' == var_info.variable:
                         pref_dir = var_info.pref_dir
@@ -186,9 +186,9 @@ class DesignerBot(AiBot):
                             value = last_cost
                         else:
                             value_specified = True
-                        if ("lower" in pref_dir or "less" in pref_dir) and self.cost >= value:
+                        if ("lower" in pref_dir or "less" in pref_dir ) and self.cost >= value:
                             self.response.append("ping unsatisfied cost")
-                        elif ("higher" in pref_dir or "more" in pref_dir) and self.cost <= value:
+                        elif ("higher" in pref_dir or "more" in pref_dir ) and self.cost <= value:
                             self.response.append("ping unsatisfied cost")
 
                 # its feasible, gets its input distance and save the closest design that satisfies the requests

@@ -91,11 +91,9 @@ class VehicleDetail(generics.RetrieveUpdateDestroyAPIView):
         return Vehicle.objects.filter(group__in=groups, session=st.session)
 
     def put(self,request,pk,format=None):
-
-        print("fire")
-
         # grab the last version of the scenario
         vehicle = Vehicle.objects.filter(id=pk).first()
+        changed = (vehicle.valid == False)
         vehicle.valid = True
         vehicle.save()
 
@@ -103,9 +101,9 @@ class VehicleDetail(generics.RetrieveUpdateDestroyAPIView):
         st = SessionTeam.objects.filter(Q(session__status=1)&Q(team=user.profile.team)).first()
         up = UserPosition.objects.filter(Q(user=user)&Q(session=st.session)).first()
         gp = GroupPosition.objects.filter(Q(position=up.position)&Q(position__structure=st.session.structure)&Q(primary=True)).first()
-        new_vehicle_message(gp.group, st.session, vehicle.tag)
 
-        print("works", vehicle.id, "---------")
+        if changed:
+            new_vehicle_message(gp.group, st.session, vehicle.tag)
 
         return Response(status=status.HTTP_201_CREATED)
 
@@ -266,6 +264,7 @@ class PlanDetail(generics.RetrieveAPIView):
 
         # grab the last version of the scenario
         plan = Plan.objects.filter(id=pk).first()
+        changed = (plan.valid == False)
         plan.valid = True
         plan.save()
 
@@ -273,9 +272,10 @@ class PlanDetail(generics.RetrieveAPIView):
         st = SessionTeam.objects.filter(Q(session__status=1)&Q(team=user.profile.team)).first()
         up = UserPosition.objects.filter(Q(user=user)&Q(session=st.session)).first()
         gp = GroupPosition.objects.filter(Q(position=up.position)&Q(position__structure=st.session.structure)&Q(primary=True)).first()
-        new_plan_message(gp.group, st.session, plan.tag)
 
-        #return plan
+        if changed:
+            new_plan_message(gp.group, st.session, plan.tag)
+
 
         return Response(status=status.HTTP_201_CREATED)
 
