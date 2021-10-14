@@ -313,6 +313,8 @@ class OpsBot(AiBot):
                 vehicle_dict[vehicle_result[0]] = []
             for vehicle_result in vehicle_request_tally:
                 vehicle_dict[vehicle_result[0]].append(vehicle_result[1])
+            if len(vehicle_dict) > 0:
+                want_strs.append("Possible suggestions for additional drone capabilities include the following:")
             for vehicle_tag in vehicle_dict:
                 range_occurrences = vehicle_dict[vehicle_tag].count("range_limit")
                 capacity_occurrences = vehicle_dict[vehicle_tag].count("capacity_limit")
@@ -336,7 +338,7 @@ class OpsBot(AiBot):
 
                 # save a submitted design
                 plan_obj = self.db_helper.plan_submit(json_obj_plan)
-                plan_obj.valid = False
+                plan_obj.valid = no_shock
                 plan_obj.save()
 
                 self.response.append("I could not create a plan that matched your request, but I submitted a plan @" + tag_id + ", profit=" + str(self.profit) + ", cost=" + str(self.cost) + ", customers=" + str(self.no_customers) + ". Let me know of any feedback.")
