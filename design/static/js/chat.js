@@ -267,13 +267,19 @@ document.addEventListener("DOMContentLoaded", function (event) {
         newBotChatOptionItem.classList.add("bot-choice-btn");        
         newBotChatOptionItem.innerHTML = text + " -->";
         newBotChatOptionItem.onclick = function() {
-            action(text, isDesign);
+            if(text && text === "[DESIGN]") {
+                addDesignSelection(action, isDesign);
+            } else if(text && text === "[PLAN]") {
+                addPlanSelection(action, isDesign);
+            } else {
+                action(text, isDesign);
+            }
         };
         newBotChatOption.appendChild(newBotChatOptionItem);
         botChatOptions.appendChild(newBotChatOption);
     };
-
-    var addTerminalButtonBotChoice = function(text, isDesign) {
+    
+    var addButtonNumber = function(action, isDesign) {
         var botChatOptions = null;
         if(isDesign) {
             botChatOptions = document.getElementById("design-bot-chat-options");
@@ -281,8 +287,76 @@ document.addEventListener("DOMContentLoaded", function (event) {
             botChatOptions = document.getElementById("ops-bot-chat-options");
         }
         var newBotChatOption = newBotChatOption = document.createElement("li");
-        var newBotChatOptionItem = newBotChatOptionItem = document.createElement("button");  
-        newBotChatOptionItem.classList.add("bot-choice-btn");   
+        var newNumberLabel = newBotChatOptionItem = document.createElement("label");        
+        newNumberLabel.innerHTML = "[NUMBER]";
+        newBotChatOption.appendChild(newNumberLabel);
+        var newNumberText = document.createElement("input");
+        newNumberText.setAttribute("type", "text");
+        newBotChatOption.appendChild(newNumberText);
+        var newBotChatOptionItem = newBotChatOptionItem = document.createElement("button");
+        newBotChatOptionItem.classList.add("bot-choice-btn");
+        newBotChatOptionItem.innerHTML = " -->";
+        newBotChatOptionItem.onclick = function() {
+            var textValue = newNumberText.value;
+            if(textValue && !isNaN(textValue)) {
+                action(textValue, isDesign);
+            } else {
+                newNumberLabel.classList.add("red-text");
+            }
+        };
+        newBotChatOption.appendChild(newBotChatOptionItem);
+        botChatOptions.appendChild(newBotChatOption);
+    };
+
+    var addDesignSelection = function(action, isDesign) {
+        clearAndAdd("", isDesign);
+
+        designUrl = "/repo/vehicle/"
+        designData = {
+            csrfmiddlewaretoken: csrftoken
+        }
+
+        $.ajax({
+            url: designUrl,
+            method: "GET",
+            data: designData,
+            success: function (result) {
+                result.results.forEach(design =>
+                    addButtonBotChoice("@" + design.tag, action, isDesign))
+            }
+        });
+    };
+
+    var addPlanSelection = function(action, isDesign) {
+        clearAndAdd("", isDesign);
+
+        planUrl = "/repo/planshort/"
+        planData = {
+            csrfmiddlewaretoken: csrftoken
+        }
+
+        $.ajax({
+            url: planUrl,
+            method: "GET",
+            data: planData,
+            success: function (result) {
+                result.results.forEach(plan =>
+                    addButtonBotChoice("@" + plan.tag, action, isDesign))
+            }
+        });
+    };
+    
+
+    var addTerminalButtonBotChoice = function(text, isDesign) {        
+        var botChatOptions = null;
+        if(isDesign) {
+            botChatOptions = document.getElementById("design-bot-chat-options");
+        } else {
+            botChatOptions = document.getElementById("ops-bot-chat-options");
+        }
+        var newBotChatOption = newBotChatOption = document.createElement("li");
+        var newBotChatOptionItem = newBotChatOptionItem = document.createElement("button");
+        newBotChatOptionItem.classList.add("bot-choice-btn");
         newBotChatOptionItem.innerHTML = text;
         newBotChatOptionItem.onclick = function() {
             clearAndAdd(text, isDesign);
@@ -306,7 +380,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         }
         var newBotChatOption = newBotChatOption = document.createElement("li");
         var newBotChatOptionItem = newBotChatOptionItem = document.createElement("button");  
-        newBotChatOptionItem.classList.add("bot-choice-btn");   
+        newBotChatOptionItem.classList.add("bot-choice-btn");
         newBotChatOptionItem.innerHTML = text;
         newBotChatOptionItem.onclick = function() {
             clearAndAdd("", isDesign);
@@ -321,17 +395,25 @@ document.addEventListener("DOMContentLoaded", function (event) {
     };
 
     // Design Bot --------------------
+    var botChatWant5 = function (text, bot) {
+        clearAndAdd(text, bot);
+
+        addTerminalDone(bot);
+        addButtonBotChoice("and", botChatWant1, bot);
+    }
+
     var botChatWant4 = function (text, bot) {
         clearAndAdd(text, bot);
 
-        addTerminalButtonBotChoice("[Number]", bot);
+        addButtonNumber(botChatWant5, bot);
     }
 
     var botChatWant3 = function (text, bot) {
         clearAndAdd(text, bot);
 
         addTerminalDone(bot);
-        addButtonBotChoice("of", botChatWant4, bot);
+        addButtonBotChoice("than", botChatWant4, bot);
+        addButtonBotChoice("and", botChatWant1, bot);
     }
 
     var botChatWant2 = function (text, bot) {
@@ -361,10 +443,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
         clearAndAdd(text, bot);
 
         addTerminalButtonBotChoice("status", bot);
-        //addButtonBotChoice("satisfied",, bot);
-        //addButtonBotChoice("unsatisfied",, bot);
-        //addButtonBotChoice("response",, bot);
-        //addTerminalButtonBotChoice("start", bot); //TODO: does this do anything?
     };
 
     var designBotChatInitial = function () {
@@ -375,6 +453,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         addButtonBotChoice("[DESIGN]", botChatWant0, bot);
         addButtonBotChoice("want", botChatWant1, bot);
         addButtonBotChoice("ping", botChatPing, bot);
+        addTerminalButtonBotChoice("suggestion", bot);
         addTerminalButtonBotChoice("help", bot);
         addLabelBotChoice("Responses", bot);
         addTerminalButtonBotChoice("no", bot);
@@ -395,6 +474,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         addButtonBotChoice("[PLAN]", opsBotChatWant0, bot);
         addButtonBotChoice("want", opsBotChatWant1, bot);
         addButtonBotChoice("ping", opsBotChatPing, bot);
+        addTerminalButtonBotChoice("suggestion", bot);
         addTerminalButtonBotChoice("help", bot);
         addLabelBotChoice("Responses", bot);
         addTerminalButtonBotChoice("no", bot);
@@ -428,7 +508,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         clearAndAdd(text, bot);
 
         addTerminalDone(bot);
-        addButtonBotChoice("of", opsBotChatWant4, bot);
+        addButtonBotChoice("than", opsBotChatWant4, bot);
         addButtonBotChoice("north", opsBotChatWant5, bot);
         addButtonBotChoice("south", opsBotChatWant5, bot);
         addButtonBotChoice("east", opsBotChatWant5, bot);
@@ -438,7 +518,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     var opsBotChatWant4 = function (text, bot) {
         clearAndAdd(text, bot);
 
-        addButtonBotChoice("[Number]", opsBotChatWant4_5, bot);
+        addButtonNumber(opsBotChatWant4_5, bot);
         addButtonBotChoice("and", opsBotChatWant1, bot);
     }
 
@@ -467,10 +547,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
         clearAndAdd(text, bot);
 
         addTerminalButtonBotChoice("status", bot);
-        //addButtonBotChoice("satisfied",, bot);
-        //addButtonBotChoice("unsatisfied",, bot);
-        //addButtonBotChoice("response",, bot);
-        //addTerminalButtonBotChoice("start", bot); //TODO: does this do anything?
     };
 
     var opsBot = function () {

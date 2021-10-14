@@ -235,3 +235,7 @@ textarea {
     padding-left: 0;
     padding-right: 0;
 }
+
+.red-text {
+    color: red;
+}

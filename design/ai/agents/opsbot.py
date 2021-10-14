@@ -69,6 +69,8 @@ class OpsBot(AiBot):
             self.response.append("Can you provide guidance on what you are unsatisfied about with respect to profit, cost, or number of customers ? ")
             return self.response
 
+        if "suggestion" in s:
+            return self.suggestion_alg()
 
         # set grammar-based variables
         if "iterate" not in s:
@@ -363,3 +365,115 @@ class OpsBot(AiBot):
         # save a submitted design
         # get the last id in the channel vehicles
         print("save cahce")
+
+    def suggestion_alg(self):
+
+        lev_dist = 100000000
+        last_config = self.config
+        submit_json_plan = None
+
+        MM = 10#
+        for i in range(MM):
+
+            # create the plan input string with empty paths, where each path has a closest vehicle as recommended by the planner AI
+            plan = {}
+            paths = []
+
+            # set user name
+            self.db_helper.set_user_name(self.name)
+
+            # get scenario
+            scenario_obj = self.db_helper.get_scenario()
+
+            # reached budget
+            fixed_cost = 0
+            counter = 0 # to prevent infinite loop
+            under_budget = True
+            budget = random.randrange(10000, 30000)
+            for var_info in self.variable_info:
+                if 'cost' == var_info.variable:
+                    value = var_info.value
+                    if not math.isnan(value):
+                        budget = value
+
+            while under_budget and counter < 100:
+                counter += 1
+
+                try:
+
+                    vehs = self.db_helper.query_vehicles()
+                    used_vehicle = vehs[random.randrange(0, len(vehs))]
+
+                    fixed_cost += used_vehicle.cost
+                    if fixed_cost <= budget:
+                        path_obj = {}
+                        vehicle_obj = {}
+                        vehicle_obj['id'] = used_vehicle.id
+                        vehicle_obj['tag'] = used_vehicle.tag
+                        vehicle_obj['config'] = used_vehicle.config
+                        vehicle_obj['range'] = used_vehicle.range
+                        vehicle_obj['cost'] = used_vehicle.cost
+                        vehicle_obj['payload'] = used_vehicle.payload
+                        vehicle_obj['velocity'] = used_vehicle.velocity
+                        path_obj['vehicle'] = vehicle_obj
+                        path_obj['customers'] = []
+                        path_obj['warehouse'] = scenario_obj['warehouse']
+                        paths.append(path_obj)
+                    else:
+                        under_budget = False
+
+                except Exception as e:
+                    print(e)
+
+            # add an empty path to the plan
+            plan['paths'] = paths
+            plan['scenario'] = scenario_obj
+
+            # convert to string for the planner AI
+            json_str = json.dumps(plan)
+
+            # use planner agent to create new plan
+            o = OpsPlan(json_str, [])
+            plan_ai_json = o.output.replace("\'","\"").replace("True", "true").replace("False", "false")
+
+            # save the plan json object
+            json_obj_plan = json.loads(plan_ai_json)
+
+            # convert the json plan to a string to save to a dataLog and calculate metrics and get the metrics of the new plan
+            plan_str = json.dumps(json_obj_plan)
+
+            new_paths = json.dumps(json_obj_plan["paths"])
+
+            test = lev(last_config, new_paths)
+
+            if test < lev_dist:
+                lev_dist = test
+                result = OpsService(plan_str)
+                submit_json_plan = json_obj_plan
+
+                self.profit = result.profit
+                self.cost = result.startupCost
+                self.no_customers = result.number_deliveries
+                self.config = json.dumps(json_obj_plan["paths"])
+
+
+
+        no_shock = self.session.market.name != "Market 3"
+
+        self.response = []
+        self.db_helper.set_user_name(self.name)
+
+        # create some kind of id for now
+        tag_id = "p" + str(int(self.profit)) + "_$" + str(int(self.cost)) + "_c" + str(int(self.no_customers))
+        submit_json_plan['tag'] = tag_id
+
+        # save a submitted design
+        plan_obj = self.db_helper.plan_submit(submit_json_plan)
+        plan_obj.valid = no_shock
+        plan_obj.save()
+
+        self.response.append("I submitted a plan @" + tag_id + ", profit= " + str(round(self.profit, 1)) + ", cost=" + str(round(self.cost, 0)) + ", nocustomers = " + str(int(self.no_customers)) + ". Let me know of any feedback.")
+        if not no_shock:
+            self.response.append("A team planner needs to evaluate this plan for it to become usuable")
+
+        return self.response

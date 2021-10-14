@@ -46,7 +46,7 @@ class AiBot():
             elapsed_seconds = 0
 
         self.ITERATION_INTERVAL = 5
-        self.iter_Time = self.ITERATION_INTERVAL + elapsed_seconds
+        self.iter_Time = self.ITERATION_INTERVAL*60 + elapsed_seconds
 
         self.reset_preferece()
 
@@ -57,8 +57,8 @@ class AiBot():
         return self.adapt
 
     def set_time(self, time_experiment, to_user):
-        if time_experiment >= self.iter_Time*60:
-            self.iter_Time += self.ITERATION_INTERVAL
+        if time_experiment >= self.iter_Time:
+            self.iter_Time += self.ITERATION_INTERVAL*60
             if self.command is None:
                 res = self.adapt_function("iterate")
             else:

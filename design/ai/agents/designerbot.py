@@ -54,12 +54,36 @@ class DesignerBot(AiBot):
             self.response.append("want lower cost of 4000")
             self.response.append("want higher range and higher capacity of 20")
             self.response.append("@ref_drone_name : want higher range")
+            self.response.append("suggestion")
             return self.response
-
 
         if "unsatisfied" in s:
             self.response = []
             self.response.append("Can you provide guidance on what you are unsatisfied about with respect to range, capacity, or cost ? ")
+            return self.response
+
+        if "suggestion" in s:
+            last_config = self.config
+            lev_dist = 100000000000
+            selected_designs = pd.read_csv(r'static/ai/designerAI.csv').values.tolist()
+            for selected_design in selected_designs:
+                test = lev(last_config, selected_design[4])
+                if test < lev_dist:
+                    self.range = selected_design[0]
+                    self.capacity = selected_design[2]
+                    self.cost = selected_design[1]
+                    self.config = selected_design[4]
+                    self.velocity = selected_design[3]
+                    lev_dist = test
+
+            tag_id = "r" + str(int(self.range)) + "_c" + str(int(self.capacity)) + "_$" + str(int(self.cost))
+            no_shock = self.session.market.name != "Market 3"
+            self.db_helper.set_user_name(self.name)
+            self.db_helper.submit_vehicle_db(tag_id, self.config, self.range, self.capacity, self.cost, self.velocity, no_shock)
+            self.response.append("I submitted a drone design @" + tag_id +", range= " + str(round(self.range, 1)) + ", capacity=" + str(round(self.capacity, 0)) + ", cost = " + str(int(self.cost)) + ". Let me know of any feedback.")
+            if not no_shock:
+                self.response.append("A team designer needs to evaluate this design for it to become usuable")
+
             return self.response
 
         if "iterate" not in s:

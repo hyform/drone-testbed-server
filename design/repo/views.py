@@ -287,6 +287,28 @@ class DataLogList(generics.CreateAPIView):
     # queryset = DataLog.objects.all()
     serializer_class = DataLogSerializer
 
+    def update_bot_path(self, session_id, usr, action, index_config):
+        try:
+            for key in BotManager.session_bot_twins:
+                if usr in key:
+                    if 'Profit' in action:
+                        opsbot = BotManager.session_bot_twins[key]
+                        profit = float(action.split("Profit,")[1].split(",")[0])
+                        startupcost = float(action.split("StartUpCost,")[1].split(",")[0])
+                        no_customers = float(action.split("Number of Deliveries,")[1].split(",")[0])
+                        config_json = action.split(";")[index_config]
+                        config_json_fix = config_json.replace("\'","\"").replace("True", "true").replace("False", "false")
+                        config = json.dumps(json.loads(config_json_fix)["paths"])
+                        json_obj_plan = json.loads(config)
+                        plan_str = json.dumps(json_obj_plan)
+                        opsbot.profit = profit
+                        opsbot.cost = startupcost
+                        opsbot.no_customers = no_customers
+                        opsbot.config = config
+                        print("removed update worked ", opsbot.profit )
+        except Exception as e:
+            print("exception", e)
+
     def update_bot(self, session_id, usr, action):
         try:
             print("session_bot_twins", len(BotManager.session_bot_twins))
@@ -320,9 +342,24 @@ class DataLogList(generics.CreateAPIView):
         except Exception as e:
             print("exception", e)
 
+    def evaluated_bot(self, session_id, usr, action):
+        try:
+            for key in BotManager.session_bot_twins:
+                if usr in key:
+                    designbot = BotManager.session_bot_twins[key]
+                    designbot.range =  float(action.split(";")[3].split("=")[1])
+                    designbot.capacity = float(action.split(";")[4].split("=")[1])
+                    designbot.cost = float(action.split(";")[5].split("=")[1])
+                    designbot.config = action.split(";")[2]
+                    print("designbot check ", designbot.range, designbot.capacity , designbot.cost, designbot.config  )
+
+        except Exception as e:
+            print("exception", e)
+
     def perform_create(self, serializer):
         user = self.request.user
         st = SessionTeam.objects.filter(Q(session__status=1)&Q(team=user.profile.team)).first()
+
         if st:
             channel = 'm_' + str(st.session.id)
             log = str(serializer)
@@ -333,6 +370,18 @@ class DataLogList(generics.CreateAPIView):
                 if "Open" in action_val:
                     logger.debug("perform_create: 'Open' in action_val == true")
                     self.update_bot(st.session.id, user.username, action_val)
+                if "Evaluated" in action_val:
+                    self.evaluated_bot(st.session.id, user.username, action_val)
+                if "VehicleRemoved" in action_val:
+                    self.update_bot_path(st.session.id, user.username, action_val, 4)
+                if "VehicleAdd" in action_val:
+                    self.update_bot_path(st.session.id, user.username, action_val, 3)
+                if "ManualPathAdded" in action_val:
+                    self.update_bot_path(st.session.id, user.username, action_val, 6)
+                if "ManualPathRemove" in action_val:
+                    self.update_bot_path(st.session.id, user.username, action_val, 6)
+                if "VehiclePathRemoved" in action_val:
+                    self.update_bot_path(st.session.id, user.username, action_val, 4)
                 logger.debug("perform_create: after if 'Open' in action_val:")
                 values = action_val.split(';')
                 length = len(values)
@@ -411,27 +460,26 @@ class DataLogList(generics.CreateAPIView):
                     elif "VehicleToggle'" in first:
                         action = "Iterating on path"
 
-                    if action:
-                        up = UserPosition.objects.filter(Q(user=user)&Q(session=st.session)).first()
-                        if up:
-                            running_timer = SessionTimer.objects.filter(session=st.session).filter(timer_type=SessionTimer.RUNNING_START).first()
-                            elapsed_seconds = -1
-                            if running_timer:
-                                current_time = datetime.now(timezone.utc)
-                                running_timestamp = running_timer.timestamp
-                                if running_timestamp:
-                                    time_difference = current_time - running_timestamp
-                                    elapsed_seconds = round(time_difference.total_seconds())
-                            else:
-                                elapsed_seconds = 0
+                    up = UserPosition.objects.filter(Q(user=user)&Q(session=st.session)).first()
+                    if up:
+                        running_timer = SessionTimer.objects.filter(session=st.session).filter(timer_type=SessionTimer.RUNNING_START).first()
+                        elapsed_seconds = -1
+                        if running_timer:
+                            current_time = datetime.now(timezone.utc)
+                            running_timestamp = running_timer.timestamp
+                            if running_timestamp:
+                                time_difference = current_time - running_timestamp
+                                elapsed_seconds = round(time_difference.total_seconds())
+                        else:
+                            elapsed_seconds = 0
 
-                            for key in BotManager.session_bot_twins:
-                                bot_user = key.split(",")[2]
-                                to_user = key.split(",")[1]
-                                aibot = BotManager.session_bot_twins[key]
-                                aibot.set_time(elapsed_seconds, to_user)
+                        for key in BotManager.session_bot_twins:
+                            bot_user = key.split(",")[2]
+                            to_user = key.split(",")[1]
+                            aibot = BotManager.session_bot_twins[key]
+                            aibot.set_time(elapsed_seconds, to_user)
 
-                            event_info_message(channel, up.position.name, action, elapsed_seconds)
+                        event_info_message(channel, up.position.name, action, elapsed_seconds)
 
             serializer.save(user=user, session=st.session, type='client')
         else:

@@ -14,10 +14,10 @@ class BotGrammar():
             # define boat grammar
             bot_grammar = r"""
 
-                sentence: want | working | ping | NO | UNSATISFIED | HELP | "bot" want | "bot" working | "bot" ping | "bot" NO | "bot" UNSATISFIED | ITERATE | "bot" ITERATE | "bot" HELP
+                sentence: want | working | ping | NO | UNSATISFIED | HELP | SUGGESTION | "bot" want | "bot" working | "bot" ping | "bot" NO | "bot" UNSATISFIED | ITERATE | "bot" ITERATE | "bot" HELP | "bot" SUGGESTION
                 want: ref? "want" want_cond+                                                            -> want
                 working: "working" want_cond+                                                           -> working
-                want_cond: PREFDIR? VARIABLE "of"? SIGNED_NUMBER? "and"?                                -> want_cond
+                want_cond: PREFDIR? VARIABLE "of"? "than"? SIGNED_NUMBER? "and"?                        -> want_cond
                 PREFDIR: "lower" | "higher" | "less" | "more"
                 VARIABLE: "range" | "capacity" | "cost"
                 ref: "@" REF_CHAR+ ":"?                                                                 -> reference
@@ -28,6 +28,7 @@ class BotGrammar():
                 UNSATISFIED: "unsatisfied"
                 ITERATE: "iterate"
                 HELP: "help"
+                SUGGESTION: "suggestion"
 
                 SPECIAL_CHAR: "_" | "{" | "}" | "~" | "!" | "#" | "$" | "%" | "^" | "&" | "*" | "(" | ")" | "-" | "+" | "="
 
@@ -58,10 +59,10 @@ class BotGrammar():
             # define boat grammar
             bot_grammar = r"""
 
-                sentence: want | working | ping | NO | UNSATISFIED | HELP | "bot" want | "bot" working | "bot" ping | "bot" NO | "bot" UNSATISFIED | ITERATE | "bot" ITERATE | "bot" HELP
+                sentence: want | working | ping | NO | UNSATISFIED | HELP | SUGGESTION | "bot" want | "bot" working | "bot" ping | "bot" NO | "bot" UNSATISFIED | ITERATE | "bot" ITERATE | "bot" HELP | "bot" SUGGESTION
                 want: ref? "want" want_cond+ GEO*                                                       -> want
                 working: "working" want_cond+                                                           -> working
-                want_cond: PREFDIR? VARIABLE "of"? SIGNED_NUMBER? "and"?                                -> want_cond
+                want_cond: PREFDIR? VARIABLE "of"? "than"? SIGNED_NUMBER? "and"?                        -> want_cond
                 PREFDIR: "lower" | "higher" | "less" | "more"
                 VARIABLE: "cost" | "profit" | "customers"
                 ref: "@" REF_CHAR+ ":"?                                                                 -> reference
@@ -73,6 +74,7 @@ class BotGrammar():
                 UNSATISFIED: "unsatisfied"
                 ITERATE: "iterate"
                 HELP: "help"
+                SUGGESTION: "suggestion"
 
                 SPECIAL_CHAR: "_" | "{" | "}" | "~" | "!" | "#" | "$" | "%" | "^" | "&" | "*" | "(" | ")" | "-" | "+" | "="
 
