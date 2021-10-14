@@ -133,6 +133,8 @@ class CustomLinks(models.Model):
     status = models.IntegerField(null=True, blank=True)
     first = models.BooleanField(null=True, blank=True)
     last = models.BooleanField(null=True, blank=True)
+    in_tutorial = models.BooleanField(null=True, blank=True)
+
     # Add Market here
     # Add int here for session position in exercise
     #TODO: add in study and experiment filtering

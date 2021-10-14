@@ -232,9 +232,11 @@ class ChatConsumer(WebsocketConsumer):
                         self.channels[channel_instance] = channel
                         if st.session.structure.name == "Fall 2021 Bot":
                             if 'Design' in channel.name:
-                                self.bm.register_session_bot(st.session, self.designer_bot.user.username, channel)
+                                if self.designer_bot:
+                                    self.bm.register_session_bot(st.session, self.designer_bot.user.username, channel)
                             if 'Operation' in channel.name:
-                                self.bm.register_session_bot(st.session, self.ops_bot.user.username, channel)
+                                if self.ops_bot:
+                                    self.bm.register_session_bot(st.session, self.ops_bot.user.username, channel)
 
                     self.channels[help_instance] = help_channel
                 elif st.session.status == Session.SETUP:

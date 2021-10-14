@@ -306,7 +306,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         };
         newBotChatOption.appendChild(newBotChatOptionItem);
         botChatOptions.appendChild(newBotChatOption);
-    };
+    };    
 
     var addDesignSelection = function(action, isDesign) {
         clearAndAdd("", isDesign);
@@ -321,8 +321,13 @@ document.addEventListener("DOMContentLoaded", function (event) {
             method: "GET",
             data: designData,
             success: function (result) {
-                result.results.forEach(design =>
-                    addButtonBotChoice("@" + design.tag, action, isDesign))
+                if(result.results.length > 0) {
+                    result.results.forEach(design =>
+                        addButtonBotChoice("@" + design.tag, action, isDesign))
+                } else {
+                    addLabelBotChoice("No Designs", isDesign);
+                    addButtonBotChoice("", action, isDesign);
+                }
             }
         });
     };
@@ -340,13 +345,17 @@ document.addEventListener("DOMContentLoaded", function (event) {
             method: "GET",
             data: planData,
             success: function (result) {
-                result.results.forEach(plan =>
-                    addButtonBotChoice("@" + plan.tag, action, isDesign))
+                if(result.results.length > 0) {
+                    result.results.forEach(plan =>
+                        addButtonBotChoice("@" + plan.tag, action, isDesign))
+                } else {
+                    addLabelBotChoice("No Plans", isDesign);
+                    addButtonBotChoice("", action, isDesign);
+                }
             }
         });
     };
     
-
     var addTerminalButtonBotChoice = function(text, isDesign) {        
         var botChatOptions = null;
         if(isDesign) {

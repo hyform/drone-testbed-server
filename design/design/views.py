@@ -243,6 +243,7 @@ def get_cutsom_links(request, st, context):
     link_status = None
     link_first = None
     link_last = None
+    link_in_tutorial = None
 
     link_org = st.team.organization
     if st.session.exercise:
@@ -260,6 +261,7 @@ def get_cutsom_links(request, st, context):
         link_is_team = False
     link_ai = st.session.use_ai
     link_status = st.session.status
+    link_in_tutorial = st.session.is_tutorial
     num_sessions = Session.objects.filter(exercise=st.session.exercise).count()
     if st.session.index == 1:
         link_first = True
@@ -296,6 +298,8 @@ def get_cutsom_links(request, st, context):
             Q(last__isnull=True) | Q(last=link_last)
         ).filter(
             Q(active=True)
+        ).filter(
+            Q(in_tutorial__isnull=True) | Q(in_tutorial=link_in_tutorial)
         )
 
     if custom_links:

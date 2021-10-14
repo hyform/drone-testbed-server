@@ -212,7 +212,7 @@ textarea {
 
 .bot-col {
     padding: 0;
-    height: 12px;
+    /*height: 12px;*/
 }
 
 .bot-btn {
@@ -223,7 +223,7 @@ textarea {
     border: 0;
     padding-left: 0;
     padding-right: 0;
-    height: 10px;
+    /*height: 10px;*/
 }
 
 .bot-choice-btn {
