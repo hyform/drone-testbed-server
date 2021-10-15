@@ -51,8 +51,8 @@ class DesignerBot(AiBot):
             self.response = []
             self.response.append("Send commands with range, capacity, cost, values, and reference drones. Some examples are")
             self.response.append("want higher range")
-            self.response.append("want lower cost of 4000")
-            self.response.append("want higher range and higher capacity of 20")
+            self.response.append("want lower cost than 4000")
+            self.response.append("want higher range and higher capacity than 20")
             self.response.append("@ref_drone_name : want higher range")
             self.response.append("suggestion")
             return self.response

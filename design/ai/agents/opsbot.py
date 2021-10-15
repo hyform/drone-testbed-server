@@ -55,8 +55,8 @@ class OpsBot(AiBot):
             self.response = []
             self.response.append("Send commands with profit, cost, customers, values, reference plans, and direction. Some examples are")
             self.response.append("want higher profit")
-            self.response.append("want lower cost of 10000")
-            self.response.append("want higher profit and higher customers of 6")
+            self.response.append("want lower cost than 10000")
+            self.response.append("want higher profit and higher customers than 6")
             self.response.append("@ref_plan_name : want higher profit")
             self.response.append("want higher profit north east")
             self.response.append("want lower cost south")
