@@ -216,8 +216,8 @@ class ChatConsumer(WebsocketConsumer):
                 self.bm = BotManager()
                 # we need to add a bot selection, and update the database to store users as bots
                 # for a test, just set a bot by name
-                self.designer_bot = UserPosition.objects.filter(session=st.session).filter(position__name="Design Specialist").first()
-                self.ops_bot = UserPosition.objects.filter(session=st.session).filter(position__name="Operations Specialist").first()
+                self.designer_bot = UserPosition.objects.filter(session=st.session).filter(position__name="Design Specialist 2").first()
+                self.ops_bot = UserPosition.objects.filter(session=st.session).filter(position__name="Operations Specialist 2").first()
 
 
             if st:
