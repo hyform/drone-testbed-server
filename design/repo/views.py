@@ -477,6 +477,7 @@ class DataLogList(generics.CreateAPIView):
                             bot_user = key.split(",")[2]
                             to_user = key.split(",")[1]
                             aibot = BotManager.session_bot_twins[key]
+                            print("---- elapsed seconds of experiment " + str(elapsed_seconds))
                             aibot.set_time(elapsed_seconds, to_user)
 
                         event_info_message(channel, up.position.name, action, elapsed_seconds)

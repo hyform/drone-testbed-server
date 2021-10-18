@@ -70,9 +70,15 @@ class OpsBot(AiBot):
             return self.response
 
         if "suggestion" in s:
-            return self.suggestion_alg()
-            #self.command = "want"
-            #s = "iterate"
+            #return self.suggestion_alg()
+            if self.adapt:
+                res = self.adapt_function(s)
+                if res is not None:
+                    return res
+            else:
+                self.command = "want"
+                s = "iterate"
+
 
         # set grammar-based variables
         if "iterate" not in s:

@@ -57,6 +57,7 @@ class AiBot():
         return self.adapt
 
     def set_time(self, time_experiment, to_user):
+        print(" -- test elapse seconds " + str(time_experiment) + " " + str(self.iter_Time) + " : second left to next bot call " + str(self.iter_Time - time_experiment))
         if time_experiment >= self.iter_Time:
             self.iter_Time += self.ITERATION_INTERVAL*60
             if self.command is None:
