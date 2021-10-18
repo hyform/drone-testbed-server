@@ -280,3 +280,16 @@ class DatabaseHelper:
 
             #twin_log_message(self.session.id, user_name, time_min, action)
             twin_log_message(self.session.id, user_name, time_out, action)
+
+    def submit_data_log2(self, user_name, action):
+
+        # if the user name is saved in the user positions (# a team agent is not in the user positions, so this is why the check is here)
+        if user_name in self.user_positions:
+
+            dl = DataLog()                                      # create a new Datalog object
+            dl.session = self.session                           # assign the session to the DataLog
+            dl.user = self.user_positions[user_name].user       # assign a user to the datalog
+            dl.action = action                                  # add the action
+            dl.time = datetime.now()
+            dl.type = "bot_manager"                            # save the type of the Datalog as digital twin for now
+            dl.save()

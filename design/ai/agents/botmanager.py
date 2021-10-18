@@ -128,19 +128,16 @@ class BotManager():
                 res = bg.get_json_of_chat(s)
 
                 if res is not None:
+                    db_helper.submit_data_log2(user, "passed_bot_grammar;" + s)
 
                     # send a message to the bot
                     msgs = BotManager.session_bot_twins[key].receive_message(s, channel, user)
-                    print("key", key)
                     # if response, return the message and the user or bot who created it
                     if msgs is not None:
                         bot_responses[db_helper.get_users()[other]] = msgs
-                        print("key---------------------", key, msgs)
                 else:
                     if "bot" in s:
                         bot_responses[db_helper.get_users()[other]] = ["intent not understood"]
-
-
 
         print("bot_responses", bot_responses)
 
