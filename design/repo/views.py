@@ -473,6 +473,7 @@ class DataLogList(generics.CreateAPIView):
                         else:
                             elapsed_seconds = 0
 
+                        logger.debug("BotManager.session_bot_twins size = : " + str(len(BotManager.session_bot_twins)))
                         for key in BotManager.session_bot_twins:
                             bot_user = key.split(",")[2]
                             to_user = key.split(",")[1]
