@@ -31,14 +31,18 @@ class BotManager():
 
                 for other in others:
                     key = self.get_bot_key2(session, other, usr)
+                    logger.debug("BotManager.session_bot_twins size = : " + str(len(BotManager.session_bot_twins)))
+                    logger.debug("before BotManager.session_bot_twins key check")
                     if key not in BotManager.session_bot_twins:
-                        if 'Design' in user_roles[usr]:
+                        logger.debug("user_roles[usr] = " + str(user_roles[usr]))
+                        if 'Design' in user_roles[usr]:                            
                             BotManager.session_bot_twins[key] = DesignerBot(usr, session, db_helper, db_helper.get_users()[usr])
                             BotManager.session_bot_twins[key].set_channel(channel)
                         if 'Plan' in user_roles[usr]:
                             BotManager.session_bot_twins[key] = OpsBot(usr, session, db_helper, db_helper.get_users()[usr])
                             BotManager.session_bot_twins[key].set_channel(channel)
-
+                    logger.debug("after BotManager.session_bot_twins key check")
+                    logger.debug("BotManager.session_bot_twins size = : " + str(len(BotManager.session_bot_twins)))
 
                 #key = self.get_bot_key(session, usr)
                 #if key not in BotManager.session_bot_twins:
