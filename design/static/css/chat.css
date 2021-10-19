@@ -115,12 +115,18 @@ html, body {
 @keyframes new-pulse {
     0% {
         background-color: #BC8F8F;
+        margin-left: 0%;
+        margin-right: 0%;
     }
     50% {
         background-color: #EB7575;
+        margin-left: 5%;
+        margin-right: 5%;
     }
     100% {
         background-color: #BC8F8F;
+        margin-left: 0%;
+        margin-right: 0%;
     }
 }
 
@@ -132,12 +138,18 @@ html, body {
 @keyframes new-priority-pulse {
     0% {
         background-color: #BC8F8F;
+        margin-left: 0%;
+        margin-right: 0%;
     }
     50% {
         background-color: #e90606;
+        margin-left: 10%;
+        margin-right: 10%;
     }
     100% {
         background-color: #BC8F8F;
+        margin-left: 0%;
+        margin-right: 0%;
     }
 }
 
