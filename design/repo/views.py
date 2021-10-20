@@ -287,12 +287,13 @@ class DataLogList(generics.CreateAPIView):
     # queryset = DataLog.objects.all()
     serializer_class = DataLogSerializer
 
-    def update_bot_path(self, session_id, usr, action, index_config):
+    def update_bot_path(self, session, usr, action, index_config):
         try:
-            for key in BotManager.session_bot_twins:
-                if usr in key:
-                    if 'Profit' in action:
-                        opsbot = BotManager.session_bot_twins[key]
+            bm = BotManager()
+            bots = bm.get_session_bot_twins(session)
+            if 'Profit' in action:
+                for bot in [bots[2], bots[3]]:
+                    if bot.other_user_name == usr:
                         profit = float(action.split("Profit,")[1].split(",")[0])
                         startupcost = float(action.split("StartUpCost,")[1].split(",")[0])
                         no_customers = float(action.split("Number of Deliveries,")[1].split(",")[0])
@@ -301,21 +302,22 @@ class DataLogList(generics.CreateAPIView):
                         config = json.dumps(json.loads(config_json_fix)["paths"])
                         json_obj_plan = json.loads(config)
                         plan_str = json.dumps(json_obj_plan)
-                        opsbot.profit = profit
-                        opsbot.cost = startupcost
-                        opsbot.no_customers = no_customers
-                        opsbot.config = config
-                        print("removed update worked ", opsbot.profit )
+                        bot.profit = profit
+                        bot.cost = startupcost
+                        bot.no_customers = no_customers
+                        bot.config = config
+                        bot.save()
+                        print("planner bot open state worked ", bot.profit )
         except Exception as e:
             print("exception", e)
 
-    def update_bot(self, session_id, usr, action):
+    def update_bot(self, session, usr, action):
         try:
-            print("session_bot_twins", len(BotManager.session_bot_twins))
-            for key in BotManager.session_bot_twins:
-                if usr in key:
-                    if 'Profit' in action:
-                        opsbot = BotManager.session_bot_twins[key]
+            bm = BotManager()
+            bots = bm.get_session_bot_twins(session)
+            if 'Profit' in action:
+                for bot in [bots[2], bots[3]]:
+                    if bot.other_user_name == usr:
                         profit = float(action.split("Profit,")[1].split(",")[0])
                         startupcost = float(action.split("StartUpCost,")[1].split(",")[0])
                         no_customers = float(action.split("Number of Deliveries,")[1].split(",")[0])
@@ -324,33 +326,37 @@ class DataLogList(generics.CreateAPIView):
                         config = json.dumps(json.loads(config_json_fix)["paths"])
                         json_obj_plan = json.loads(config)
                         plan_str = json.dumps(json_obj_plan)
-                        opsbot.profit = profit
-                        opsbot.cost = startupcost
-                        opsbot.no_customers = no_customers
-                        opsbot.config = config
-                        print("opsbot.profit ", opsbot.profit )
-                    else:
-                        designbot = BotManager.session_bot_twins[key]
+                        bot.profit = profit
+                        bot.cost = startupcost
+                        bot.no_customers = no_customers
+                        bot.config = config
+                        bot.save()
+                        print("opsbot.profit updated ", bot.profit )
+            else:
+                for bot in [bots[0], bots[1]]:
+                    if bot.other_user_name == usr:
                         config = action.split(";")[3]
-                        vehicle = Vehicle.objects.filter(Q(config=config, session_id=session_id)).first()
-                        designbot.range = vehicle.range
-                        designbot.capacity = vehicle.payload
-                        designbot.cost = vehicle.cost
-                        designbot.config = vehicle.config
-                        print("designbot.range ", designbot.range )
+                        vehicle = Vehicle.objects.filter(Q(config=config, session=session)).first()
+                        bot.range = vehicle.range
+                        bot.capacity = vehicle.payload
+                        bot.cost = vehicle.cost
+                        bot.config = vehicle.config
+                        bot.save()
+                        print("designbot.range ", bot.range )
 
         except Exception as e:
             print("exception", e)
 
-    def evaluated_bot(self, session_id, usr, action):
+    def evaluated_bot(self, session, usr, action):
         try:
-            for key in BotManager.session_bot_twins:
-                if usr in key:
-                    designbot = BotManager.session_bot_twins[key]
-                    designbot.range =  float(action.split(";")[3].split("=")[1])
-                    designbot.capacity = float(action.split(";")[4].split("=")[1])
-                    designbot.cost = float(action.split(";")[5].split("=")[1])
-                    designbot.config = action.split(";")[2]
+            bm = BotManager()
+            bots = bm.get_session_bot_twins(session)
+            for bot in [bots[0], bots[1]]:
+                if bot.other_user_name == usr:
+                    bot.range =  float(action.split(";")[3].split("=")[1])
+                    bot.capacity = float(action.split(";")[4].split("=")[1])
+                    bot.cost = float(action.split(";")[5].split("=")[1])
+                    bot.config = action.split(";")[2]
                     print("designbot check ", designbot.range, designbot.capacity , designbot.cost, designbot.config  )
 
         except Exception as e:
@@ -369,19 +375,19 @@ class DataLogList(generics.CreateAPIView):
                 logger.debug("perform_create: before if 'Open' in action_val:")
                 if "Open" in action_val:
                     logger.debug("perform_create: 'Open' in action_val == true")
-                    self.update_bot(st.session.id, user.username, action_val)
+                    self.update_bot(st.session, user.username, action_val)
                 if "Evaluated" in action_val:
-                    self.evaluated_bot(st.session.id, user.username, action_val)
+                    self.evaluated_bot(st.session, user.username, action_val)
                 if "VehicleRemoved" in action_val:
-                    self.update_bot_path(st.session.id, user.username, action_val, 4)
+                    self.update_bot_path(st.session, user.username, action_val, 4)
                 if "VehicleAdd" in action_val:
-                    self.update_bot_path(st.session.id, user.username, action_val, 3)
+                    self.update_bot_path(st.session, user.username, action_val, 3)
                 if "ManualPathAdded" in action_val:
-                    self.update_bot_path(st.session.id, user.username, action_val, 6)
+                    self.update_bot_path(st.session, user.username, action_val, 6)
                 if "ManualPathRemove" in action_val:
-                    self.update_bot_path(st.session.id, user.username, action_val, 6)
+                    self.update_bot_path(st.session, user.username, action_val, 6)
                 if "VehiclePathRemoved" in action_val:
-                    self.update_bot_path(st.session.id, user.username, action_val, 4)
+                    self.update_bot_path(st.session, user.username, action_val, 4)
                 logger.debug("perform_create: after if 'Open' in action_val:")
                 values = action_val.split(';')
                 length = len(values)
@@ -473,13 +479,21 @@ class DataLogList(generics.CreateAPIView):
                         else:
                             elapsed_seconds = 0
 
-                        logger.debug("BotManager.session_bot_twins size = : " + str(len(BotManager.session_bot_twins)))
-                        for key in BotManager.session_bot_twins:
-                            bot_user = key.split(",")[2]
-                            to_user = key.split(",")[1]
-                            aibot = BotManager.session_bot_twins[key]
-                            print("---- elapsed seconds of experiment " + str(elapsed_seconds))
-                            aibot.set_time(elapsed_seconds, to_user)
+                        bm = BotManager()
+                        bots = bm.get_session_bot_twins(st.session)
+                        if bots:
+                            for bot in bots:
+                                if bot:
+                                    bot.iter_time = elapsed_seconds
+                                    #print("update time bot", bot, elapsed_seconds, bot.iter_time, bot.last_iter_time, (bot.iter_time - bot.last_iter_time) )
+                                    if (bot.iter_time - bot.last_iter_time) >= 300:
+                                        bm.send_adaptive_command(st.session, bot.id)
+                                        print("update bot agents adaptive call")
+                                        bot.last_iter_time = bot.iter_time
+
+                                    bot.save()
+
+
 
                         event_info_message(channel, up.position.name, action, elapsed_seconds)
 

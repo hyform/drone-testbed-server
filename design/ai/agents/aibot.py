@@ -1,5 +1,5 @@
 from asgiref.sync import async_to_sync
-
+from .database_helper import DatabaseHelper
 from .botgrammar import BotGrammar
 from .adaptive_team_ai_updated_planner import AdaptiveTeamAIUpdatedPlanner
 
@@ -70,6 +70,7 @@ class AiBot():
 
 
     def reset_preferece(self):
+        print("reset pref")
         self.command = None
         self.command_type = None
         self.referenced_obj = None
@@ -85,7 +86,7 @@ class AiBot():
         return "aibot"
 
     # receives a message from a channel to process it an assign grammar based information variables
-    def receive_message(self, s, channel, usr):
+    def receive_message(self, s):
 
 
         print("-------------- received")
@@ -197,7 +198,6 @@ class AiBot():
 ####                        'channel': self.channel_instance
 ####                    }
 ####                )
-
 
 # class to store want information specific to variables
 class VariableInformation():

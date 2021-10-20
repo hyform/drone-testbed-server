@@ -2,15 +2,21 @@ from .aibot import AiBot
 from .designermarkov import DesignerMarkov
 from .adaptive_team_ai_updated_planner import AdaptiveTeamAIUpdatedPlanner
 from Levenshtein import distance as lev
+from .database_helper import DatabaseHelper
 
 import pandas as pd
 import math
 import random
 
-class DesignerBot(AiBot):
+from ai.models import DesignerBot, OpsBot
 
-    def __init__(self, name, session, db_helper, user):
-        super().__init__(name, session, db_helper, user)
+from django.db.models import Q
+
+class DesignerBotAgent(AiBot):
+
+    def __init__(self):
+        print("init")
+
         self.range = 10
         self.capacity = 5
         self.cost = 3470
@@ -33,6 +39,8 @@ class DesignerBot(AiBot):
         if s == "no":
             self.ask_adapt_variables.pop(0)
 
+        self.persist()
+
         if "range" in self.ask_adapt_variables:
             return ["Do you have any preference on range ?"]
         if "capacity" in self.ask_adapt_variables:
@@ -40,12 +48,128 @@ class DesignerBot(AiBot):
         if "cost" in self.ask_adapt_variables:
             return ["Do you have any preference on cost ?"]
 
+
+
         self.adapt = False
         self.command = "want"
         return None
 
+
+    def persist(self):
+        bot = DesignerBot.objects.filter(Q(id=self.bot_id)).first()
+
+        bot.session = self.session
+        bot.iter_time = self.iter_time
+        bot.command = self.command
+        bot.command_type = self.command_type
+        bot.referenced_obj = self.referenced_obj
+        bot.range_dir = None
+        bot.range_value = None
+        bot.capacity_dir = None
+        bot.capacity_value = None
+        bot.cost_dir = None
+        bot.cost_value = None
+
+        print("var_info.variable len", len( self.variable_info))
+        for var_info in self.variable_info:
+            print("var_info.variable", var_info.variable)
+            if var_info.variable == "range":
+                bot.range_dir = var_info.pref_dir
+                bot.range_value = self.range
+                print("range save --------", bot.range_value)
+            if var_info.variable == "capacity":
+                bot.capacity_dir = var_info.pref_dir
+                bot.capacity_value = self.capacity
+                print("capacit", bot.capacity_value)
+            if var_info.variable == "cost":
+                bot.cost_dir = var_info.pref_dir
+                bot.cost_value = self.cost
+
+
+        bot.ask_range = False
+        bot.ask_capacity = False
+        bot.ask_cost = False
+        if "range" in self.ask_adapt_variables:
+            bot.ask_range = True
+        if "capacity" in self.ask_adapt_variables:
+            bot.ask_capacity = True
+        if "cost" in self.ask_adapt_variables:
+            bot.ask_cost = True
+
+        bot.range = self.range
+        bot.capacity = self.capacity
+        bot.cost = self.cost
+        bot.config = self.config
+
+        bot.save()
+
+
+    def send_to_bot(self, bot_id, s):
+        bot = DesignerBot.objects.filter(Q(id=bot_id)).first()
+
+        self.bot_id = bot.id
+        self.name = bot.bot_user_name
+        self.db_helper = DatabaseHelper(bot.session)
+        self.session = bot.session
+        self.iter_time = bot.iter_time
+        self.command = bot.command
+        self.command_type = bot.command_type
+        self.referenced_obj = bot.referenced_obj
+
+        self.config = bot.config
+        self.range = bot.range
+        self.capacity = bot.capacity
+        self.cost = bot.cost
+
+        self.variable_info = []
+        print("range ---------- check", bot.range_dir )
+        if bot.range_dir is not None:
+            var_info = VariableInformation()
+            var_info.variable = "range"
+            var_info.pref_dir = bot.range_dir
+            var_info.value = bot.range_value
+            if var_info.value is None:
+                var_info.value = float('nan')
+            self.variable_info.append(var_info)
+            print("load test me",var_info.value )
+
+        if bot.capacity_dir is not None:
+            var_info = VariableInformation()
+            var_info.variable = "capacity"
+            var_info.pref_dir = bot.capacity_dir
+            var_info.value = bot.capacity_value
+            if var_info.value is None:
+                var_info.value = float('nan')
+            self.variable_info.append(var_info)
+
+        if bot.cost_dir is not None:
+            var_info = VariableInformation()
+            var_info.variable = "cost"
+            var_info.pref_dir = bot.cost_dir
+            var_info.value = bot.cost_value
+            if var_info.value is None:
+                var_info.value = float('nan')            
+            self.variable_info.append(var_info)
+
+        self.ask_adapt_variables = []
+        if bot.ask_range:
+            self.ask_adapt_variables.append("range")
+        if bot.ask_capacity:
+            self.ask_adapt_variables.append("capacity")
+        if bot.ask_cost:
+            self.ask_adapt_variables.append("cost")
+        self.adapt = len(self.ask_adapt_variables) > 0
+
+        return self.receive_message(s)
+
+
+
+
+
 ####    def receive_message(self, s, channel, channel_instance, channel_layer):
-    def receive_message(self, s, channel, usr):
+    def receive_message(self, s):
+
+        self.response = []
 
         if "help" in s:
             self.response = []
@@ -66,6 +190,7 @@ class DesignerBot(AiBot):
             if self.adapt:
                 res = self.adapt_function(s)
                 if res is not None:
+                    self.persist()
                     return res
             else:
                 self.command = "want"
@@ -95,10 +220,12 @@ class DesignerBot(AiBot):
 #            return self.response
 
         if "iterate" not in s:
-            super().receive_message(s, channel, usr)
+            super().receive_message(s)
             if self.adapt:
                 res = self.adapt_function(s)
+                print("results ", res)
                 if res is not None:
+                    self.persist()
                     return res
 
         # print bot grammer information
@@ -136,6 +263,8 @@ class DesignerBot(AiBot):
                 last_capacity = self.capacity
                 last_cost = self.cost
                 last_config = self.config
+
+                print("------------======================",last_range, last_capacity, last_cost, last_config)
 
                 # if referencing another design, then reference that design
                 if self.referenced_obj is not None:
@@ -257,7 +386,7 @@ class DesignerBot(AiBot):
                     self.cost = submit_cost
                     self.velocity = submit_velocity
 
-                    self.saved_states[usr] = [self.config, self.range, self.capacity, self.cost, self.velocity]
+                    #self.saved_states[usr] = [self.config, self.range, self.capacity, self.cost, self.velocity]
 
                     tag_id = "r" + str(int(self.range)) + "_c" + str(int(self.capacity)) + "_$" + str(int(self.cost))
 
@@ -271,7 +400,7 @@ class DesignerBot(AiBot):
 
 
 
-
+                    self.persist()
                     return self.response  # time delay
 
                 # we could not find a feasible design, but we will submit our last state anyways, tune the 0.5
@@ -284,12 +413,13 @@ class DesignerBot(AiBot):
                     # get the last id in the channel vehicles
                     self.db_helper.set_user_name(self.name)
 
-                    self.saved_states[usr] = [self.config, self.range, self.capacity, self.cost, self.velocity]
+                    #self.saved_states[usr] = [self.config, self.range, self.capacity, self.cost, self.velocity]
 
                     tag_id = "r" + str(int(self.range)) + "_c" + str(int(self.capacity)) + "_$" + str(int(self.cost))
 
                     self.db_helper.submit_vehicle_db(tag_id, self.config, self.range, self.capacity, self.cost, self.velocity)
                     self.response.append("I could not create a drone that matched your request, but I submitted a drone design @" + tag_id + ", range=" + str(self.range)+ ", capacity=" + str(self.capacity) + ", cost=" + str(self.cost) + ". Let me know of any feedback.")
+                    self.persist()
                     return self.response  # time delay
 
                 # reset or state to the last design or the referenced vehicle in the command
@@ -302,4 +432,14 @@ class DesignerBot(AiBot):
             if 'ping' in self.command and 'status' in self.command_type:
                 self.response.append("status : range = " + str(round(self.range, 1)) + " , capacity = " + str(round(self.capacity, 0)) + " , cost = " + str(round(self.cost,0)))
 
+        self.persist()
         return self.response
+
+
+# class to store want information specific to variables
+class VariableInformation():
+
+    def __init__(self):
+        self.pref_dir = None
+        self.variable = None
+        self.value = float("nan")

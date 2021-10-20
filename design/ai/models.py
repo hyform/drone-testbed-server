@@ -3,6 +3,10 @@ import grpc
 from . import uavdesign_pb2_grpc as uavdesign_pb2_grpc
 from . import uavdesign_pb2 as uavdesign_pb2
 
+from exper.models import Session
+from chat.models import Channel, ChannelPosition
+
+
 from ortools.constraint_solver import routing_enums_pb2
 from ortools.constraint_solver import pywrapcp
 
@@ -15,6 +19,7 @@ import time
 
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
+
 
 # from .seqtosql.dronebotseqtosql import DroneBotSeqToSQL
 
@@ -31,6 +36,57 @@ class Designer1(models.Model):
     cost = models.FloatField()
     payload = models.FloatField()
     velocity = models.FloatField(default=0.1)
+
+
+class DesignerBot(models.Model):
+    session = models.ForeignKey(Session, on_delete=models.CASCADE)
+    channel_id = models.IntegerField(default=0, null=True, blank=True)
+    iter_time = models.FloatField(default=0, null=True, blank=True)
+    last_iter_time = models.FloatField(default=0, null=True, blank=True)
+    command = models.CharField(max_length=500, null=True, blank=True)
+    command_type = models.CharField(max_length=50, null=True, blank=True)
+    referenced_obj = models.CharField(max_length=500, null=True, blank=True)
+    range_dir = models.CharField(max_length=10, null=True, blank=True)
+    range_value = models.FloatField(default=10, null=True, blank=True)
+    capacity_dir = models.CharField(max_length=10, null=True, blank=True)
+    capacity_value = models.FloatField(default=5, null=True, blank=True)
+    cost_dir = models.CharField(max_length=10,null=True, blank=True)
+    cost_value = models.FloatField(default=3470,null=True, blank=True)
+    config =  models.CharField(default="aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3", max_length=5000, null=True, blank=True)
+    ask_range = models.BooleanField(default=True, null=True, blank=True)
+    ask_capacity = models.BooleanField(default=True, null=True, blank=True)
+    ask_cost = models.BooleanField(default=True, null=True, blank=True)
+    bot_user_name =  models.CharField(max_length=10, null=True, blank=True)
+    other_user_name =  models.CharField(max_length=10, null=True, blank=True)
+    range = models.FloatField(default=10,null=True, blank=True)
+    capacity = models.FloatField(default=5,null=True, blank=True)
+    cost = models.FloatField(default=3470,null=True, blank=True)
+
+
+class OpsBot(models.Model):
+    session = models.ForeignKey(Session, on_delete=models.CASCADE)
+    channel_id = models.IntegerField(default=0, null=True, blank=True)
+    iter_time = models.FloatField(default=0, null=True, blank=True)
+    last_iter_time = models.FloatField(default=0, null=True, blank=True)
+    command = models.CharField(max_length=500, null=True, blank=True)
+    command_type = models.CharField(max_length=50, null=True, blank=True)
+    referenced_obj = models.CharField(max_length=500, null=True, blank=True)
+    profit_dir = models.CharField(max_length=10, null=True, blank=True)
+    profit_value = models.FloatField(null=True, blank=True)
+    cost_dir = models.CharField(max_length=10, null=True, blank=True)
+    cost_value = models.FloatField(null=True, blank=True)
+    customers_dir = models.CharField(max_length=10, null=True, blank=True)
+    customers_value = models.FloatField(null=True, blank=True)
+    config =  models.CharField(max_length=10000, null=True, blank=True)
+    ask_profit = models.BooleanField(default=True,null=True, blank=True)
+    ask_cost = models.BooleanField(default=True,null=True, blank=True)
+    ask_customers = models.BooleanField(default=True,null=True, blank=True)
+    bot_user_name =  models.CharField(max_length=10, null=True, blank=True)
+    other_user_name =  models.CharField(max_length=10, null=True, blank=True)
+    profit = models.FloatField(null=True, blank=True)
+    cost = models.FloatField(null=True, blank=True)
+    customers = models.FloatField(null=True, blank=True)
+
 
 class UAVDesign(object):
     def __init__(self, config):
@@ -65,6 +121,9 @@ class UAVDesign2(object):
         # design = uavdesign_pb2.UAVDesign(config = "*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3")
         design = uavdesign_pb2.UAVDesign(config = self.config)
         self.results = stub.GetUAVPerformance(design)
+
+
+
 
 class DroneBot(object):
 

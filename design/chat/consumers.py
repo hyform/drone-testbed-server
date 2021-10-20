@@ -67,6 +67,7 @@ class ChatConsumer(WebsocketConsumer):
         self.userid = self.scope['user'].id
         self.username = self.scope['user'].username
         self.channels = OrderedDict([])
+        self.bot_exp = False
         st = None
 
         if self.user.is_anonymous:
@@ -212,13 +213,8 @@ class ChatConsumer(WebsocketConsumer):
 
             if st.session.structure.name == "Fall 2021 Bot":
 
-                # any bots ?
-                self.bm = BotManager()
+                self.bot_exp = True
                 # we need to add a bot selection, and update the database to store users as bots
-                # for a test, just set a bot by name
-                self.designer_bot = UserPosition.objects.filter(session=st.session).filter(position__name="Design Specialist 2").first()
-                self.ops_bot = UserPosition.objects.filter(session=st.session).filter(position__name="Operations Specialist 2").first()
-
 
             if st:
                 help_channel = Channel.objects.filter(name="Help").first()
@@ -232,11 +228,12 @@ class ChatConsumer(WebsocketConsumer):
                         self.channels[channel_instance] = channel
                         if st.session.structure.name == "Fall 2021 Bot":
                             if 'Design' in channel.name:
-                                if self.designer_bot:
-                                    self.bm.register_session_bot(st.session, self.designer_bot.user.username, channel)
-                            if 'Operation' in channel.name:
-                                if self.ops_bot:
-                                    self.bm.register_session_bot(st.session, self.ops_bot.user.username, channel)
+                                bm = BotManager()
+                                bm.initialize_designer_bot_twins(st.session, channel)
+                            elif 'Operation' in channel.name:
+                                bm = BotManager()
+                                bm.initialize_ops_bot_twins(st.session, channel)
+
 
                     self.channels[help_instance] = help_channel
                 elif st.session.status == Session.SETUP:
@@ -524,14 +521,23 @@ class ChatConsumer(WebsocketConsumer):
                 #then bot code below is under this if statement
                 if session.structure.name == "Fall 2021 Bot":
 
-                    print("user.username", user.username)
 
-                    msgs = self.bm.send_to_bots(message, user.username, channel, st.session)
+
+                    print("user.username", user.username)
+                    bm = BotManager()
+                    msgs = bm.send_to_bots(message, user.username, channel, st.session)
 
                     print("check -----------", user.username, msgs, message)
 
                     # if a bot returns a message
-                    for bot_user in msgs:
+                    for bot_user_name in msgs:
+
+                        ups = UserPosition.objects.filter(Q(session=st.session))
+                        for up in ups:
+                            if up.user.username == bot_user_name:
+                                bot_user = up.user
+                                break
+
 
                         # get the position name of the bot
                         st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=bot_user.profile.team)).first()
@@ -541,7 +547,7 @@ class ChatConsumer(WebsocketConsumer):
                             if position:
                                 sender_string = position.name
 
-                        for msg in msgs[bot_user]:
+                        for msg in msgs[bot_user_name]:
                             # add object and datalog
                             Message.objects.create(sender=bot_user, channel=channel, message=msg, session=st.session)
                             DataLog.objects.create(user=bot_user, session=st.session, action=msg, type='chat: ' + channel.name + ' @' + channel_instance)

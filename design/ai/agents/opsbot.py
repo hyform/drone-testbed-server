@@ -9,17 +9,21 @@ from ai.models import OpsService
 from ai.models import OpsPlan
 from repo.serializers import PlanSerializer
 
+from .database_helper import DatabaseHelper
+
 from Levenshtein import distance as lev
 
-class OpsBot(AiBot):
+from ai.models import DesignerBot, OpsBot
 
-    def __init__(self, name, session, db_helper, user):
-        super().__init__(name, session, db_helper, user)
-        self.name = name
+from django.db.models import Q
+
+class OpsBotAgent(AiBot):
+
+    def __init__(self):
+
         self.profit = 0
         self.cost = 0
         self.no_customers = 0
-        self.db_helper = db_helper
         self.config = ""
 
         self.ask_adapt_variables = ["profit", "cost", "customers"]
@@ -39,6 +43,8 @@ class OpsBot(AiBot):
         if s == "no":
             self.ask_adapt_variables.pop(0)
 
+        self.persist()
+
         if "profit" in self.ask_adapt_variables:
             return ["Do you have any preference on profit ?"]
         if "cost" in self.ask_adapt_variables:
@@ -49,7 +55,107 @@ class OpsBot(AiBot):
         self.command = "want"
         return None
 
-    def receive_message(self, s, channel, usr):
+    def persist(self):
+        bot = OpsBot.objects.filter(Q(id=self.bot_id)).first()
+
+        bot.session = self.session
+        bot.iter_time = self.iter_time
+        bot.command = self.command
+        bot.command_type = self.command_type
+        bot.referenced_obj = self.referenced_obj
+        bot.profit_dir = None
+        bot.profit_value = None
+        bot.cost_dir = None
+        bot.cost_value = None
+        bot.customers_dir = None
+        bot.customers_value = None
+
+        for var_info in self.variable_info:
+            if var_info.variable == "profit":
+                bot.profit_dir = var_info.pref_dir
+                bot.profit_value = self.profit
+            if var_info.variable == "cost":
+                bot.cost_dir = var_info.pref_dir
+                bot.cost_value = self.cost
+            if var_info.variable == "customers":
+                bot.customers_dir = var_info.pref_dir
+                bot.customers_value = self.no_customers
+
+
+        bot.ask_profit = False
+        bot.ask_cost = False
+        bot.ask_customers = False
+        if "profit" in self.ask_adapt_variables:
+            bot.ask_profit = True
+        if "cost" in self.ask_adapt_variables:
+            bot.ask_cost = True
+        if "customers" in self.ask_adapt_variables:
+            bot.ask_customers = True
+
+        bot.profit = self.profit
+        bot.cost = self.cost
+        bot.customers = self.no_customers
+        bot.config = self.config
+
+        bot.save()
+
+    def send_to_bot(self, bot_id, s):
+        bot = OpsBot.objects.filter(Q(id=bot_id)).first()
+
+        self.bot_id = bot.id
+        self.name = bot.bot_user_name
+        self.db_helper = DatabaseHelper(bot.session)
+        self.session = bot.session
+        self.iter_time = bot.iter_time
+        self.command = bot.command
+        self.command_type = bot.command_type
+        self.referenced_obj = bot.referenced_obj
+
+        self.profit = bot.profit
+        self.cost = bot.cost
+        self.no_customers = bot.customers
+        self.config = bot.config
+
+        self.variable_info = []
+        if bot.profit_dir is not None:
+            var_info = VariableInformation()
+            var_info.variable = "profit"
+            var_info.pref_dir = bot.profit_dir
+            var_info.value = bot.profit_value
+            if var_info.value is None:
+                var_info.value = float('nan')
+            self.variable_info.append(var_info)
+
+        if bot.cost_dir is not None:
+            var_info = VariableInformation()
+            var_info.variable = "cost"
+            var_info.pref_dir = bot.cost_dir
+            var_info.value = bot.cost_value
+            if var_info.value is None:
+                var_info.value = float('nan')
+            self.variable_info.append(var_info)
+
+        if bot.customers_dir is not None:
+            var_info = VariableInformation()
+            var_info.variable = "customers"
+            var_info.pref_dir = bot.customers_dir
+            var_info.value = bot.customers_value
+            if var_info.value is None:
+                var_info.value = float('nan')
+            self.variable_info.append(var_info)
+
+        self.ask_adapt_variables = []
+        if bot.ask_profit:
+            self.ask_adapt_variables.append("profit")
+        if bot.ask_cost:
+            self.ask_adapt_variables.append("cost")
+        if bot.ask_customers:
+            self.ask_adapt_variables.append("customers")
+        self.adapt = len(self.ask_adapt_variables) > 0
+
+        return self.receive_message(s)
+
+    def receive_message(self, s):
 
         if "help" in s:
             self.response = []
@@ -82,10 +188,11 @@ class OpsBot(AiBot):
 
         # set grammar-based variables
         if "iterate" not in s:
-            super().receive_message(s, channel, usr)
+            super().receive_message(s)
             if self.adapt:
                 res = self.adapt_function(s)
                 if res is not None:
+                    self.persist()
                     return res
 
         geo_locations = []
@@ -120,6 +227,18 @@ class OpsBot(AiBot):
                 last_cost = self.cost
                 last_no_customers = self.no_customers
                 last_config = self.config
+
+                print("--------load--------", self.no_customers)
+
+                if last_profit is None:
+                    last_profit = 0
+                if last_cost is None:
+                    last_cost = 0
+                if last_no_customers is None:
+                    last_no_customers = 0
+                if last_config is None:
+                    last_config = ""
+
 
                 # if referencing another plan, then reference that plan
                 if self.referenced_obj is not None:
@@ -311,6 +430,8 @@ class OpsBot(AiBot):
                     if not no_shock:
                         self.response.append("A team planner needs to evaluate this plan for it to become usuable")
 
+
+                    self.persist()
                     # send a return message (update this) , just an example
                     return self.response
 
@@ -356,6 +477,7 @@ class OpsBot(AiBot):
 
 
                     # send a return message (update this) , just an example
+                    self.persist()
                     return self.response
 
                 else:
@@ -490,4 +612,12 @@ class OpsBot(AiBot):
         if not no_shock:
             self.response.append("A team planner needs to evaluate this plan for it to become usuable")
 
+        self.persist()
         return self.response
+
+class VariableInformation():
+
+    def __init__(self):
+        self.pref_dir = None
+        self.variable = None
+        self.value = float("nan")
