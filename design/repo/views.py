@@ -486,11 +486,10 @@ class DataLogList(generics.CreateAPIView):
                                 if bot:
                                     bot.iter_time = elapsed_seconds
                                     #print("update time bot", bot, elapsed_seconds, bot.iter_time, bot.last_iter_time, (bot.iter_time - bot.last_iter_time) )
-                                    if (bot.iter_time - bot.last_iter_time) >= 300:
+                                    if (bot.iter_time - bot.last_iter_time) >= 440:
                                         bm.send_adaptive_command(st.session, bot.id)
                                         print("update bot agents adaptive call")
                                         bot.last_iter_time = bot.iter_time
-
                                     bot.save()
 
 

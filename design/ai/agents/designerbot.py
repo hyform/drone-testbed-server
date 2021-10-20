@@ -148,7 +148,7 @@ class DesignerBotAgent(AiBot):
             var_info.pref_dir = bot.cost_dir
             var_info.value = bot.cost_value
             if var_info.value is None:
-                var_info.value = float('nan')            
+                var_info.value = float('nan')
             self.variable_info.append(var_info)
 
         self.ask_adapt_variables = []
@@ -264,7 +264,7 @@ class DesignerBotAgent(AiBot):
                 last_cost = self.cost
                 last_config = self.config
 
-                print("------------======================",last_range, last_capacity, last_cost, last_config)
+                print("entered want --designer ----------======================",last_range, last_capacity, last_cost, last_config)
 
                 # if referencing another design, then reference that design
                 if self.referenced_obj is not None:

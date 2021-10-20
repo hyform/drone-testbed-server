@@ -151,6 +151,7 @@ class OpsBotAgent(AiBot):
             self.ask_adapt_variables.append("cost")
         if bot.ask_customers:
             self.ask_adapt_variables.append("customers")
+
         self.adapt = len(self.ask_adapt_variables) > 0
 
         return self.receive_message(s)
@@ -228,7 +229,7 @@ class OpsBotAgent(AiBot):
                 last_no_customers = self.no_customers
                 last_config = self.config
 
-                print("--------load--------", self.no_customers)
+                print("entered want planner --------load--------", self.no_customers)
 
                 if last_profit is None:
                     last_profit = 0

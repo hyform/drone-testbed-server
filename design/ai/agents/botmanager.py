@@ -37,7 +37,7 @@ class BotManager():
             for usr in user_roles:
                 others = db_helper.get_others_in_channel(session, channel, usr)
                 for other in others:
-                    if user_positions[usr].id ==  designer_bot.id:
+                    if user_positions[usr].id == designer_bot.id:
                         db = DesignerBot()
                         db.session = session
                         db.bot_user_name = usr
@@ -103,19 +103,15 @@ class BotManager():
         bot_responses = {}
         bots = self.get_session_bot_twins(session)
 
-        print("---------------------", bots)
-
         if bots:
             for i, bot in enumerate(bots):
                 if bot:
-                    if bot.other_user_name == user:
+                    if bot.other_user_name == user and bot.channel_id == channel.id:
                         bot_type = "opsbot"
                         if i <= 1:
                             bot_type = "designbot"
                         bg = BotGrammar(bot_type)
                         res = bg.get_json_of_chat(s)
-
-                        print("====================", res)
 
                         if res is not None:
                             db_helper.submit_data_log2(user, "passed_bot_grammar;" + s)
