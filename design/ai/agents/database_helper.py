@@ -7,7 +7,7 @@ from repo.models import Scenario, Vehicle, Plan, Customer, PathCustomer, Path, W
 from repo.serializers import ScenarioSerializer
 from django.db.models import Q
 
-from chat.messaging import new_vehicle_message, new_plan_message, new_scenario_message
+from chat.messaging import new_vehicle_message, new_plan_message, new_scenario_message, bot_adapt_message
 from chat.models import Channel, ChannelPosition
 from api.messaging import twin_log_message
 
@@ -257,6 +257,10 @@ class DatabaseHelper:
         new_plan_message(self.user_primary_groups[self.user_name], self.session, plan.tag)
 
         return plan
+
+    def bot_adaptive(self):
+        bot_adapt_message(self.user_primary_groups[self.user_name], self.session)
+
 
     # submits a datalog
     def submit_data_log(self, user_name, action, real_time, time_min):

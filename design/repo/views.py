@@ -481,12 +481,16 @@ class DataLogList(generics.CreateAPIView):
 
                         bm = BotManager()
                         bots = bm.get_session_bot_twins(st.session)
+                        command = True
                         if bots:
                             for bot in bots:
                                 if bot:
                                     bot.iter_time = elapsed_seconds
                                     #print("update time bot", bot, elapsed_seconds, bot.iter_time, bot.last_iter_time, (bot.iter_time - bot.last_iter_time) )
                                     if (bot.iter_time - bot.last_iter_time) >= 360:
+                                        if command:
+                                            bm.send_adaptive_chat(st.session)
+                                            command = False
                                         bm.send_adaptive_command(st.session, bot.id)
                                         print("update bot agents adaptive call")
                                         bot.last_iter_time = bot.iter_time

@@ -73,6 +73,27 @@ def new_plan_message(group, session, tag):
                 }
             )
 
+def bot_adapt_message(group, session):
+    if group and session:
+        help_channel = Channel.objects.filter(name="Help").first()
+
+        group_positions = GroupPosition.objects.filter(group=group)
+        positions = Position.objects.filter(id__in=Subquery(group_positions.values('position')))
+        user_positions = UserPosition.objects.filter(session=session).filter(position__in=positions)
+        users = User.objects.filter(id__in=Subquery(user_positions.values('user')))
+
+        for user in users:
+            help_instance = str(help_channel.id) + "_" + str(user.id) + "___" + str(session.id)
+            async_to_sync(get_channel_layer().group_send)(
+                help_instance,
+                {
+                    'type': 'system.usermessage',
+                    'message': "Bot is suggesting ...",
+                    'sender': "Bot",
+                    'channel': help_instance
+                }
+            )
+
 def new_scenario_message(group, session):
     if group and session:
         help_channel = Channel.objects.filter(name="Help").first()
@@ -114,7 +135,7 @@ def new_scenario_message(group, session):
                     'sender': "System",
                     'channel': help_instance
                 }
-            )            
+            )
 
 def new_precheck_message(user, session, check):
     if user and session:

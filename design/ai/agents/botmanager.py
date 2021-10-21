@@ -79,7 +79,16 @@ class BotManager():
             return [None, None, ops_bots[0], ops_bots[1]]
 
 
+    def send_adaptive_chat(self, session):
+        bot_setups = self.get_session_bot_twins(session)
+        if len(bot_setups) > 0:
+            db_helper = DatabaseHelper(session)
+            db_helper.set_user_name(bot_setups[0].bot_user_name)
+            db_helper.bot_adaptive()
+
+
     def send_adaptive_command(self, session, bot_id):
+
         bot_setups = self.get_session_bot_twins(session)
         for i in range(4):
             if bot_setups[i]:
