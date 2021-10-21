@@ -161,12 +161,12 @@ class OpsBotAgent(AiBot):
         if "help" in s:
             self.response = []
             self.response.append("Send commands with profit, cost, customers, values, reference plans, and direction. Some examples are")
-            self.response.append("want higher profit")
-            self.response.append("want lower cost than 10000")
-            self.response.append("want higher profit and higher customers than 6")
-            self.response.append("@ref_plan_name : want higher profit")
-            self.response.append("want higher profit north east")
-            self.response.append("want lower cost south")
+            self.response.append("want more profit")
+            self.response.append("want less cost than 10000")
+            self.response.append("want more profit and more customers than 6")
+            self.response.append("@ref_plan_name : want more profit")
+            self.response.append("want more profit north east")
+            self.response.append("want less cost south")
             return self.response
 
 
@@ -386,6 +386,7 @@ class OpsBotAgent(AiBot):
                                 self.response.append("ping unsatisfied customers")
 
                     if len(self.response) == 0:
+
                         lev_dist = lev(last_config, self.config)
 
                         nudge = True
@@ -410,6 +411,8 @@ class OpsBotAgent(AiBot):
 
                     self.response = []
                     #self.response.append("calculated intent is : " + s)
+                    if 'iterate' in self.response:
+                        self.response.append("Bot plan suggestions are below : ")
 
                     # set the bot metrics to the submitted values
                     self.db_helper.set_user_name(self.name)
@@ -445,7 +448,7 @@ class OpsBotAgent(AiBot):
                 for vehicle_result in vehicle_request_tally:
                     vehicle_dict[vehicle_result[0]].append(vehicle_result[1])
                 if len(vehicle_dict) > 0:
-                    want_strs.append("Possible suggestions for additional drone capabilities include the following:")
+                    want_strs.append("Suggestions for drone capabilities include the following:")
                 for vehicle_tag in vehicle_dict:
                     range_occurrences = vehicle_dict[vehicle_tag].count("range_limit")
                     capacity_occurrences = vehicle_dict[vehicle_tag].count("capacity_limit")
@@ -461,7 +464,7 @@ class OpsBotAgent(AiBot):
                 for want_str in want_strs:
                     responses.append(want_str)
 
-                if random.random() < 0.5:
+                if random.random() < 0.5 and "iterate" not in s:
 
 
                     tag_id = "p" + str(int(self.profit)) + "_$" + str(int(self.cost)) + "_c" + str(int(self.no_customers))

@@ -129,7 +129,7 @@ class BotManager():
                             if msgs is not None:
                                 bot_responses[bot.bot_user_name] = msgs
                         else:
-                            if "bot" in s:
+                            if s.startswith("bot"):
                                 bot_responses[bot.bot_user_name] = ["intent not understood"]
 
 

@@ -396,6 +396,9 @@ def session_status_archive(request):
                                 v.group=group
                             v.save()
                             vehicleMap[oldVehicleId] = v
+                    else:
+                        baseConfig = "*aMM0+++++*bNM2+++*cMN1+++*dLM2+++*eML1+++^ab^ac^ad^ae,5,3"
+                        Vehicle.objects.create(tag="base", config=baseConfig, result="Success", range=10.0, velocity=20.0, cost=3470.20043945312, payload=5, group=group, session=next_session)
                     if same_market:
                         for p in Plan.objects.filter(session=session).iterator():
                             originalpk = p.pk

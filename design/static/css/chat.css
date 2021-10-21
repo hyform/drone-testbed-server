@@ -229,12 +229,11 @@ textarea {
 
 .bot-btn {
     background-color: #d69c30;
-    min-width: 100%;
     text-align: center;
     color: white;
     border: 0;
-    padding-left: 0;
-    padding-right: 0;
+    padding-left: 5;
+    padding-right: 5;
     /*height: 10px;*/
 }
 
@@ -246,6 +245,15 @@ textarea {
     border: 1;
     padding-left: 0;
     padding-right: 0;
+}
+
+.bot-choice-btn-small {
+    background-color: #d69c30;
+    text-align: center;
+    color: white;
+    border: 1;
+    padding-left: 5;
+    padding-right: 5;
 }
 
 .red-text {

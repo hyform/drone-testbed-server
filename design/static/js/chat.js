@@ -436,8 +436,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
     var botChatWant1 = function (text, bot) {
         clearAndAdd(text, bot);
 
-        addButtonBotChoice("lower", botChatWant2, bot);
-        addButtonBotChoice("higher", botChatWant2, bot);
+        //addButtonBotChoice("lower", botChatWant2, bot);
+        //addButtonBotChoice("higher", botChatWant2, bot);
         addButtonBotChoice("less", botChatWant2, bot);
         addButtonBotChoice("more", botChatWant2, bot);
     };
@@ -499,8 +499,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
     var opsBotChatWant1 = function (text, bot) {
         clearAndAdd(text, bot);
 
-        addButtonBotChoice("lower", opsBotChatWant2, bot);
-        addButtonBotChoice("higher", opsBotChatWant2, bot);
+        //addButtonBotChoice("lower", opsBotChatWant2, bot);
+        //addButtonBotChoice("higher", opsBotChatWant2, bot);
         addButtonBotChoice("less", opsBotChatWant2, bot);
         addButtonBotChoice("more", opsBotChatWant2, bot);
     };
@@ -528,7 +528,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
         clearAndAdd(text, bot);
 
         addButtonNumber(opsBotChatWant4_5, bot);
-        addButtonBotChoice("and", opsBotChatWant1, bot);
     }
 
     var opsBotChatWant4_5 = function (text, bot) {
@@ -543,6 +542,13 @@ document.addEventListener("DOMContentLoaded", function (event) {
     }
 
     var opsBotChatWant5 = function (text, bot) {
+        clearAndAdd(text, bot);
+
+        addTerminalDone(bot);
+        addButtonBotChoice("and", opsBotChatWant6, bot);
+    }
+
+    var opsBotChatWant6 = function (text, bot) {
         clearAndAdd(text, bot);
 
         addTerminalDone(bot);
@@ -731,7 +737,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 if (message === "Help" || message === "Session") {
                     //If the Setup channel is added back in, place it before these two
                     channelList.appendChild(newChannel);
-                    activateChannel(newChannel);
+                    activateChannel(channelList.children[0]);
                     if(message === "Help") {
                         responseChannel = channelId;
                     }

@@ -174,10 +174,10 @@ class DesignerBotAgent(AiBot):
         if "help" in s:
             self.response = []
             self.response.append("Send commands with range, capacity, cost, values, and reference drones. Some examples are")
-            self.response.append("want higher range")
-            self.response.append("want lower cost than 4000")
-            self.response.append("want higher range and higher capacity than 20")
-            self.response.append("@ref_drone_name : want higher range")
+            self.response.append("want more range")
+            self.response.append("want less cost than 4000")
+            self.response.append("want more range and more capacity than 20")
+            self.response.append("@ref_drone_name : want more range")
             self.response.append("suggestion")
             return self.response
 
@@ -377,6 +377,8 @@ class DesignerBotAgent(AiBot):
 
                     self.response = []
                     #self.response.append("calculated intent is : " + s)
+                    if 'iterate' in self.response:
+                        self.response.append("Bot plan suggestions are below : ")                     
 
                     # set the bot metrics to the submitted values
                     self.db_helper.set_user_name(self.name)
@@ -398,13 +400,11 @@ class DesignerBotAgent(AiBot):
                     if not no_shock:
                         self.response.append("A team designer needs to evaluate this design for it to become usuable")
 
-
-
                     self.persist()
                     return self.response  # time delay
 
                 # we could not find a feasible design, but we will submit our last state anyways, tune the 0.5
-                if random.random() < 0.5:
+                if random.random() < 0.5 and 'iterate' not in s:
 
                     self.response = []
                     #self.response.append("calculated intent is : " + s)
