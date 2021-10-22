@@ -176,6 +176,7 @@ class DesignerBotAgent(AiBot):
             self.response.append("Send commands with range, capacity, cost, values, and reference drones. Some examples are")
             self.response.append("want more range")
             self.response.append("want less cost than 4000")
+            self.response.append("want same range as 10")
             self.response.append("want more range and more capacity than 20")
             self.response.append("@ref_drone_name : want more range")
             self.response.append("suggestion")
@@ -330,6 +331,8 @@ class DesignerBotAgent(AiBot):
                                 self.response.append("ping unsatisfied range")
                             elif ("higher" in pref_dir or "more" in pref_dir ) and self.range <= value:
                                 self.response.append("ping unsatisfied range")
+                            elif ("same" in pref_dir ) and (self.range <= (value - 2) or self.range >= (value + 2)):
+                                self.response.append("ping unsatisfied range")
                         if 'capacity' == var_info.variable:
                             pref_dir = var_info.pref_dir
                             value = var_info.value
@@ -341,6 +344,8 @@ class DesignerBotAgent(AiBot):
                                 self.response.append("ping unsatisfied capacity")
                             elif ("higher" in pref_dir or "more" in pref_dir ) and self.capacity <= value:
                                 self.response.append("ping unsatisfied capacity")
+                            elif ("same" in pref_dir ) and (self.capacity <= (value - 2) or self.capacity >= (value + 2)):
+                                self.response.append("ping unsatisfied capacity")
                         if 'cost' == var_info.variable:
                             pref_dir = var_info.pref_dir
                             value = var_info.value
@@ -351,6 +356,8 @@ class DesignerBotAgent(AiBot):
                             if ("lower" in pref_dir or "less" in pref_dir ) and self.cost >= value:
                                 self.response.append("ping unsatisfied cost")
                             elif ("higher" in pref_dir or "more" in pref_dir ) and self.cost <= value:
+                                self.response.append("ping unsatisfied cost")
+                            elif ("same" in pref_dir ) and (self.cost <= (value - 500) or self.capacity >= (value + 500)):
                                 self.response.append("ping unsatisfied cost")
 
                     # its feasible, gets its input distance and save the closest design that satisfies the requests
@@ -371,14 +378,12 @@ class DesignerBotAgent(AiBot):
                             submit_cost = self.cost
                             submit_velocity = self.velocity
 
-
+                print("------------------------------------------", submit_design)
                 # we have a design to submit
                 if submit_design:
 
                     self.response = []
                     #self.response.append("calculated intent is : " + s)
-                    if 'iterate' in self.response:
-                        self.response.append("Bot plan suggestions are below : ")                     
 
                     # set the bot metrics to the submitted values
                     self.db_helper.set_user_name(self.name)
@@ -396,7 +401,13 @@ class DesignerBotAgent(AiBot):
 
                     # get an id for the vehicle submit
                     self.db_helper.submit_vehicle_db(tag_id, self.config, self.range, self.capacity, self.cost, self.velocity, no_shock)
-                    self.response.append("I submitted a drone design @" + tag_id +", range= " + str(round(self.range, 1)) + ", capacity=" + str(round(self.capacity, 0)) + ", cost = " + str(int(self.cost)) + ". Let me know of any feedback.")
+
+
+                    prepend = ""
+                    if 'iterate' in s:
+                        prepend = "Bot suggestion : "
+
+                    self.response.append(prepend + "Submitted a drone design @" + tag_id +", range= " + str(round(self.range, 1)) + ", capacity=" + str(round(self.capacity, 0)) + ", cost = " + str(int(self.cost)) + ".")
                     if not no_shock:
                         self.response.append("A team designer needs to evaluate this design for it to become usuable")
 
@@ -422,15 +433,21 @@ class DesignerBotAgent(AiBot):
                     self.persist()
                     return self.response  # time delay
 
+                elif 'iterate' in s:
+                    self.response.append("Bot suggestion : I could not create a design that matched your preferences")
+                else:
+                    self.response.append("ask again if you want me to try harder to see if I can create a design that satisifes your request")
+
                 # reset or state to the last design or the referenced vehicle in the command
                 self.range = last_range
                 self.capacity = last_capacity
                 self.cost = last_cost
                 self.config = last_config
-                self.response.append("ask again if you want me to try harder to see if I can create a design that satisifes your request")
+                self.response.append("")
 
             if 'ping' in self.command and 'status' in self.command_type:
                 self.response.append("status : range = " + str(round(self.range, 1)) + " , capacity = " + str(round(self.capacity, 0)) + " , cost = " + str(round(self.cost,0)))
+
 
         self.persist()
         return self.response

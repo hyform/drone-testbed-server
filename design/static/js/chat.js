@@ -223,7 +223,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     }
 
     // ---------- Bot Chat Functions ------------------    
-    var clearAndAdd = function (chosenText, isDesign) {
+    var clearAndAdd = function (chosenText, isDesign, temp) {
         var botChatOptions = null;
         if(isDesign) {
             botChatOptions = document.getElementById("design-bot-chat-options");
@@ -241,7 +241,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         }       
     };
 
-    var addLabelBotChoice = function(text, isDesign) {
+    var addLabelBotChoice = function(text, isDesign, temp) {
         var botChatOptions = null;
         if(isDesign) {
             botChatOptions = document.getElementById("design-bot-chat-options");
@@ -255,7 +255,18 @@ document.addEventListener("DOMContentLoaded", function (event) {
         botChatOptions.appendChild(newBotChatOption);
     };
 
-    var addButtonBotChoice = function(text, action, isDesign) {
+    var addButtonBotChoice = function(text, action, isDesign, temp) {
+        if(text === "range") {
+            temp = temp + "range";
+        } else if(text === "capacity") {
+            temp = temp + "capacity";
+        } else if(text === "cost") {
+            temp = temp + "cost";
+        }else if(text === "profit") {
+            temp = temp + "profit";
+        }else if(text === "customers") {
+            temp = temp + "customers";
+        }
         var botChatOptions = null;
         if(isDesign) {
             botChatOptions = document.getElementById("design-bot-chat-options");
@@ -268,18 +279,18 @@ document.addEventListener("DOMContentLoaded", function (event) {
         newBotChatOptionItem.innerHTML = text + " -->";
         newBotChatOptionItem.onclick = function() {
             if(text && text === "[DESIGN]") {
-                addDesignSelection(action, isDesign);
+                addDesignSelection(action, isDesign, temp);
             } else if(text && text === "[PLAN]") {
-                addPlanSelection(action, isDesign);
+                addPlanSelection(action, isDesign, temp);
             } else {
-                action(text, isDesign);
+                action(text, isDesign, temp);
             }
         };
         newBotChatOption.appendChild(newBotChatOptionItem);
         botChatOptions.appendChild(newBotChatOption);
     };
     
-    var addButtonNumber = function(action, isDesign) {
+    var addButtonNumber = function(action, isDesign, temp) {
         var botChatOptions = null;
         if(isDesign) {
             botChatOptions = document.getElementById("design-bot-chat-options");
@@ -299,7 +310,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         newBotChatOptionItem.onclick = function() {
             var textValue = newNumberText.value;
             if(textValue && !isNaN(textValue)) {
-                action(textValue, isDesign);
+                action(textValue, isDesign, temp);
             } else {
                 newNumberLabel.classList.add("red-text");
             }
@@ -308,8 +319,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
         botChatOptions.appendChild(newBotChatOption);
     };    
 
-    var addDesignSelection = function(action, isDesign) {
-        clearAndAdd("", isDesign);
+    var addDesignSelection = function(action, isDesign, temp) {
+        clearAndAdd("", isDesign, temp);
 
         designUrl = "/repo/vehicle/"
         designData = {
@@ -323,17 +334,17 @@ document.addEventListener("DOMContentLoaded", function (event) {
             success: function (result) {
                 if(result.results.length > 0) {
                     result.results.forEach(design =>
-                        addButtonBotChoice("@" + design.tag, action, isDesign))
+                        addButtonBotChoice("@" + design.tag, action, isDesign, temp))
                 } else {
-                    addLabelBotChoice("No Designs", isDesign);
-                    addButtonBotChoice("", action, isDesign);
+                    addLabelBotChoice("No Designs", isDesign, temp);
+                    addButtonBotChoice("", action, isDesign, temp);
                 }
             }
         });
     };
 
-    var addPlanSelection = function(action, isDesign) {
-        clearAndAdd("", isDesign);
+    var addPlanSelection = function(action, isDesign, temp) {
+        clearAndAdd("", isDesign, temp);
 
         planUrl = "/repo/planshort/"
         planData = {
@@ -347,10 +358,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
             success: function (result) {
                 if(result.results.length > 0) {
                     result.results.forEach(plan =>
-                        addButtonBotChoice("@" + plan.tag, action, isDesign))
+                        addButtonBotChoice("@" + plan.tag, action, isDesign, temp))
                 } else {
-                    addLabelBotChoice("No Plans", isDesign);
-                    addButtonBotChoice("", action, isDesign);
+                    addLabelBotChoice("No Plans", isDesign, temp);
+                    addButtonBotChoice("", action, isDesign, temp);
                 }
             }
         });
@@ -368,7 +379,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         newBotChatOptionItem.classList.add("bot-choice-btn");
         newBotChatOptionItem.innerHTML = text;
         newBotChatOptionItem.onclick = function() {
-            clearAndAdd(text, isDesign);
+            clearAndAdd(text, isDesign, temp);
             if(isDesign) {
                 $("#design-bot-chat-modal").modal("hide");
             } else {
@@ -392,7 +403,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         newBotChatOptionItem.classList.add("bot-choice-btn");
         newBotChatOptionItem.innerHTML = text;
         newBotChatOptionItem.onclick = function() {
-            clearAndAdd("", isDesign);
+            clearAndAdd("", isDesign, "");
             if(isDesign) {
                 $("#design-bot-chat-modal").modal("hide");
             } else {
@@ -404,69 +415,103 @@ document.addEventListener("DOMContentLoaded", function (event) {
     };
 
     // Design Bot --------------------
-    var botChatWant5 = function (text, bot) {
-        clearAndAdd(text, bot);
+    var botChatWant5 = function (text, bot, temp) {
+        clearAndAdd(text, bot, temp);
 
         addTerminalDone(bot);
-        addButtonBotChoice("and", botChatWant1, bot);
+        if(!(temp.includes("range") && temp.includes("capacity") && temp.includes("cost"))) {
+            addButtonBotChoice("and", botChatWant1, bot, temp);
+        }
     }
 
-    var botChatWant4 = function (text, bot) {
-        clearAndAdd(text, bot);
+    var botChatWant4 = function (text, bot, temp) {
+        clearAndAdd(text, bot, temp);
 
-        addButtonNumber(botChatWant5, bot);
+        addButtonNumber(botChatWant5, bot, temp);
     }
 
-    var botChatWant3 = function (text, bot) {
-        clearAndAdd(text, bot);
+    var botChatWant3 = function (text, bot, temp) {
+        clearAndAdd(text, bot, temp);
 
         addTerminalDone(bot);
-        addButtonBotChoice("than", botChatWant4, bot);
-        addButtonBotChoice("and", botChatWant1, bot);
+        addButtonBotChoice("than", botChatWant4, bot, temp);
+        if(!(temp.includes("range") && temp.includes("capacity") && temp.includes("cost"))) {
+            addButtonBotChoice("and", botChatWant1, bot, temp);
+        }
     }
 
-    var botChatWant2 = function (text, bot) {
-        clearAndAdd(text, bot);
+    var botChatWant2_2 = function (text, bot, temp) {
+        clearAndAdd(text, bot, temp);
 
-        addButtonBotChoice("range", botChatWant3, bot);
-        addButtonBotChoice("capacity", botChatWant3, bot);
-        addButtonBotChoice("cost", botChatWant3, bot);
+        addTerminalDone(bot);
+        addButtonBotChoice("as", botChatWant4, bot, temp);
+        if(!(temp.includes("range") && temp.includes("capacity") && temp.includes("cost"))) {
+            addButtonBotChoice("and", botChatWant1, bot, temp);
+        }
+    }
+
+    var botChatWant2_1 = function (text, bot, temp) {
+        clearAndAdd(text, bot, temp);
+
+        if(!temp.includes("range")) {
+            addButtonBotChoice("range", botChatWant2_2, bot, temp);
+        }
+        if(!temp.includes("capacity")) {
+            addButtonBotChoice("capacity", botChatWant2_2, bot, temp);
+        }
+        if(!temp.includes("cost")) {
+            addButtonBotChoice("cost", botChatWant2_2, bot, temp);
+        }
     };
 
-    var botChatWant1 = function (text, bot) {
-        clearAndAdd(text, bot);
+    var botChatWant2 = function (text, bot, temp) {
+        clearAndAdd(text, bot, temp);
 
-        //addButtonBotChoice("lower", botChatWant2, bot);
-        //addButtonBotChoice("higher", botChatWant2, bot);
-        addButtonBotChoice("less", botChatWant2, bot);
-        addButtonBotChoice("more", botChatWant2, bot);
+        if(!temp.includes("range")) {
+            addButtonBotChoice("range", botChatWant3, bot, temp);
+        }
+        if(!temp.includes("capacity")) {
+            addButtonBotChoice("capacity", botChatWant3, bot, temp);
+        }
+        if(!temp.includes("cost")) {
+            addButtonBotChoice("cost", botChatWant3, bot, temp);
+        }
     };
 
-    var botChatWant0 = function (text, bot) {
-        clearAndAdd(text, bot);
+    var botChatWant1 = function (text, bot, temp) {
+        clearAndAdd(text, bot, temp);
 
-        addButtonBotChoice("want", botChatWant1, bot);
+        addButtonBotChoice("less", botChatWant2, bot, temp);
+        addButtonBotChoice("more", botChatWant2, bot, temp);
+        addButtonBotChoice("same", botChatWant2_1, bot, temp);
     };
 
-    var botChatPing = function (text, bot) {
-        clearAndAdd(text, bot);
+    var botChatWant0 = function (text, bot, temp) {
+        clearAndAdd(text, bot, temp);
 
-        addTerminalButtonBotChoice("status", bot);
+        addButtonBotChoice("want", botChatWant1, bot, temp);
+    };
+
+    var botChatPing = function (text, bot, temp) {
+        clearAndAdd(text, bot, temp);
+
+        addTerminalButtonBotChoice("status", bot, temp);
     };
 
     var designBotChatInitial = function () {
         var bot = true;
-        clearAndAdd(null, bot);
+        var temp = "";
+        clearAndAdd(null, bot, temp);
 
-        addLabelBotChoice("Questions", bot);
-        addButtonBotChoice("[DESIGN]", botChatWant0, bot);
-        addButtonBotChoice("want", botChatWant1, bot);
-        addButtonBotChoice("ping", botChatPing, bot);
-        addTerminalButtonBotChoice("suggestion", bot);
-        addTerminalButtonBotChoice("help", bot);
-        addLabelBotChoice("Responses", bot);
-        addTerminalButtonBotChoice("no", bot);
-        addTerminalButtonBotChoice("unsatisfied", bot);
+        addLabelBotChoice("Questions", bot, temp);
+        addButtonBotChoice("[DESIGN]", botChatWant0, bot, temp);
+        addButtonBotChoice("want", botChatWant1, bot, temp);
+        addButtonBotChoice("ping", botChatPing, bot, temp);
+        addTerminalButtonBotChoice("suggestion", bot, temp);
+        addTerminalButtonBotChoice("help", bot, temp);
+        addLabelBotChoice("Responses", bot, temp);
+        addTerminalButtonBotChoice("no", bot, temp);
+        addTerminalButtonBotChoice("unsatisfied", bot, temp);
     }
 
     var designBot = function () {
@@ -477,91 +522,130 @@ document.addEventListener("DOMContentLoaded", function (event) {
     // Ops Bot --------------------
     var opsBotChatInitial = function () {
         var bot = false;
-        clearAndAdd(null, bot);        
+        var temp = "";
+        clearAndAdd(null, bot, temp);        
 
-        addLabelBotChoice("Questions", bot);
-        addButtonBotChoice("[PLAN]", opsBotChatWant0, bot);
-        addButtonBotChoice("want", opsBotChatWant1, bot);
-        addButtonBotChoice("ping", opsBotChatPing, bot);
-        addTerminalButtonBotChoice("suggestion", bot);
-        addTerminalButtonBotChoice("help", bot);
-        addLabelBotChoice("Responses", bot);
-        addTerminalButtonBotChoice("no", bot);
-        addTerminalButtonBotChoice("unsatisfied", bot);
+        addLabelBotChoice("Questions", bot, temp);
+        addButtonBotChoice("[PLAN]", opsBotChatWant0, bot, temp);
+        addButtonBotChoice("want", opsBotChatWant1, bot, temp);
+        addButtonBotChoice("ping", opsBotChatPing, bot, temp);
+        addTerminalButtonBotChoice("suggestion", bot, temp);
+        addTerminalButtonBotChoice("help", bot, temp);
+        addLabelBotChoice("Responses", bot, temp);
+        addTerminalButtonBotChoice("no", bot, temp);
+        addTerminalButtonBotChoice("unsatisfied", bot, temp);
     }
 
-    var opsBotChatWant0 = function (text, bot) {
-        clearAndAdd(text, bot);
+    var opsBotChatWant0 = function (text, bot, temp) {
+        clearAndAdd(text, bot, temp);
 
-        addButtonBotChoice("want", opsBotChatWant1, bot);
+        addButtonBotChoice("want", opsBotChatWant1, bot, temp);
     };
 
-    var opsBotChatWant1 = function (text, bot) {
-        clearAndAdd(text, bot);
+    var opsBotChatWant1 = function (text, bot, temp) {
+        clearAndAdd(text, bot, temp);
 
-        //addButtonBotChoice("lower", opsBotChatWant2, bot);
-        //addButtonBotChoice("higher", opsBotChatWant2, bot);
-        addButtonBotChoice("less", opsBotChatWant2, bot);
-        addButtonBotChoice("more", opsBotChatWant2, bot);
+        addButtonBotChoice("less", opsBotChatWant2, bot, temp);
+        addButtonBotChoice("more", opsBotChatWant2, bot, temp);
+        addButtonBotChoice("same", opsBotChatWant2_1, bot, temp);
     };
 
-    var opsBotChatWant2 = function (text, bot) {
-        clearAndAdd(text, bot);
+    var opsBotChatWant2 = function (text, bot, temp) {
+        clearAndAdd(text, bot, temp);
 
-        addButtonBotChoice("cost", opsBotChatWant3, bot);
-        addButtonBotChoice("profit", opsBotChatWant3, bot);
-        addButtonBotChoice("customers", opsBotChatWant3, bot);
+        if(!temp.includes("cost")) {
+            addButtonBotChoice("cost", opsBotChatWant3, bot, temp);
+        }
+        if(!temp.includes("profit")) {
+            addButtonBotChoice("profit", opsBotChatWant3, bot, temp);
+        }
+        if(!temp.includes("customers")) {
+            addButtonBotChoice("customers", opsBotChatWant3, bot, temp);
+        }
     };
 
-    var opsBotChatWant3 = function (text, bot) {
-        clearAndAdd(text, bot);
+    var opsBotChatWant2_1 = function (text, bot, temp) {
+        clearAndAdd(text, bot, temp);
+
+        if(!temp.includes("cost")) {
+            addButtonBotChoice("cost", opsBotChatWant2_2, bot, temp);
+        }
+        if(!temp.includes("profit")) {
+            addButtonBotChoice("profit", opsBotChatWant2_2, bot, temp);
+        }
+        if(!temp.includes("customers")) {
+            addButtonBotChoice("customers", opsBotChatWant2_2, bot, temp);
+        }
+    };
+
+    var opsBotChatWant2_2 = function (text, bot, temp) {
+        clearAndAdd(text, bot, temp);
 
         addTerminalDone(bot);
-        addButtonBotChoice("than", opsBotChatWant4, bot);
-        addButtonBotChoice("north", opsBotChatWant5, bot);
-        addButtonBotChoice("south", opsBotChatWant5, bot);
-        addButtonBotChoice("east", opsBotChatWant5, bot);
-        addButtonBotChoice("west", opsBotChatWant5, bot);
+        addButtonBotChoice("as", opsBotChatWant4, bot, temp);
+        if(!(temp.includes("cost") && temp.includes("profit") && temp.includes("customers"))) {
+            addButtonBotChoice("and", opsBotChatWant1, bot, temp);
+        }
+        addButtonBotChoice("north", opsBotChatWant5, bot, temp);
+        addButtonBotChoice("south", opsBotChatWant5, bot, temp);
+        addButtonBotChoice("east", opsBotChatWant5, bot, temp);
+        addButtonBotChoice("west", opsBotChatWant5, bot, temp);
+    };
+
+    var opsBotChatWant3 = function (text, bot, temp) {
+        clearAndAdd(text, bot, temp);
+
+        addTerminalDone(bot);
+        addButtonBotChoice("than", opsBotChatWant4, bot, temp);
+        if(!(temp.includes("cost") && temp.includes("profit") && temp.includes("customers"))) {
+            addButtonBotChoice("and", opsBotChatWant1, bot, temp);
+        }
+        addButtonBotChoice("north", opsBotChatWant5, bot, temp);
+        addButtonBotChoice("south", opsBotChatWant5, bot, temp);
+        addButtonBotChoice("east", opsBotChatWant5, bot, temp);
+        addButtonBotChoice("west", opsBotChatWant5, bot, temp);
     }    
 
-    var opsBotChatWant4 = function (text, bot) {
-        clearAndAdd(text, bot);
+    var opsBotChatWant4 = function (text, bot, temp) {
+        clearAndAdd(text, bot, temp);
 
-        addButtonNumber(opsBotChatWant4_5, bot);
+        addButtonNumber(opsBotChatWant4_5, bot, temp);
     }
 
-    var opsBotChatWant4_5 = function (text, bot) {
-        clearAndAdd(text, bot);
+    var opsBotChatWant4_5 = function (text, bot, temp) {
+        clearAndAdd(text, bot, temp);
 
         addTerminalDone(bot);
-        addButtonBotChoice("and", opsBotChatWant1, bot);
-        addButtonBotChoice("north", opsBotChatWant5, bot);
-        addButtonBotChoice("south", opsBotChatWant5, bot);
-        addButtonBotChoice("east", opsBotChatWant5, bot);
-        addButtonBotChoice("west", opsBotChatWant5, bot);
+        if(!(temp.includes("cost") && temp.includes("profit") && temp.includes("customers"))) {
+            addButtonBotChoice("and", opsBotChatWant1, bot, temp);
+        }
+        addButtonBotChoice("north", opsBotChatWant5, bot, temp);
+        addButtonBotChoice("south", opsBotChatWant5, bot, temp);
+        addButtonBotChoice("east", opsBotChatWant5, bot, temp);
+        addButtonBotChoice("west", opsBotChatWant5, bot, temp);
     }
 
-    var opsBotChatWant5 = function (text, bot) {
-        clearAndAdd(text, bot);
+    var opsBotChatWant5 = function (text, bot, temp) {
+        clearAndAdd(text, bot, temp);
 
         addTerminalDone(bot);
-        addButtonBotChoice("and", opsBotChatWant6, bot);
+        addButtonBotChoice("and", opsBotChatWant6, bot, temp);
     }
 
-    var opsBotChatWant6 = function (text, bot) {
-        clearAndAdd(text, bot);
+    var opsBotChatWant6 = function (text, bot, temp) {
+        clearAndAdd(text, bot, temp);
 
         addTerminalDone(bot);
-        addButtonBotChoice("north", opsBotChatWant5, bot);
-        addButtonBotChoice("south", opsBotChatWant5, bot);
-        addButtonBotChoice("east", opsBotChatWant5, bot);
-        addButtonBotChoice("west", opsBotChatWant5, bot);
+        addButtonBotChoice("north", opsBotChatWant5, bot, temp);
+        addButtonBotChoice("south", opsBotChatWant5, bot, temp);
+        addButtonBotChoice("east", opsBotChatWant5, bot, temp);
+        addButtonBotChoice("west", opsBotChatWant5, bot, temp);
     }
 
-    var opsBotChatPing = function (text, bot) {
-        clearAndAdd(text, bot);
+    var opsBotChatPing = function (text, bot, temp) {
+        clearAndAdd(text, bot, temp);
 
-        addTerminalButtonBotChoice("status", bot);
+        addTerminalButtonBotChoice("status", bot, temp);
     };
 
     var opsBot = function () {

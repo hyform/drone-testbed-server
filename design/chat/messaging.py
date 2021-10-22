@@ -73,7 +73,7 @@ def new_plan_message(group, session, tag):
                 }
             )
 
-def bot_adapt_message(group, session):
+def bot_adapt_message(group, session, msgs):
     if group and session:
         help_channel = Channel.objects.filter(name="Help").first()
 
@@ -82,17 +82,19 @@ def bot_adapt_message(group, session):
         user_positions = UserPosition.objects.filter(session=session).filter(position__in=positions)
         users = User.objects.filter(id__in=Subquery(user_positions.values('user')))
 
-        for user in users:
-            help_instance = str(help_channel.id) + "_" + str(user.id) + "___" + str(session.id)
-            async_to_sync(get_channel_layer().group_send)(
-                help_instance,
-                {
-                    'type': 'system.usermessage',
-                    'message': "Bot is suggesting ...",
-                    'sender': "Bot",
-                    'channel': help_instance
-                }
-            )
+        for msg in msgs:
+            if "Bot suggestion" in msg:
+                for user in users:
+                    help_instance = str(help_channel.id) + "_" + str(user.id) + "___" + str(session.id)
+                    async_to_sync(get_channel_layer().group_send)(
+                        help_instance,
+                        {
+                            'type': 'system.usermessage',
+                            'message': msg,
+                            'sender': "Bot",
+                            'channel': help_instance
+                        }
+                    )
 
 def new_scenario_message(group, session):
     if group and session:

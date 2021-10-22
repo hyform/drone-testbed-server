@@ -163,6 +163,7 @@ class OpsBotAgent(AiBot):
             self.response.append("Send commands with profit, cost, customers, values, reference plans, and direction. Some examples are")
             self.response.append("want more profit")
             self.response.append("want less cost than 10000")
+            self.response.append("want same cost as 5000")
             self.response.append("want more profit and more customers than 6")
             self.response.append("@ref_plan_name : want more profit")
             self.response.append("want more profit north east")
@@ -364,6 +365,8 @@ class OpsBotAgent(AiBot):
                                 self.response.append("ping unsatisfied profit")
                             elif ("higher" in pref_dir or "more" in pref_dir ) and self.profit <= value:
                                 self.response.append("ping unsatisfied profit")
+                            elif ("same" in pref_dir ) and (self.profit <= (value - 500) or self.profit >= (value + 500)):
+                                self.response.append("ping unsatisfied profit")
                         if 'cost' == var_info.variable:
                             pref_dir = var_info.pref_dir
                             value = var_info.value
@@ -374,6 +377,8 @@ class OpsBotAgent(AiBot):
                                 self.response.append("ping unsatisfied cost")
                             elif ("higher" in pref_dir or "more" in pref_dir ) and self.cost <= value:
                                 self.response.append("ping unsatisfied cost")
+                            elif ("same" in pref_dir ) and (self.cost <= (value - 500) or self.cost >= (value + 500)):
+                                self.response.append("ping unsatisfied cost")
                         if 'customers' == var_info.variable:
                             pref_dir = var_info.pref_dir
                             value = var_info.value
@@ -383,6 +388,8 @@ class OpsBotAgent(AiBot):
                             if ("lower" in pref_dir or "less" in pref_dir ) and self.no_customers >= value:
                                 self.response.append("ping unsatisfied customers")
                             elif ("higher" in pref_dir or "more" in pref_dir ) and self.no_customers <= value:
+                                self.response.append("ping unsatisfied customers")
+                            elif ("same" in pref_dir ) and (self.no_customers <= (value - 2) or self.no_customers >= (value + 2)):
                                 self.response.append("ping unsatisfied customers")
 
                     if len(self.response) == 0:
@@ -411,8 +418,6 @@ class OpsBotAgent(AiBot):
 
                     self.response = []
                     #self.response.append("calculated intent is : " + s)
-                    if 'iterate' in self.response:
-                        self.response.append("Bot plan suggestions are below : ")
 
                     # set the bot metrics to the submitted values
                     self.db_helper.set_user_name(self.name)
@@ -430,7 +435,11 @@ class OpsBotAgent(AiBot):
                     plan_obj.valid = no_shock
                     plan_obj.save()
 
-                    self.response.append("I submitted a plan @" + tag_id + ", profit= " + str(round(self.profit, 1)) + ", cost=" + str(round(self.cost, 0)) + ", nocustomers = " + str(int(self.no_customers)) + ". Let me know of any feedback.")
+                    prepend = ""
+                    if 'iterate' in s:
+                        prepend = "Bot suggestion : "
+
+                    self.response.append(prepend + " Submitted a plan @" + tag_id + ", profit= " + str(round(self.profit, 1)) + ", cost=" + str(round(self.cost, 0)) + ", nocustomers = " + str(int(self.no_customers)) + ".")
                     if not no_shock:
                         self.response.append("A team planner needs to evaluate this plan for it to become usuable")
 
@@ -484,8 +493,10 @@ class OpsBotAgent(AiBot):
                     self.persist()
                     return self.response
 
+                elif 'iterate' in s:
+                    self.response.append("Bot suggestion : I could not create a plan that matched your preferences")
                 else:
-                    self.response.append("I could not create a plan that matched your request")
+                    self.response.append("Could not create a plan that matched your request")
 
 
                 # reset to last state
