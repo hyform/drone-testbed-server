@@ -34,6 +34,7 @@ from sklearn.decomposition import TruncatedSVD
 from scipy.spatial.distance import pdist, squareform
 import logging
 from ai.agents.botmanager import BotManager
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -495,6 +496,7 @@ class DataLogList(generics.CreateAPIView):
                                         logger.debug("adaptive ================================================= update bot agents adaptive call ================== " + str(bot.id) + str(bot.bot_user_name) + str(bot.other_user_name))
                                         print("adaptive ================================================= update bot agents adaptive call ================== ", bot.id, bot.bot_user_name, bot.other_user_name)
                                         logger.debug("session id = " + str(st.session.id))
+                                        logger.debug("PROCESS ID = " + str(os.getpid()))
                                     bot.save()
 
 
