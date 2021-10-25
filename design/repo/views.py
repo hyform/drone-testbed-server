@@ -506,7 +506,7 @@ class DataLogList(generics.CreateAPIView):
                                         else:
                                             logger.debug("different")
                                         logger.debug("iter = " + str(bot.iter_time) + " , last = " + str(bot.last_iter_time))
-                                        if (bot.iter_time - bot.last_iter_time) >= 60 and current_pid == st_3.session.pid:
+                                        if (bot.iter_time - bot.last_iter_time) >= 9*60 and current_pid == st_3.session.pid:
                                             bot.last_iter_time = bot.iter_time
                                             bot.save()
                                             bm.send_adaptive_command(st.session, bot.id)
