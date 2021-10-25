@@ -492,9 +492,7 @@ class DataLogList(generics.CreateAPIView):
                             for bot in bots:
                                 if bot:
 
-                                    bot.iter_time = elapsed_seconds                                    
-                                    logger.debug("last_iter_time = " + str(bot.last_iter_time))
-                                    logger.debug("iter_time = " + str(bot.iter_time))
+                                    bot.iter_time = elapsed_seconds
                                     logger.debug("update time bot" + str(bot) + str(elapsed_seconds) + str(bot.iter_time) + str(bot.last_iter_time) + str(bot.iter_time - bot.last_iter_time) )
                                     print("update time bot", bot, bot.id, elapsed_seconds, bot.iter_time, bot.last_iter_time, (bot.iter_time - bot.last_iter_time) )
                                     #weak but deadlock/race condition safe mutex hack to minimize multiple bots sending updates
@@ -510,8 +508,6 @@ class DataLogList(generics.CreateAPIView):
                                         print("adaptive ================================================= update bot agents adaptive call ================== ", bot.id, bot.bot_user_name, bot.other_user_name)
                                         logger.debug("session id = " + str(st.session.id))
                                         logger.debug("PROCESS ID = " + str(os.getpid()))
-                                    if bot.last_iter_time > bot.iter_time:
-                                        bot.last_iter_time = bot.iter_time
                                     bot.save()
 
 
