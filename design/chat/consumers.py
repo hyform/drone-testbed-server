@@ -211,7 +211,7 @@ class ChatConsumer(WebsocketConsumer):
         else:
             st = SessionTeam.objects.filter(Q(session__status__in=Session.ACTIVE_STATES)&Q(team=self.user.profile.team)).first()
 
-            if st.session.structure.name == "Fall 2021 Bot":
+            if st and st.session.structure.name == "Fall 2021 Bot":
 
                 self.bot_exp = True
                 # we need to add a bot selection, and update the database to store users as bots
