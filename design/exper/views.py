@@ -287,6 +287,8 @@ def session_status_play(request):
                     if running_timer:
                         running_timer.timestamp = datetime.now(timezone.utc)
                         running_timer.save()
+                        session.pid="0"
+                        session.save()
                     else:
                         SessionTimer.objects.create(timer_type=SessionTimer.RUNNING_START, timestamp=datetime.now(timezone.utc), session=session)
 
