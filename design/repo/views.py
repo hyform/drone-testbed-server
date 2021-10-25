@@ -485,12 +485,18 @@ class DataLogList(generics.CreateAPIView):
                             for bot in bots:
                                 if bot:
                                     bot.iter_time = elapsed_seconds
-                                    print("update time bot", bot, elapsed_seconds, bot.iter_time, bot.last_iter_time, (bot.iter_time - bot.last_iter_time) )
-                                    if (bot.iter_time - bot.last_iter_time) >= 9*60:
-                                        bm.send_adaptive_command(st.session, bot.id)
-                                        print("update bot agents adaptive call", bot.bot_user_name, bot.other_user_name)
+                                    logger.debug("update time bot" + str(bot) + str(elapsed_seconds) + str(bot.iter_time) + str(bot.last_iter_time) + str(bot.iter_time - bot.last_iter_time) )
+                                    print("update time bot", bot, bot.id, elapsed_seconds, bot.iter_time, bot.last_iter_time, (bot.iter_time - bot.last_iter_time) )
+                                    if (bot.iter_time - bot.last_iter_time) >= 60:
                                         bot.last_iter_time = bot.iter_time
+                                        bot.save()                                        
+                                        bm.send_adaptive_command(st.session, bot.id)                                        
+                                        logger.debug("update bot agents adaptive call" + str(bot.bot_user_name) + str(bot.other_user_name))
+                                        logger.debug("adaptive ================================================= update bot agents adaptive call ================== " + str(bot.id) + str(bot.bot_user_name) + str(bot.other_user_name))
+                                        print("adaptive ================================================= update bot agents adaptive call ================== ", bot.id, bot.bot_user_name, bot.other_user_name)
+                                        logger.debug("session id = " + str(st.session.id))
                                     bot.save()
+
 
 
 
