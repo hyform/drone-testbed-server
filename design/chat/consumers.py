@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 class OrganizationConsumer(WebsocketConsumer):
     def connect(self):
         self.user = self.scope['user']
-        if self.user.profile.is_experimenter():
+        if not self.user.is_anonymous and self.user.profile.is_experimenter():
             self.accept()
             org = self.user.profile.organization
             help_channel = Channel.objects.filter(name="Help").first()
