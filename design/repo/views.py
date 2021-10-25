@@ -497,8 +497,13 @@ class DataLogList(generics.CreateAPIView):
                                     print("update time bot", bot, bot.id, elapsed_seconds, bot.iter_time, bot.last_iter_time, (bot.iter_time - bot.last_iter_time) )
                                     #weak but deadlock/race condition safe mutex hack to minimize multiple bots sending updates
                                     #current_pid_2 = str(os.getpid())                                    
-                                    st_3 = SessionTeam.objects.filter(Q(session__status=1)&Q(team=user.profile.team)).first()
+                                    st_3 = SessionTeam.objects.filter(Q(session__status=1)&Q(team=user.profile.team)).first()                                    
                                     logger.debug("******** Lock info: pid = " + current_pid + ", session pid = " + st_3.session.pid)
+                                    if(current_pid == st_3.session.pid):
+                                        logger.debug("same")
+                                    else:
+                                        logger.debug("different")
+                                    logger.debug("iter = " + str(bot.iter_time) + " , last = " + str(bot.last_iter_time))
                                     if (bot.iter_time - bot.last_iter_time) >= 30 and current_pid == st_3.session.pid:
                                         bot.last_iter_time = bot.iter_time
                                         bot.save()
