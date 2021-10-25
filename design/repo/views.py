@@ -488,37 +488,37 @@ class DataLogList(generics.CreateAPIView):
                             st_2.session.pid = current_pid
                             st_2.session.save()
 
-                        bm = BotManager()
-                        bots = bm.get_session_bot_twins(st.session)
-                        if bots:
-                            for bot in bots:
-                                if bot:
+                            bm = BotManager()
+                            bots = bm.get_session_bot_twins(st.session)
+                            if bots:
+                                for bot in bots:
+                                    if bot:
 
-                                    bot.iter_time = elapsed_seconds
-                                    logger.debug("update time bot" + str(bot) + str(elapsed_seconds) + str(bot.iter_time) + str(bot.last_iter_time) + str(bot.iter_time - bot.last_iter_time) )
-                                    print("update time bot", bot, bot.id, elapsed_seconds, bot.iter_time, bot.last_iter_time, (bot.iter_time - bot.last_iter_time) )
-                                    #weak but deadlock/race condition safe mutex hack to minimize multiple bots sending updates
-                                    #current_pid_2 = str(os.getpid())                                    
-                                    st_3 = SessionTeam.objects.filter(Q(session__status=1)&Q(team=user.profile.team)).first()                                    
-                                    logger.debug("******** Lock info: pid = " + current_pid + ", session pid = " + st_3.session.pid)
-                                    if(current_pid == st_3.session.pid):
-                                        logger.debug("same")
-                                    else:
-                                        logger.debug("different")
-                                    logger.debug("iter = " + str(bot.iter_time) + " , last = " + str(bot.last_iter_time))
-                                    if (bot.iter_time - bot.last_iter_time) >= 30 and current_pid == st_3.session.pid:
-                                        bot.last_iter_time = bot.iter_time
+                                        bot.iter_time = elapsed_seconds
+                                        logger.debug("update time bot" + str(bot) + str(elapsed_seconds) + str(bot.iter_time) + str(bot.last_iter_time) + str(bot.iter_time - bot.last_iter_time) )
+                                        print("update time bot", bot, bot.id, elapsed_seconds, bot.iter_time, bot.last_iter_time, (bot.iter_time - bot.last_iter_time) )
+                                        #weak but deadlock/race condition safe mutex hack to minimize multiple bots sending updates
+                                        #current_pid_2 = str(os.getpid())                                    
+                                        st_3 = SessionTeam.objects.filter(Q(session__status=1)&Q(team=user.profile.team)).first()                                    
+                                        logger.debug("******** Lock info: pid = " + current_pid + ", session pid = " + st_3.session.pid)
+                                        if(current_pid == st_3.session.pid):
+                                            logger.debug("same")
+                                        else:
+                                            logger.debug("different")
+                                        logger.debug("iter = " + str(bot.iter_time) + " , last = " + str(bot.last_iter_time))
+                                        if (bot.iter_time - bot.last_iter_time) >= 60 and current_pid == st_3.session.pid:
+                                            bot.last_iter_time = bot.iter_time
+                                            bot.save()
+                                            bm.send_adaptive_command(st.session, bot.id)
+                                            logger.debug("update bot agents adaptive call" + str(bot.bot_user_name) + str(bot.other_user_name))
+                                            logger.debug("adaptive ================================================= update bot agents adaptive call ================== " + str(bot.id) + str(bot.bot_user_name) + str(bot.other_user_name))
+                                            print("adaptive ================================================= update bot agents adaptive call ================== ", bot.id, bot.bot_user_name, bot.other_user_name)
+                                            logger.debug("session id = " + str(st.session.id))
+                                            logger.debug("PROCESS ID = " + str(os.getpid()))
                                         bot.save()
-                                        bm.send_adaptive_command(st.session, bot.id)
-                                        logger.debug("update bot agents adaptive call" + str(bot.bot_user_name) + str(bot.other_user_name))
-                                        logger.debug("adaptive ================================================= update bot agents adaptive call ================== " + str(bot.id) + str(bot.bot_user_name) + str(bot.other_user_name))
-                                        print("adaptive ================================================= update bot agents adaptive call ================== ", bot.id, bot.bot_user_name, bot.other_user_name)
-                                        logger.debug("session id = " + str(st.session.id))
-                                        logger.debug("PROCESS ID = " + str(os.getpid()))
-                                    bot.save()
-                        
-                        st_2.session.pid = "0"
-                        st_2.session.save()
+                            
+                            st_2.session.pid = "0"
+                            st_2.session.save()
 
                         event_info_message(channel, up.position.name, action, elapsed_seconds)
 
