@@ -367,7 +367,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         });
     };
     
-    var addTerminalButtonBotChoice = function(text, isDesign) {        
+    var addTerminalButtonBotChoice = function(text, isDesign, temp) {        
         var botChatOptions = null;
         if(isDesign) {
             botChatOptions = document.getElementById("design-bot-chat-options");
