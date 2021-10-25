@@ -69,6 +69,7 @@ class Session(models.Model):
     is_tutorial = models.BooleanField(default=False)
     use_ai = models.BooleanField()
     use_process_ai = models.BooleanField(default=False)
+    pid = models.CharField(max_length=20, blank=True) #Weak mutex hack for bots
 
     NONE = 0
     RUNNING = 1

@@ -480,15 +480,28 @@ class DataLogList(generics.CreateAPIView):
                         else:
                             elapsed_seconds = 0
 
+                        #weak but deadlock/race condition safe mutex hack to minimize multiple bots sending updates
+                        current_pid = str(os.getpid())
+                        st_2 = SessionTeam.objects.filter(Q(session__status=1)&Q(team=user.profile.team)).first()
+                        st_2.session.pid = current_pid
+                        st_2.session.save()
+
                         bm = BotManager()
                         bots = bm.get_session_bot_twins(st.session)
                         if bots:
                             for bot in bots:
                                 if bot:
-                                    bot.iter_time = elapsed_seconds
+
+                                    bot.iter_time = elapsed_seconds                                    
+                                    logger.debug("last_iter_time = " + str(bot.last_iter_time))
+                                    logger.debug("iter_time = " + str(bot.iter_time))
                                     logger.debug("update time bot" + str(bot) + str(elapsed_seconds) + str(bot.iter_time) + str(bot.last_iter_time) + str(bot.iter_time - bot.last_iter_time) )
                                     print("update time bot", bot, bot.id, elapsed_seconds, bot.iter_time, bot.last_iter_time, (bot.iter_time - bot.last_iter_time) )
-                                    if (bot.iter_time - bot.last_iter_time) >= 60:
+                                    #weak but deadlock/race condition safe mutex hack to minimize multiple bots sending updates
+                                    current_pid_2 = str(os.getpid())                                    
+                                    st_3 = SessionTeam.objects.filter(Q(session__status=1)&Q(team=user.profile.team)).first()
+                                    logger.debug("Lock info: pid = " + current_pid_2 + ", session pid = " + st_3.session.pid)
+                                    if (bot.iter_time - bot.last_iter_time) >= 30 and current_pid_2 == st_3.session.pid:
                                         bot.last_iter_time = bot.iter_time
                                         bot.save()                                        
                                         bm.send_adaptive_command(st.session, bot.id)                                        
@@ -497,6 +510,8 @@ class DataLogList(generics.CreateAPIView):
                                         print("adaptive ================================================= update bot agents adaptive call ================== ", bot.id, bot.bot_user_name, bot.other_user_name)
                                         logger.debug("session id = " + str(st.session.id))
                                         logger.debug("PROCESS ID = " + str(os.getpid()))
+                                    if bot.last_iter_time > bot.iter_time:
+                                        bot.last_iter_time = bot.iter_time
                                     bot.save()
 
 
