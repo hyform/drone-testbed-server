@@ -483,7 +483,7 @@ class DataLogList(generics.CreateAPIView):
                         #weak but deadlock/race condition safe mutex hack to minimize multiple bots sending updates
                         current_pid = str(os.getpid())
                         st_2 = SessionTeam.objects.filter(Q(session__status=1)&Q(team=user.profile.team)).first()
-                        if(st_2.session.pid == "0"):
+                        if(not st_2.session.pid or st_2.session.pid == "0"):
                             logger.debug("Saving new pid to =============******======== " + current_pid)
                             st_2.session.pid = current_pid
                             st_2.session.save()
