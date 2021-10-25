@@ -520,7 +520,7 @@ class DataLogList(generics.CreateAPIView):
                             st_2.session.pid = "0"
                             st_2.session.save()
                         else:
-                            debug.log("session pid == " + st_2.session.pid)
+                            logger.debug("session pid == " + st_2.session.pid)
 
                         event_info_message(channel, up.position.name, action, elapsed_seconds)
 
