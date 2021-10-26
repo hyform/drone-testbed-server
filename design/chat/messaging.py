@@ -73,28 +73,53 @@ def new_plan_message(group, session, tag):
                 }
             )
 
-def bot_adapt_message(group, session, msgs):
-    if group and session:
-        help_channel = Channel.objects.filter(name="Help").first()
+def bot_adapt_message(group, session, msgs, is_design):
+    if session:
+        if is_design:
+            design_channel = Channel.objects.filter(structure=session.structure).filter(name="Design").first()
 
-        group_positions = GroupPosition.objects.filter(group=group)
-        positions = Position.objects.filter(id__in=Subquery(group_positions.values('position')))
-        user_positions = UserPosition.objects.filter(session=session).filter(position__in=positions)
-        users = User.objects.filter(id__in=Subquery(user_positions.values('user')))
+            for msg in msgs:
+                if "Bot suggestion" in msg:
+                        design_channel_instance = str(design_channel.id) + "___" + str(session.id)
+                        async_to_sync(get_channel_layer().group_send)(
+                            design_channel_instance,
+                            {
+                                'type': 'chat.message',
+                                'message': msg,
+                                'sender': "Bot",
+                                'channel': design_channel_instance
+                            }
+                        )
 
-        for msg in msgs:
-            if "Bot suggestion" in msg:
-                for user in users:
-                    help_instance = str(help_channel.id) + "_" + str(user.id) + "___" + str(session.id)
-                    async_to_sync(get_channel_layer().group_send)(
-                        help_instance,
-                        {
-                            'type': 'system.usermessage',
-                            'message': msg,
-                            'sender': "Bot",
-                            'channel': help_instance
-                        }
-                    )
+            ops_channel = Channel.objects.filter(structure=session.structure).filter(name="Operations").first()
+
+            for msg in msgs:
+                if "Bot suggestion" in msg:
+                        ops_channel_instance = str(ops_channel.id) + "___" + str(session.id)
+                        async_to_sync(get_channel_layer().group_send)(
+                            ops_channel_instance,
+                            {
+                                'type': 'chat.message',
+                                'message': msg,
+                                'sender': "Bot",
+                                'channel': ops_channel_instance
+                            }
+                        )
+        else:
+            ops_channel = Channel.objects.filter(structure=session.structure).filter(name="Operations").first()
+
+            for msg in msgs:
+                if "Bot suggestion" in msg:
+                        ops_channel_instance = str(ops_channel.id) + "___" + str(session.id)
+                        async_to_sync(get_channel_layer().group_send)(
+                            ops_channel_instance,
+                            {
+                                'type': 'chat.message',
+                                'message': msg,
+                                'sender': "Bot",
+                                'channel': ops_channel_instance
+                            }
+                        )
 
 def new_scenario_message(group, session):
     if group and session:

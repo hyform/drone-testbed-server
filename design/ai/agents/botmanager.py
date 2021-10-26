@@ -79,11 +79,11 @@ class BotManager():
             return [None, None, ops_bots[0], ops_bots[1]]
 
 
-    def send_adaptive_chat(self, session, msgs):
+    def send_adaptive_chat(self, session, msgs, is_design):
         bot_setups = self.get_session_bot_twins(session)
         db_helper = DatabaseHelper(session)
         db_helper.set_user_name(bot_setups[0].bot_user_name)
-        db_helper.bot_adaptive(msgs)
+        db_helper.bot_adaptive(msgs, is_design)
 
 
     def send_adaptive_command(self, session, bot_id):
@@ -96,16 +96,15 @@ class BotManager():
                     # make sure to set as a want command
                     bot_setups[i].command = "want"
                     bot_setups[i].save()
-
-
+                    
                     if i <= 1:
                         db = DesignerBotAgent()
                         msgs = db.send_to_bot(bot_setups[i].id, 'iterate')
-                        self.send_adaptive_chat(session, msgs)
+                        self.send_adaptive_chat(session, msgs, True)
                     else:
                         ob = OpsBotAgent()
                         msgs = ob.send_to_bot(bot_setups[i].id, 'iterate')
-                        self.send_adaptive_chat(session, msgs)
+                        self.send_adaptive_chat(session, msgs, False)
 
 
 

@@ -266,6 +266,14 @@ document.addEventListener("DOMContentLoaded", function (event) {
             temp = temp + "profit";
         }else if(text === "customers") {
             temp = temp + "customers";
+        }else if(text === "north") {
+            temp = temp + "north";
+        }else if(text === "south") {
+            temp = temp + "south";
+        }else if(text === "east") {
+            temp = temp + "east";
+        }else if(text === "west") {
+            temp = temp + "west";
         }
         var botChatOptions = null;
         if(isDesign) {
@@ -586,10 +594,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
         if(!(temp.includes("cost") && temp.includes("profit") && temp.includes("customers"))) {
             addButtonBotChoice("and", opsBotChatWant1, bot, temp);
         }
-        addButtonBotChoice("north", opsBotChatWant5, bot, temp);
-        addButtonBotChoice("south", opsBotChatWant5, bot, temp);
-        addButtonBotChoice("east", opsBotChatWant5, bot, temp);
-        addButtonBotChoice("west", opsBotChatWant5, bot, temp);
+        addButtonBotChoice("north", opsBotChatWant6, bot, temp);
+        addButtonBotChoice("south", opsBotChatWant6, bot, temp);
+        addButtonBotChoice("east", opsBotChatWant6, bot, temp);
+        addButtonBotChoice("west", opsBotChatWant6, bot, temp);
     };
 
     var opsBotChatWant3 = function (text, bot, temp) {
@@ -600,10 +608,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
         if(!(temp.includes("cost") && temp.includes("profit") && temp.includes("customers"))) {
             addButtonBotChoice("and", opsBotChatWant1, bot, temp);
         }
-        addButtonBotChoice("north", opsBotChatWant5, bot, temp);
-        addButtonBotChoice("south", opsBotChatWant5, bot, temp);
-        addButtonBotChoice("east", opsBotChatWant5, bot, temp);
-        addButtonBotChoice("west", opsBotChatWant5, bot, temp);
+        addButtonBotChoice("north", opsBotChatWant6, bot, temp);
+        addButtonBotChoice("south", opsBotChatWant6, bot, temp);
+        addButtonBotChoice("east", opsBotChatWant6, bot, temp);
+        addButtonBotChoice("west", opsBotChatWant6, bot, temp);
     }    
 
     var opsBotChatWant4 = function (text, bot, temp) {
@@ -619,27 +627,37 @@ document.addEventListener("DOMContentLoaded", function (event) {
         if(!(temp.includes("cost") && temp.includes("profit") && temp.includes("customers"))) {
             addButtonBotChoice("and", opsBotChatWant1, bot, temp);
         }
-        addButtonBotChoice("north", opsBotChatWant5, bot, temp);
-        addButtonBotChoice("south", opsBotChatWant5, bot, temp);
-        addButtonBotChoice("east", opsBotChatWant5, bot, temp);
-        addButtonBotChoice("west", opsBotChatWant5, bot, temp);
+        addButtonBotChoice("north", opsBotChatWant6, bot, temp);
+        addButtonBotChoice("south", opsBotChatWant6, bot, temp);
+        addButtonBotChoice("east", opsBotChatWant6, bot, temp);
+        addButtonBotChoice("west", opsBotChatWant6, bot, temp);
     }
 
+    /* and not in direction choices, so remove
     var opsBotChatWant5 = function (text, bot, temp) {
         clearAndAdd(text, bot, temp);
 
         addTerminalDone(bot);
         addButtonBotChoice("and", opsBotChatWant6, bot, temp);
     }
+    */
 
     var opsBotChatWant6 = function (text, bot, temp) {
         clearAndAdd(text, bot, temp);
 
         addTerminalDone(bot);
-        addButtonBotChoice("north", opsBotChatWant5, bot, temp);
-        addButtonBotChoice("south", opsBotChatWant5, bot, temp);
-        addButtonBotChoice("east", opsBotChatWant5, bot, temp);
-        addButtonBotChoice("west", opsBotChatWant5, bot, temp);
+        if(!temp.includes("north")) {
+            addButtonBotChoice("north", opsBotChatWant6, bot, temp);
+        }
+        if(!temp.includes("south")) {
+            addButtonBotChoice("south", opsBotChatWant6, bot, temp);
+        }
+        if(!temp.includes("east")) {
+            addButtonBotChoice("east", opsBotChatWant6, bot, temp);
+        }
+        if(!temp.includes("west")) {
+            addButtonBotChoice("west", opsBotChatWant6, bot, temp);
+        }
     }
 
     var opsBotChatPing = function (text, bot, temp) {

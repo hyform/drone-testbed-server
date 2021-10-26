@@ -258,8 +258,8 @@ class DatabaseHelper:
 
         return plan
 
-    def bot_adaptive(self, msgs):
-        bot_adapt_message(self.user_primary_groups[self.user_name], self.session, msgs)
+    def bot_adaptive(self, msgs, is_design):
+        bot_adapt_message(self.user_primary_groups[self.user_name], self.session, msgs, is_design)
 
 
     # submits a datalog
